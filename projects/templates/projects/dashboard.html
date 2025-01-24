@@ -1,0 +1,26 @@
+{% extends "projects/base.html" %}
+{% block title %}
+<title>Dashboard</title>
+{% endblock title %}
+
+{% block page_header %}
+<h1>Welcome to Your Dashboard!</h1>
+{% endblock page_header %}
+{% block content %}
+    <p>Here are your tasks:</p>
+
+    <h2>Your Tasks</h2>
+    <ul>
+        {% for task in user_tasks %}
+            <li>
+                <strong>{{ task.title }}</strong> ({{ task.status }})<br>
+                Due: {{ task.due_date }}<br>
+                Priority: {{ task.priority }}<br>
+                Project: {{ task.project.name }}<br>
+                <p>{{ task.description }}</p>
+            </li>
+        {% empty %}
+            <p>You have no tasks assigned.</p>
+        {% endfor %}
+    </ul>
+{% endblock content %}
