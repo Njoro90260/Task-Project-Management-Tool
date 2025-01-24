@@ -62,3 +62,28 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author.username} on {self.task.title}"
+    
+class Feature(models.Model):
+    title = models.CharField(max_length=100, help_text="Short title of the feature, e.g., 'Task Management'")
+    description = models.TextField(help_text="Detailed description of the feature")
+    svg_icon = models.TextField(
+        help_text="Inline SVG markup for custom icons",
+        blank=True,
+        null=True, 
+    )
+    icon_file = models.FileField(
+        upload_to='feature_icons/', 
+        blank=True, null=True, 
+        help_text="Upload an SVG file"
+    )
+    is_active = models.BooleanField(default=True, help_text="Display this on the homepage?")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['title']
+        verbose_name = "Feature"
+        verbose_name_plural = "Features"
+
+    def __str__(self):
+        return self.title

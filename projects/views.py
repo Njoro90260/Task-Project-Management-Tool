@@ -4,9 +4,9 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
-    if request.user.is_authenticated:
-        return redirect('projects:dashboard')
-    return render(request, 'projects/index.html')
+    features = Feature.objects.filter(is_active=True)
+    context = {'features': features}
+    return render(request, 'projects/index.html', context)
 
 @login_required
 def dashboard(request):

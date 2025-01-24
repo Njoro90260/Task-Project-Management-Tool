@@ -20,6 +20,11 @@
                 <span>Hello, {{user.username}}.</span>
             </li>
             <li>
+                <button>
+                    <a href="{% url 'projects:dashboard' %}">Go to Dashboard</a>
+                </button>
+            </li>
+            <li>
                 <a href="{% url 'Users:logout' %}">Logout</a>
             </li>
             {% else %}
