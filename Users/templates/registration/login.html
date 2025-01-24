@@ -1,0 +1,14 @@
+{% extends "projects/base.html" %}
+
+{% block page_header %}
+<h2>Login to your account</h2>
+{% endblock page_header %}
+
+{% block content %}
+<form action="{% url 'Users:login' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button name="submit">Login</button>
+    <input type="hidden" name="next" value="{% url 'projects:dashboard' %}"/>
+</form>
+{% endblock content %}

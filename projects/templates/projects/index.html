@@ -1,0 +1,23 @@
+{% extends "projects/base.html" %}
+
+{% block content %}
+<h1>Welcome people.</h1>
+<h2>Features</h2>
+<div>
+    {% for feature in features %}
+    <div>
+        {% if feature.svg_icon %}
+        <!-- Render inline SCG markup -->
+        <div>
+            {{ feature.svg_icon|safe }}
+        </div>
+        {% elif feature.icon_file %}
+        <!-- Render SVG  file as image  -->
+         <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}">
+        {% endif %}
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
