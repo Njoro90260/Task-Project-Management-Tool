@@ -20,15 +20,17 @@
             <legend>Project Details</legend>
             {{ project_form.as_p }}
             <div>
-                <label for="{{ project_form.add_task.id_for_label }}">Add tasks?</label>
-                {{ project_form.add_task }}
+                <label for="{{ project_form.add_tasks.id_for_label }}">Add tasks?</label>
+                {{ project_form.add_tasks }}
             </div>
         </fieldset>
 
+        {% if task_form %}
         <fieldset>
             <legend>Task Details</legend>
             {{ task_form.as_p }}
         </fieldset>
+        {% endif %}
         <button type="submit">Submit</button>
     </form>
 {% endblock content %}

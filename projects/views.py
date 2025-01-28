@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
-from.forms import *
+from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -35,22 +35,21 @@ def create_project_and_tasks(request):
     """View for creating a new project and optionally adding tasks."""
     if request.method == 'POST':
         project_form = ProjectForm(request.POST)
+        task_form = TaskForm(request.POST) if 'add_tasks' in request.POST else None
 
         if project_form.is_valid():
             project = project_form.save(commit=False)
             project.created_by = request.user
             project.save()
 
-            if 'add_tasks' in request.POST:
-                task_form = TaskForm(request.POST)
-                if task_form.is_valid():
-                    task = task_form.save(commit=False)
-                    task.project = project
-                    task.save()
-                    messages.success(request, 'Project and task created successfully.')
-                    return redirect('projects:dashboard')
-                else:
-                    messages.error(request, 'Task form is invalid. Please correct the errors and try again.')
+            if task_form and task_form.is_valid():
+                task = task_form.save(commit=False)
+                task.project = project
+                task.save()
+                messages.success(request, 'Project and task created successfully.')
+                return redirect('projects:dashboard')
+            elif task_form:
+                messages.error(request, 'Task form is invalid. Please correct the errors and try again.')
             else:
                 messages.success(request, 'Project created successfully. You can add tasks later.')
                 return redirect('projects:dashboard')
@@ -62,7 +61,7 @@ def create_project_and_tasks(request):
 
     context = {
         'project_form': project_form,
-        'task_form': task_form if 'add_tasks' in request.POST else None,
+        'task_form': task_form if request.method == 'POST' and 'add_tasks' in request.POST else None,
     }
 
     return render(request, 'projects/create_project_and_tasks.html', context)

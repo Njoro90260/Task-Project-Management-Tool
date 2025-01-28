@@ -3,15 +3,15 @@ from .models import Project, Task
 import datetime
 
 class ProjectForm(forms.ModelForm):
-    add_tasks = forms.BooleanField(required=False)
+    add_tasks = forms.BooleanField(required=False, label='Add tasks?')
+    
     class Meta:
         model = Project
         fields = ['name', 'description', 'deadline', 'add_tasks']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Project Name', 'class': 'form-control', 'size': 80}),
-            'description': forms.Textarea(attrs={'placeholder': 'Describe the project...', 'class': 'form-control', 'size': 80}),
-            'deadline': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'size': 80}),
-            # 'add_task': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Describe the project...', 'class': 'form-control', 'rows': 4}),
+            'deadline': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
     def clean_deadline(self):
