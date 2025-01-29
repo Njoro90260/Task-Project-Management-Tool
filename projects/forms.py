@@ -7,10 +7,10 @@ class ProjectForm(forms.ModelForm):
     
     class Meta:
         model = Project
-        fields = ['name', 'description', 'deadline', 'add_tasks']
+        fields = ['name', 'project_description', 'deadline', 'add_tasks']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Project Name', 'class': 'form-control', 'size': 80}),
-            'description': forms.Textarea(attrs={'placeholder': 'Describe the project...', 'class': 'form-control', 'rows': 4}),
+            'project_description': forms.Textarea(attrs={'placeholder': 'Describe the project...', 'class': 'form-control', 'rows': 4}),
             'deadline': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
@@ -23,12 +23,12 @@ class ProjectForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['project', 'assigned_to', 'title', 'description', 'status', 'priority', 'start_date', 'due_date']
+        fields = ['project', 'assigned_to', 'title', 'task_description', 'status', 'priority', 'start_date', 'due_date']
         widgets = {
             'project': forms.Select(attrs={'class': 'form-control'}),
             'assigned_to': forms.Select(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'placeholder': 'Task Title', 'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'placeholder': 'Describe the task...', 'class': 'form-control', 'rows': 4}),
+            'task_description': forms.Textarea(attrs={'placeholder': 'Describe the task...', 'class': 'form-control', 'rows': 4}),
             'status': forms.Select(attrs={'class': 'form-control'}),
             'priority': forms.Select(attrs={'class': 'form-control'}),
             'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
