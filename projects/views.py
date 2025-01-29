@@ -29,10 +29,8 @@ def dashboard(request):
     }
     return render(request, 'projects/dashboard.html', context)
 
-
-@login_required
 def create_project_and_tasks(request):
-    """View for creating a new project and optionally adding tasks."""
+    """"View for creating a new project and optionally adding tasks."""
     if request.method == 'POST':
         project_form = ProjectForm(request.POST)
         task_form = TaskForm(request.POST) if 'add_tasks' in request.POST else None
@@ -47,7 +45,10 @@ def create_project_and_tasks(request):
                 task.project = project
                 task.save()
                 messages.success(request, 'Project and task created successfully.')
-                return redirect('projects:dashboard')
+                if 'save_add_another' in request.POST:
+                    return redirect('create_project_and_tasks')
+                else:
+                    return redirect('projects:dashboard')
             elif task_form:
                 messages.error(request, 'Task form is invalid. Please correct the errors and try again.')
             else:
