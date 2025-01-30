@@ -1,0 +1,54 @@
+{% extends "projects/base.html" %}
+
+{% block content %}
+<h2>Kanban Board</h2>
+
+<!-- Task Creation Form -->
+ <form method="post" class="task-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Task</button>
+ </form>
+
+
+<div class="kanban-board">
+    <div class="kanban-column" data-status="To Do">
+        <h3>To Do</h3>
+        <div class="task-list">
+            {% for task in task_todo %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                {{ task.title }}
+            </div>
+            {% empty %}
+            <p>No tasks in To Do</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="kanban-column" data-status="In Progress">
+        <h3>In Progress</h3>
+        <div class="task-list">
+            {% for task in task_in_progress %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                {{ task.title }}
+            </div>
+            {% empty %}
+            <p>No tasks in Progress</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="kanban-column" data-status="Completed">
+        <h3>Completed</h3>
+        <div class="task-list">
+            {% for task in task_completed %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                {{ task.title }}
+            </div>
+            {% empty %}
+            <p>No tasks Completed</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

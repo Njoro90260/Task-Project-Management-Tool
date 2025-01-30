@@ -69,6 +69,33 @@ def create_project_and_tasks(request):
 
     return render(request, 'projects/create_project_and_tasks.html', context)
 
+def kanban_board(request):
+    #Handle task creation form submission
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.status = "To Do"
+            task.project = Project.objects.get(id=request.POST.get('project_id'))
+            task.save()
+            return redirect('projects:kanban-board')
+        
+        else:
+            form = TaskForm()
+            
+    # Group task by their status
+    task_todo = Task.objects.filter(status="To Do")
+    task_in_progress = Task.objects.filter(status="In Progress")
+    task_completed = Task.objects.filter(status="Completed")
+
+    context = {
+        "task_todo": task_todo,
+        "task_in_progress": task_in_progress,
+        "task_completed": task_completed,
+    }
+
+    return render(request, "projects/kanban_board.html", context)
+
 
 @csrf_protect
 def update_task_status(request):
