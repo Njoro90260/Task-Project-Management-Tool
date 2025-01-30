@@ -1,0 +1,38 @@
+{% extends "projects/base.html" %}
+
+{% block content %}
+<div class="kanban-container">
+    <div class="kanban-column" data-status="To Do">
+        <h3>To Do</h3>
+        <div class="task-list" id="todo-task">
+            {% for task in task_todo %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                {{ task.title }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="kanban-column" data-status="In Progress">
+        <h3>In Progress</h3>
+        <div class="task-list" id="inprogress-task">
+            {% for task in task_in_progress %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                {{ task.title }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="kanban-column" data-status="Completed">
+        <h3>Completed</h3>
+        <div class="task-list" id="completed-tasks">
+            {% for task in task_completed %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                {{ task.title }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

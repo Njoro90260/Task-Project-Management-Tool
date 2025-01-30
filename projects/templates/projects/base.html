@@ -16,6 +16,9 @@
             <li>
                 <a href="{% url 'projects:index' %}">Home</a>
             </li>
+            <li>
+                <a href="{% url 'projects:update_task_status' %}">update tasks</a>
+            </li>
         </ul>
         <ul>
             {% if user.is_authenticated %}

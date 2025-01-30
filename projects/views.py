@@ -3,7 +3,9 @@ from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_protect
+import json
 # Create your views here.
 def index(request):
     features = Feature.objects.filter(is_active=True)
@@ -66,3 +68,31 @@ def create_project_and_tasks(request):
     }
 
     return render(request, 'projects/create_project_and_tasks.html', context)
+
+
+@csrf_protect
+def update_task_status(request):
+    if request.method == 'POST':
+        try:
+            # Get the request body and parse it
+            data = json.loads(request.body)
+            task_id = data.get('task_id')
+            new_status = data.get('status')
+
+            # Validate the data
+            if not task_id or not new_status:
+                return JsonResponse({'error': 'Missing task_id or status!'}, status=400)
+            
+            # Update the task status
+            task = Task.objects.get(id=task_id)
+            task.status = new_status
+            task.save()
+
+            return JsonResponse({"message": "Task status updated successfully."}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON!'}, status=400)
+        except Task.DoesNotExist:
+            return JsonResponse({'error': 'Task not found!'}, status=404)
+        
+    else:
+        return JsonResponse({'error': 'Invalid request method!'}, status=405)
