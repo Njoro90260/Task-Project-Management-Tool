@@ -70,13 +70,12 @@ def create_project_and_tasks(request):
     return render(request, 'projects/create_project_and_tasks.html', context)
 
 def kanban_board(request):
+    form = TaskForm()
     #Handle task creation form submission
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
-            task.status = "To Do"
-            task.project = Project.objects.get(id=request.POST.get('project_id'))
             task.save()
             return redirect('projects:kanban-board')
         
@@ -92,6 +91,7 @@ def kanban_board(request):
         "task_todo": task_todo,
         "task_in_progress": task_in_progress,
         "task_completed": task_completed,
+        "form": form
     }
 
     return render(request, "projects/kanban_board.html", context)
