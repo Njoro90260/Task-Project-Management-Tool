@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('projects.urls')),
     path('users/', include('Users.urls')),
-    # path('tasks/', include('tasks.urls')),
+    path('kanban/', include('kanban.urls')),
 ]
 
 if settings.DEBUG:
