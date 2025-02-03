@@ -6,6 +6,10 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 import json
+import logging
+
+logger = logging.getLogger(__name__)
+
 # Create your views here.
 def index(request):
     features = Feature.objects.filter(is_active=True)
@@ -99,6 +103,10 @@ def kanban_board(request):
 
 @csrf_protect
 def update_task_status(request):
+    logger.debug(f"Request method: {request.method}")
+    logger.debug(f"Request headers: {request.headers}")
+    logger.debug(f"Request body: {request.body}")
+    
     if request.method == 'POST':
         try:
             # Get the request body and parse it

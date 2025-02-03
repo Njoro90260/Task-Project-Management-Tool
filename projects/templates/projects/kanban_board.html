@@ -2,7 +2,7 @@
 
 {% block content %}
 <h2>Kanban Board</h2>
-
+<a href="{% url 'projects:update_task_status' %}">update tasks</a>
 <!-- Task Creation Form -->
  <form method="post" class="task-form">
     {% csrf_token %}

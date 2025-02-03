@@ -1,38 +1,114 @@
-{% extends "projects/base.html" %}
-
-{% block content %}
-<div class="kanban-container">
-    <div class="kanban-column" data-status="To Do">
-        <h3>To Do</h3>
-        <div class="task-list" id="todo-task">
-            {% for task in task_todo %}
-            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
-                {{ task.title }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board</title>
+    <style>
+        .kanban-container { display: flex; gap: 20px; }
+        .kanban-column { flex: 1; padding: 10px; border: 1px solid #ccc; }
+        .task-card { padding: 10px; margin: 5px 0; background: #f1f1f1; cursor: grab; }
+    </style>
+</head>
+<body>
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div class="kanban-container">
+        <div class="kanban-column" data-status="To Do">
+            <h3>To Do</h3>
+            <div class="task-list" id="todo-task">
+                {% for task in task_todo %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                    {{ task.title }}
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+        </div>
+    
+        <div class="kanban-column" data-status="In Progress">
+            <h3>In Progress</h3>
+            <div class="task-list" id="inprogress-task">
+                {% for task in task_in_progress %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                    {{ task.title }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    
+        <div class="kanban-column" data-status="Completed">
+            <h3>Completed</h3>
+            <div class="task-list" id="completed-tasks">
+                {% for task in task_completed %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                    {{ task.title }}
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const taskCards = document.querySelectorAll(".task-card");
+        const columns = document.querySelectorAll(".task-list");
 
-    <div class="kanban-column" data-status="In Progress">
-        <h3>In Progress</h3>
-        <div class="task-list" id="inprogress-task">
-            {% for task in task_in_progress %}
-            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
-                {{ task.title }}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+        taskCards.forEach(card => {
+            card.addEventListener("dragstart", function(event) {
+                event.dataTransfer.setData("taskId", this.dataset.taskId);
+            });
+        });
 
-    <div class="kanban-column" data-status="Completed">
-        <h3>Completed</h3>
-        <div class="task-list" id="completed-tasks">
-            {% for task in task_completed %}
-            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
-                {{ task.title }}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-{% endblock content %}
+        columns.forEach(column => {
+            column.addEventListener("dragover", function(event) {
+                event.preventDefault();
+            });
+
+            column.addEventListener("drop", function(event) {
+                event.preventDefault();
+                const taskId = event.dataTransfer.getData("taskId");
+                const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+                if (taskCard) {
+                    this.appendChild(taskCard);
+                }
+                
+                fetch('/update-task-status/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        task_id: taskId,
+                        status: this.parentElement.dataset.status
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Server response:", data);
+                    if (data.message) {
+                        console.log("Task updated successfully.")
+                    } else if (data.error) {
+                        console.error("Error", data.error);
+                        alert("Error:" + data.error);
+                    }
+                }).catch(error => console.error("Error updating task:", error));
+            });
+        });
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>    
+</body>
+</html>

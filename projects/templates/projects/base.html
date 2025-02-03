@@ -19,9 +19,6 @@
             <li>
                 <a href="{% url 'projects:kanban-board' %}">Task Management</a>
             </li>
-            <li>
-                <a href="{% url 'projects:update_task_status' %}">update tasks</a>
-            </li>
         </ul>
         <ul>
             {% if user.is_authenticated %}

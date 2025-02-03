@@ -53,6 +53,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (taskCard) {
                         list.appendChild(taskCard);
                     }
+                } else if (data.error) {
+                    console.error('Error:', data.error);
+                    alert('Error: ' + data.error);
                 }
             })
             .catch(error => console.error("Error updating task:", error));
