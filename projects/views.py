@@ -1,14 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
-import json
-import logging
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import *
 
-logger = logging.getLogger(__name__)
 
 # Create your views here.
 def index(request):
@@ -73,6 +71,30 @@ def create_project_and_tasks(request):
 
     return render(request, 'projects/create_project_and_tasks.html', context)
 
+
+@csrf_protect
+def update_task_status(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            task_id = data.get("task_id")
+            new_status = data.get("status")
+
+            if not task_id or not new_status:
+                return JsonResponse({"error": "Missing task_id or status!"}, status=400)
+            
+            task = Task.objects.get(id=task_id)
+            task.status = new_status
+            task.save()
+
+            return JsonResponse({"Usage": "Taks status updated successfully!"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON!"}, status=400)
+        except Task.DoesNotExist:
+            return JsonResponse({"error": "Invalid request method!"}, status=405)
+        
+
+
 def kanban_board(request):
     form = TaskForm()
     #Handle task creation form submission
@@ -99,35 +121,3 @@ def kanban_board(request):
     }
 
     return render(request, "projects/kanban_board.html", context)
-
-
-@csrf_protect
-def update_task_status(request):
-    logger.debug(f"Request method: {request.method}")
-    logger.debug(f"Request headers: {request.headers}")
-    logger.debug(f"Request body: {request.body}")
-    
-    if request.method == 'POST':
-        try:
-            # Get the request body and parse it
-            data = json.loads(request.body)
-            task_id = data.get('task_id')
-            new_status = data.get('status')
-
-            # Validate the data
-            if not task_id or not new_status:
-                return JsonResponse({'error': 'Missing task_id or status!'}, status=400)
-            
-            # Update the task status
-            task = Task.objects.get(id=task_id)
-            task.status = new_status
-            task.save()
-
-            return JsonResponse({"message": "Task status updated successfully."}, status=200)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON!'}, status=400)
-        except Task.DoesNotExist:
-            return JsonResponse({'error': 'Task not found!'}, status=404)
-        
-    else:
-        return JsonResponse({'error': 'Invalid request method!'}, status=405)
