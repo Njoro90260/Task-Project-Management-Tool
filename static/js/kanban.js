@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const newStatus = this.dataset.status;
             const taskCard = document.querySelector(`[data-task-id='${taskId}']`);
 
-            fetch('/update-task-status/', {
+            fetch('update-task-status/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
