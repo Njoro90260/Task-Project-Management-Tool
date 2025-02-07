@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
+from rest_framework import generics
+from .serializers import TaskSerializer
 
 
 # Create your views here.
@@ -50,7 +52,7 @@ def create_project_and_tasks(request):
                 task.save()
                 messages.success(request, 'Project and task created successfully.')
                 if 'save_add_another' in request.POST:
-                    return redirect('create_project_and_tasks')
+                    return redirect('projects:create_project_and_tasks')
                 else:
                     return redirect('projects:dashboard')
             elif task_form:
@@ -72,26 +74,26 @@ def create_project_and_tasks(request):
     return render(request, 'projects/create_project_and_tasks.html', context)
 
 
-@csrf_protect
-def update_task_status(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            task_id = data.get("task_id")
-            new_status = data.get("status")
+# @csrf_protect
+# def update_task_status(request):
+#     if request.method == "POST":
+#         try:
+#             data = json.loads(request.body)
+#             task_id = data.get("task_id")
+#             new_status = data.get("status")
 
-            if not task_id or not new_status:
-                return JsonResponse({"error": "Missing task_id or status!"}, status=400)
+#             if not task_id or not new_status:
+#                 return JsonResponse({"error": "Missing task_id or status!"}, status=400)
             
-            task = Task.objects.get(id=task_id)
-            task.status = new_status
-            task.save()
+#             task = Task.objects.get(id=task_id)
+#             task.status = new_status
+#             task.save()
 
-            return JsonResponse({"Usage": "Taks status updated successfully!"}, status=200)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON!"}, status=400)
-        except Task.DoesNotExist:
-            return JsonResponse({"error": "Invalid request method!"}, status=405)
+#             return JsonResponse({"Usage": "Taks status updated successfully!"}, status=200)
+#         except json.JSONDecodeError:
+#             return JsonResponse({"error": "Invalid JSON!"}, status=400)
+#         except Task.DoesNotExist:
+#             return JsonResponse({"error": "Invalid request method!"}, status=405)
         
 
 
@@ -121,3 +123,13 @@ def kanban_board(request):
     }
 
     return render(request, "projects/kanban_board.html", context)
+
+# List all tasks & create new tasks
+class TaskListCreateView(generics.ListCreateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+# Retrieve, update or delete a task
+class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer

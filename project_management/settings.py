@@ -42,9 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+     # third party apps
     'rest_framework',
-    # third party apps
     'debug_toolbar',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -56,8 +57,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True 
 ROOT_URLCONF = 'project_management.urls'
 
 TEMPLATES = [
@@ -125,6 +128,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Ensure this matches your project structure
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For production (collectstatic)
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

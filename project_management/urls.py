@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('projects.urls')),
     path('users/', include('Users.urls')),
     # path('tasks/', include('tasks.urls')),
+    path('api/', include('projects.api_urls')),  # Dedicated API routes
 ]
 
 if settings.DEBUG:
