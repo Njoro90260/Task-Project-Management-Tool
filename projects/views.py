@@ -1,8 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_protect
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import *
+
 
 # Create your views here.
 def index(request):
@@ -29,10 +33,8 @@ def dashboard(request):
     }
     return render(request, 'projects/dashboard.html', context)
 
-
-@login_required
 def create_project_and_tasks(request):
-    """View for creating a new project and optionally adding tasks."""
+    """"View for creating a new project and optionally adding tasks."""
     if request.method == 'POST':
         project_form = ProjectForm(request.POST)
         task_form = TaskForm(request.POST) if 'add_tasks' in request.POST else None
@@ -47,7 +49,10 @@ def create_project_and_tasks(request):
                 task.project = project
                 task.save()
                 messages.success(request, 'Project and task created successfully.')
-                return redirect('projects:dashboard')
+                if 'save_add_another' in request.POST:
+                    return redirect('create_project_and_tasks')
+                else:
+                    return redirect('projects:dashboard')
             elif task_form:
                 messages.error(request, 'Task form is invalid. Please correct the errors and try again.')
             else:
@@ -65,3 +70,54 @@ def create_project_and_tasks(request):
     }
 
     return render(request, 'projects/create_project_and_tasks.html', context)
+
+
+@csrf_protect
+def update_task_status(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            task_id = data.get("task_id")
+            new_status = data.get("status")
+
+            if not task_id or not new_status:
+                return JsonResponse({"error": "Missing task_id or status!"}, status=400)
+            
+            task = Task.objects.get(id=task_id)
+            task.status = new_status
+            task.save()
+
+            return JsonResponse({"Usage": "Taks status updated successfully!"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON!"}, status=400)
+        except Task.DoesNotExist:
+            return JsonResponse({"error": "Invalid request method!"}, status=405)
+        
+
+
+def kanban_board(request):
+    form = TaskForm()
+    #Handle task creation form submission
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.save()
+            return redirect('projects:kanban-board')
+        
+        else:
+            form = TaskForm()
+            
+    # Group task by their status
+    task_todo = Task.objects.filter(status="To Do")
+    task_in_progress = Task.objects.filter(status="In Progress")
+    task_completed = Task.objects.filter(status="Completed")
+
+    context = {
+        "task_todo": task_todo,
+        "task_in_progress": task_in_progress,
+        "task_completed": task_completed,
+        "form": form
+    }
+
+    return render(request, "projects/kanban_board.html", context)

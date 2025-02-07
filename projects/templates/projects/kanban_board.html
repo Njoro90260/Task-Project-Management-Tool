@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board</title>
+    {% load static %}
+    <style>
+        .kanban-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .kanban-column {
+            width: 30%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+        }
+
+        .task-card {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: grab;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <h2>Kanban Board</h2>
+    <!-- <a href="{% url 'projects:update_task_status' %}">update tasks</a> -->
+    <!-- Task Creation Form -->
+    <form method="post" class="task-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Task</button>
+    </form>
+    <h2>Manage Tasks.</h2>
+    <div class="kanban-container">
+        <div class="kanban-column" data-status="To Do">
+            <h3>To Do</h3>
+            <div class="task-list">
+                {% for task in task_todo %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                    {{ task.title }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="kanban-column" data-status="In Progress">
+            <h3>In Progress</h3>
+            <div class="task-list">
+                {% for task in task_in_progress %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                    {{ task.title }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="kanban-column" data-status="Completed">
+            <h3>Completed</h3>
+            <div class="task-list">
+                {% for task in task_completed %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                    {{ task.title }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/kanban.js' %}" defer></script>
+</body>
+
+</html>

@@ -16,6 +16,9 @@
             <li>
                 <a href="{% url 'projects:index' %}">Home</a>
             </li>
+            <li>
+                <a href="{% url 'projects:kanban-board' %}">Task Management</a>
+            </li>
         </ul>
         <ul>
             {% if user.is_authenticated %}
@@ -48,7 +51,11 @@
             {% block content %}{% endblock content %}
         </div>
     </main>
+
+    
     <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 </body>
 
 </html>

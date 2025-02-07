@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Project(models.Model):
     """The projects that will be managed model."""
     name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    project_description = models.TextField(blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -26,7 +26,7 @@ class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tasks')
     title = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
+    task_description = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=50,
         choices=[
