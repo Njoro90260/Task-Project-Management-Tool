@@ -1,43 +1,68 @@
 {% extends "projects/base.html" %}
-{% block title %}
-<title>Dashboard</title>
-{% endblock title %}
-
-{% block page_header %}
-<h1>Welcome to Your Dashboard!</h1>
-{% endblock page_header %}
+{% load custom_filters %}
 
 {% block content %}
-<p>Your projects</p>
-{% if user_projects %}
-    {% for project in user_projects %}
-    <h2>{{ project.name }}</h2>
-    <p>{{ project.project_description }}</p>
-    <small>Date Created: {{ project.created_at }}</small><br>
-    <small>Deadline: {{ project.deadline }}</small><br>
-    <p>Progress: {{ project.project_progress }}</p>
-    {% endfor %}
-{% else %}
-    <p>You have no projects.</p>
-{% endif %}
+<div class="container">
+    <h2>Dashboard</h2>
 
-<p>Here are your tasks:</p>
-{% if user_tasks %}
-    <h2>Your Tasks</h2>
+    <h3>Your Projects</h3>
+    <a href="{% url 'projects:create_project_and_tasks' %}">Create a new project and tasks</a>
     <ul>
-        {% for task in user_tasks %}
-        <li>
-            <strong>{{ task.title }}</strong> ({{ task.status }})<br>
-            Due: {{ task.due_date }}<br>
-            Priority: {{ task.priority }}<br>
-            Project: {{ task.project.name }}<br>
-            <p>{{ task.task_description }}</p>
-        </li>
+        {% for project in user_projects %}
+            <li>
+                <strong>{{ project.name }}</strong> - Progress: {{ project_progress|get_item:project.id|floatformat:2 }}%
+            </li>
+        {% empty %}
+            <li>No projects found.</li>
         {% endfor %}
     </ul>
-{% else %}
-    <p>You have no tasks assigned.</p>
-{% endif %}
 
-<a href="{% url 'projects:create_project_and_tasks' %}">Create a new project and tasks</a>
-{% endblock content %}
+    <h3>Overdue Tasks</h3>
+    <ul>
+        {% for task in overdue_tasks %}
+            <li>{{ task.title }} (Due: {{ task.due_date }})</li>
+        {% empty %}
+            <li>No overdue tasks.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Upcoming Tasks</h3>
+    <ul>
+        {% for task in upcoming_tasks %}
+            <li>{{ task.title }} (Due: {{ task.due_date }})</li>
+        {% empty %}
+            <li>No upcoming tasks.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Tasks by Priority</h3>
+
+    <h4>High Priority</h4>
+    <ul>
+        {% for task in high_priority_tasks %}
+            <li>{{ task.title }}</li>
+        {% empty %}
+            <li>No high-priority tasks.</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Medium Priority</h4>
+    <ul>
+        {% for task in medium_priority_tasks %}
+            <li>{{ task.title }}</li>
+        {% empty %}
+            <li>No medium-priority tasks.</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Low Priority</h4>
+    <ul>
+        {% for task in low_priority_tasks %}
+            <li>{{ task.title }}</li>
+        {% empty %}
+            <li>No low-priority tasks.</li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}
