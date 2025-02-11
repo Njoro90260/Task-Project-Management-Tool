@@ -1,12 +1,14 @@
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from rest_framework import generics
 from .serializers import TaskSerializer
 from django.db.models import Count, Q
 from django.utils.timezone import now
+from django.http import HttpResponseForbidden
+from Users.models import ProjectRole, ProjectPermission 
 
 
 # Create your views here.
@@ -136,3 +138,32 @@ class TaskListCreateView(generics.ListCreateAPIView):
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+def edit_task(request, project_id, task_id):
+    project = get_object_or_404(Project, id=project_id)
+    task = get_object_or_404(Task, id=task_id)
+    user_role = ProjectRole.objects.filter(user=request.user, project=project).first()
+
+    if user_role:
+        permissions = ProjectPermission.objects.filter(project_role=user_role).first()
+        if permissions and permissions.can_edit_tasks:
+            # Allow editing tasks
+            if request.method == 'POST':
+                form = TaskForm(request.POST, instance=task)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Task updated successfully.')
+                    return redirect('projects:dashboard')
+            else:
+                form = TaskForm(instance=task)
+                context = {
+                    'project': project,
+                    'task': task,
+                    'form': form,
+                }
+                return render(request, 'projects/edit_task.html', context)
+        else:
+            return HttpResponseForbidden("You don't have permission to edit tasks in this project.")
+    else: 
+        return HttpResponseForbidden("You are not a member of this project.")
+    
