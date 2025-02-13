@@ -156,12 +156,12 @@ def edit_task(request, project_id, task_id):
                     return redirect('projects:dashboard')
             else:
                 form = TaskForm(instance=task)
-                context = {
-                    'project': project,
-                    'task': task,
-                    'form': form,
-                }
-                return render(request, 'projects/edit_task.html', context)
+            context = {
+                'project': project,
+                'task': task,
+                'form': form,
+            }
+            return render(request, 'projects/edit_task.html', context)
         else:
             return HttpResponseForbidden("You don't have permission to edit tasks in this project.")
     else: 
