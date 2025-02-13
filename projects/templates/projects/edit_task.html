@@ -1,14 +1,27 @@
-{% extends "projects/base.html" %}
+{% extends 'projects/base.html' %}
+
 {% block content %}
-    <h1>Edit Task</h1>
-    <h2>Project: {{ project.name }}</h2>
-    <h3>Task: {{ task.title }}</h3>
+<div class="container mt-4">
+    <h2 class="mb-3">Edit Task: {{ task.title }}</h2>
+    
+    {# Display messages, e.g., success messages from views.py #}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Changes</button>
-    </form>
+    <div class="card p-4 shadow-sm">
+        <h5>Project: {{ project.name }}</h5>
 
-    <a href="{% url 'projects:dashboard' %}">Back to Dashboard</a>
-{% endblock content %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.as_p }}  {# Renders form fields with paragraph formatting #}
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{% url 'projects:dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

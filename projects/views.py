@@ -140,30 +140,35 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
 
 def edit_task(request, project_id, task_id):
+    if not request.user.is_authenticated:
+        return redirect('Users:login')
+    
+    
     project = get_object_or_404(Project, id=project_id)
-    task = get_object_or_404(Task, id=task_id)
+    task = get_object_or_404(Task, id=task_id, project=project)
     user_role = ProjectRole.objects.filter(user=request.user, project=project).first()
 
-    if user_role:
-        permissions = ProjectPermission.objects.filter(project_role=user_role).first()
-        if permissions and permissions.can_edit_tasks:
-            # Allow editing tasks
-            if request.method == 'POST':
-                form = TaskForm(request.POST, instance=task)
-                if form.is_valid():
-                    form.save()
-                    messages.success(request, 'Task updated successfully.')
-                    return redirect('projects:dashboard')
-            else:
-                form = TaskForm(instance=task)
-            context = {
-                'project': project,
-                'task': task,
-                'form': form,
-            }
-            return render(request, 'projects/edit_task.html', context)
-        else:
-            return HttpResponseForbidden("You don't have permission to edit tasks in this project.")
-    else: 
+    if not user_role:
         return HttpResponseForbidden("You are not a member of this project.")
     
+    permissions = ProjectPermission.objects.filter(project_role=user_role).first()
+
+    if not permissions or not permissions.can_edit_tasks:
+        return HttpResponseForbidden("You do not have permission to edit tasks in this project.")
+    
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Task updated successfully.")
+            return redirect('projects:dashboard')
+    else:
+        form = TaskForm(instance=task)
+
+    context = {
+        'project': project,
+        'task': task,
+        'form': form
+    }
+    print(type(request.user), request.user)
+    return render(request, 'projects/edit_task.html', context)

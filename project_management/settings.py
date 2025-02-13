@@ -138,6 +138,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For production (collectst
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'Users.User'  
+
 LOGIN_URL = 'Users:login'
 LOGOUT_URL = 'Users:logout'
 LOGOUT_REDIRECT_URL = '/'

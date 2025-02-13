@@ -1,13 +1,13 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.conf import settings
 from .models import Project, Task
 from .forms import ProjectForm, TaskForm
 
 class CreateProjectAndTasksViewTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = settings.AUTH_USER_MODEL.objects.create_user(username='testuser', password='testpassword')
         self.client.login(username='testuser', password='testpassword')
 
     def test_create_project_and_task(self):
