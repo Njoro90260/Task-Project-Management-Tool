@@ -8,7 +8,7 @@ from .serializers import TaskSerializer
 from django.db.models import Count, Q
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
-from Users.models import ProjectRole, ProjectPermission 
+from .models import ProjectRole, ProjectPermission 
 
 
 # Create your views here.
