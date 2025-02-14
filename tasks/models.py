@@ -1,6 +1,6 @@
 from django.db import models
-from django.conf import settings
 from projects.models import Task
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 class SubTask(models.Model):
@@ -25,7 +25,7 @@ class SubTask(models.Model):
         ],
         default='Medium'
     )
-    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='subtasks')
+    assigned_to = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='subtasks')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -36,7 +36,7 @@ class SubTask(models.Model):
 class TaskAttachment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='attachments')
     file = models.FileField(upload_to='task_attachments/')
-    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    uploaded_by = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -44,7 +44,7 @@ class TaskAttachment(models.Model):
     
 class TaskHistory(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='history')
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    updated_by = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
     change_description = models.TextField()
     updated_at = models.DateTimeField(auto_now_add=True)
 

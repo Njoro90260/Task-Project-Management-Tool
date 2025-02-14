@@ -1,22 +1,23 @@
 from django.db import models
-from django.conf import settings
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 class Project(models.Model):
     """The projects that will be managed model."""
     name = models.CharField(max_length=255)
     project_description = models.TextField(blank=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='projects')
+    created_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='projects')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deadline = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.name
-    
+
+
 class TeamMember(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='team_menbers')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='team_members')
     role = models.CharField(max_length=100, choices=[('Manager', 'Manager'), ('Developer', 'Developer'), ('Tester', 'Tester')])
 
     def __str__(self):
@@ -24,7 +25,7 @@ class TeamMember(models.Model):
     
 class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
-    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='tasks')
+    assigned_to = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='tasks')
     title = models.CharField(max_length=255)
     task_description = models.TextField(blank=True, null=True)
     status = models.CharField(
@@ -56,7 +57,7 @@ class Task(models.Model):
 
 class Comment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
