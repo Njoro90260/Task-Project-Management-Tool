@@ -13,6 +13,13 @@ class Project(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     deadline = models.DateField(blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # Assign creator as Admin
+        admin_role, created = Role.objects.get_or_create(name='Admin')
+        self.created_by.roles.add(admin_role)
+
     def __str__(self):
         return self.name
 
