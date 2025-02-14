@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from Users.models import Role
 
 # Create your models here.
 class Project(models.Model):
@@ -88,3 +89,30 @@ class Feature(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class ProjectRole(models.Model):
+    """This model links Users, Projects, and Roles, ensuring users have different roles in different projects."""
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ['user', 'project']
+
+    def __str__(self):
+        return f'{self.user.username} - {self.role.name} - {self.project.name}'
+    
+class ProjectPermission(models.Model):
+    """" Custom model to define fine-grained access control."""
+    project_role = models.ForeignKey(ProjectRole, on_delete=models.CASCADE)
+    can_create_tasks = models.BooleanField(default=False)
+    can_edit_tasks = models.BooleanField(default=False)
+    can_delete_tasks = models.BooleanField(default=False)
+    can_manage_members = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Permissions for {self.project_role.user.username} in {self.project_role.project.name}"
+    
+
+
