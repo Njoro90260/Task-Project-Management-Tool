@@ -8,8 +8,7 @@ from .serializers import TaskSerializer
 from django.db.models import Count, Q
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
-from .models import ProjectRole, ProjectPermission 
-
+from Users.utils import user_has_permission
 
 # Create your views here.
 def index(request):
@@ -139,36 +138,26 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
-def edit_task(request, project_id, task_id):
-    if not request.user.is_authenticated:
-        return redirect('Users:login')
-    
-    
-    project = get_object_or_404(Project, id=project_id)
-    task = get_object_or_404(Task, id=task_id, project=project)
-    user_role = ProjectRole.objects.filter(user=request.user, project=project).first()
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    project = task.project
 
-    if not user_role:
-        return HttpResponseForbidden("You are not a member of this project.")
+    if not user_has_permission(request.user, project, 'change_task'):
+        messages.error(request, "You are not a member of this project or lack the required permissions.")
     
-    permissions = ProjectPermission.objects.filter(project_role=user_role).first()
-
-    if not permissions or not permissions.can_edit_tasks:
-        return HttpResponseForbidden("You do not have permission to edit tasks in this project.")
-    
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
             messages.success(request, "Task updated successfully.")
             return redirect('projects:dashboard')
+        
     else:
         form = TaskForm(instance=task)
 
     context = {
-        'project': project,
-        'task': task,
-        'form': form
+        "form": form,
+        "task": task
     }
-    print(type(request.user), request.user)
-    return render(request, 'projects/edit_task.html', context)
+    return render(request, "projects/edit_task.html", context)
+        

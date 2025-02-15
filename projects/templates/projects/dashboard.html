@@ -24,7 +24,7 @@
     <ul>
         {% for task in overdue_tasks %}
             <li>{{ task.title }} (Due: {{ task.due_date }})</li>
-            <a href="{% url 'projects:edit_task' project_id=task.project.id task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No overdue tasks.</li>
         {% endfor %}
@@ -34,7 +34,7 @@
     <ul>
         {% for task in upcoming_tasks %}
             <li>{{ task.title }} (Due: {{ task.due_date }})</li>
-            <a href="{% url 'projects:edit_task' project_id=task.project.id task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No upcoming tasks.</li>
         {% endfor %}
@@ -46,7 +46,7 @@
     <ul>
         {% for task in high_priority_tasks %}
             <li>{{ task.title }}</li>
-            <a href="{% url 'projects:edit_task' project_id=task.project.id task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No high-priority tasks.</li>
         {% endfor %}
@@ -56,7 +56,7 @@
     <ul>
         {% for task in medium_priority_tasks %}
             <li>{{ task.title }}</li>
-            <a href="{% url 'projects:edit_task' project_id=task.project.id task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No medium-priority tasks.</li>
         {% endfor %}
@@ -66,7 +66,7 @@
     <ul>
         {% for task in low_priority_tasks %}
             <li>{{ task.title }}</li>
-            <a href="{% url 'projects:edit_task' project_id=task.project.id task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No low-priority tasks.</li>
         {% endfor %}
