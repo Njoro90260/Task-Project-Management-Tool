@@ -1,6 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import User, Role, ProjectRole, ProjectPermission
+from .models import User, Role
+from projects.models import ProjectRole, ProjectPermission
 
 @receiver(post_save, sender=User)
 def assign_default_role(sender, instance, created, **kwargs):

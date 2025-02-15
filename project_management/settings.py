@@ -138,29 +138,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For production (collectst
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'Users.User'
+
 LOGIN_URL = 'Users:login'
 LOGOUT_URL = 'Users:logout'
 LOGOUT_REDIRECT_URL = '/'
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': 'debug.log',
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['file'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
-
 
 
 INTERNAL_IPS = [

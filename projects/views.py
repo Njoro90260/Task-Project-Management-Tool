@@ -8,8 +8,7 @@ from .serializers import TaskSerializer
 from django.db.models import Count, Q
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
-from Users.models import ProjectRole, ProjectPermission 
-
+from Users.utils import user_has_permission
 
 # Create your views here.
 def index(request):
@@ -139,31 +138,26 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
-def edit_task(request, project_id, task_id):
-    project = get_object_or_404(Project, id=project_id)
+def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
-    user_role = ProjectRole.objects.filter(user=request.user, project=project).first()
+    project = task.project
 
-    if user_role:
-        permissions = ProjectPermission.objects.filter(project_role=user_role).first()
-        if permissions and permissions.can_edit_tasks:
-            # Allow editing tasks
-            if request.method == 'POST':
-                form = TaskForm(request.POST, instance=task)
-                if form.is_valid():
-                    form.save()
-                    messages.success(request, 'Task updated successfully.')
-                    return redirect('projects:dashboard')
-            else:
-                form = TaskForm(instance=task)
-            context = {
-                'project': project,
-                'task': task,
-                'form': form,
-            }
-            return render(request, 'projects/edit_task.html', context)
-        else:
-            return HttpResponseForbidden("You don't have permission to edit tasks in this project.")
-    else: 
-        return HttpResponseForbidden("You are not a member of this project.")
+    if not user_has_permission(request.user, project, 'change_task'):
+        messages.error(request, "You are not a member of this project or lack the required permissions.")
     
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Task updated successfully.")
+            return redirect('projects:dashboard')
+        
+    else:
+        form = TaskForm(instance=task)
+
+    context = {
+        "form": form,
+        "task": task
+    }
+    return render(request, "projects/edit_task.html", context)
+        
