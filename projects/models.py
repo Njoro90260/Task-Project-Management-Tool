@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from Users.models import Role
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 user = settings.AUTH_USER_MODEL
@@ -8,10 +9,11 @@ class Project(models.Model):
     """The projects that will be managed model."""
     name = models.CharField(max_length=255)
     project_description = models.TextField(blank=True)
-    created_by = models.ForeignKey(user, on_delete=models.CASCADE, related_name='projects')
+    created_by = models.ForeignKey(user, on_delete=models.CASCADE, related_name='owned_projects')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deadline = models.DateField(blank=True, null=True)
+    members = models.ManyToManyField(user, through="ProjectRole", related_name="projects")
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

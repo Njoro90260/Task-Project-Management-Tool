@@ -7,6 +7,7 @@
 {% block content %}
 <div class="container">
     <h2>Dashboard</h2>
+    <p>Welcome, {{ user.username }}!</p>
 
     <h3>Your Projects</h3>
     <a href="{% url 'projects:create_project_and_tasks' %}">Create a new project and tasks</a>
@@ -14,6 +15,7 @@
         {% for project in user_projects %}
             <li>
                 <strong>{{ project.name }}</strong> - Progress: {{ project_progress|get_item:project.id|floatformat:2 }}%
+                <a href="{% url 'projects:assign_role' project.id %}">Manage</a>
             </li>
         {% empty %}
             <li>No projects found.</li>

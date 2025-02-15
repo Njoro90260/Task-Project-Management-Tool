@@ -11,5 +11,5 @@ urlpatterns = [
     path('create_project_and_tasks/<int:project_id>/', views.create_project_and_tasks, name='create_project_and_tasks'),
     path("kanban/", views.kanban_board, name="kanban-board"),
     path('tasks/<int:task_id>/edit/', views.edit_task, name='edit_task'),
-    # path("update-task-status/", views.update_task_status, name="update_task_status"),
+    path('projects/<int:project_id>/assign_role/', views.assign_role, name='assign_role'),
 ]

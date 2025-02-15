@@ -9,4 +9,6 @@ def user_has_permission(user, project, permission_codename):
             return True
     return False
 
-    
+def user_has_project_role(user, project, role_name):
+    return ProjectRole.objects.filter(user=user, project=project, role__name=role_name).exists()
+

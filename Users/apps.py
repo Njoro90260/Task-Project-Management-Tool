@@ -7,3 +7,6 @@ class UsersConfig(AppConfig):
 
     def ready(self):
         import Users.signals
+        from Users.models import Role
+        for role_name in ['Admin', 'Manager', 'Team Member']:
+            Role.objects.get_or_create(name=role_name)
