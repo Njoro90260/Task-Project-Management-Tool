@@ -15,9 +15,6 @@
             <li>
                 <a href="{% url 'projects:index' %}">Home</a>
             </li>
-            <li>
-                <a href="{% url 'projects:kanban-board' %}">Task Management</a>
-            </li>
         </ul>
         <ul>
             {% if user.is_authenticated %}

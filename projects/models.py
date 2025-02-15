@@ -73,7 +73,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.author.username} on {self.task.title}"
+        return f"Comment by {self.author.username}: {self.content[:50]}"
     
 class Feature(models.Model):
     title = models.CharField(max_length=100, help_text="Short title of the feature, e.g., 'Task Management'")

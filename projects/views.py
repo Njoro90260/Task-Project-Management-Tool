@@ -108,34 +108,6 @@ def create_project_and_tasks(request, project_id=None):
     return render(request, 'projects/create_project_and_tasks.html', context)
 
 
-
-def kanban_board(request):
-    form = TaskForm()
-    #Handle task creation form submission
-    if request.method == 'POST':
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            task = form.save(commit=False)
-            task.save()
-            return redirect('projects:kanban-board')
-        
-        else:
-            form = TaskForm()
-            
-    # Group task by their status
-    task_todo = Task.objects.filter(status="To Do")
-    task_in_progress = Task.objects.filter(status="In Progress")
-    task_completed = Task.objects.filter(status="Completed")
-
-    context = {
-        "task_todo": task_todo,
-        "task_in_progress": task_in_progress,
-        "task_completed": task_completed,
-        "form": form
-    }
-
-    return render(request, "projects/kanban_board.html", context)
-
 # List all tasks & create new tasks
 class TaskListCreateView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
@@ -145,29 +117,6 @@ class TaskListCreateView(generics.ListCreateAPIView):
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-
-def edit_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
-    project = task.project
-
-    if not user_has_permission(request.user, project, 'change_task'):
-        messages.error(request, "You are not a member of this project or lack the required permissions.")
-    
-    if request.method == "POST":
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Task updated successfully.")
-            return redirect('projects:dashboard')
-        
-    else:
-        form = TaskForm(instance=task)
-
-    context = {
-        "form": form,
-        "task": task
-    }
-    return render(request, "projects/edit_task.html", context)
 
 def assign_role(request, project_id):
     project = get_object_or_404(Project, id=project_id)

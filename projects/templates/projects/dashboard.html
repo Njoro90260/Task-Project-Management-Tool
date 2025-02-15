@@ -8,9 +8,10 @@
 <div class="container">
     <h2>Dashboard</h2>
     <p>Welcome, {{ user.username }}!</p>
-
+    
     <h3>Your Projects</h3>
-    <a href="{% url 'projects:create_project_and_tasks' %}">Create a new project and tasks</a>
+    <a href="{% url 'projects:create_project_and_tasks' %}">Create a new project and tasks</a><br>
+    <a href="{% url 'tasks:kanban-board' %}">Manage Tasks</a>
     <ul>
         {% for project in user_projects %}
             <li>
@@ -26,7 +27,7 @@
     <ul>
         {% for task in overdue_tasks %}
             <li>{{ task.title }} (Due: {{ task.due_date }})</li>
-            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No overdue tasks.</li>
         {% endfor %}
@@ -36,7 +37,7 @@
     <ul>
         {% for task in upcoming_tasks %}
             <li>{{ task.title }} (Due: {{ task.due_date }})</li>
-            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No upcoming tasks.</li>
         {% endfor %}
@@ -48,7 +49,7 @@
     <ul>
         {% for task in high_priority_tasks %}
             <li>{{ task.title }}</li>
-            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No high-priority tasks.</li>
         {% endfor %}
@@ -58,7 +59,7 @@
     <ul>
         {% for task in medium_priority_tasks %}
             <li>{{ task.title }}</li>
-            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No medium-priority tasks.</li>
         {% endfor %}
@@ -68,7 +69,7 @@
     <ul>
         {% for task in low_priority_tasks %}
             <li>{{ task.title }}</li>
-            <a href="{% url 'projects:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No low-priority tasks.</li>
         {% endfor %}

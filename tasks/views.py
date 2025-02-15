@@ -1,3 +1,72 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect, get_object_or_404
+from projects.models import Task, Comment
+from projects.utils import user_has_permission
+from django.contrib import messages
+from projects.forms import TaskForm
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    project = task.project
+
+    if not user_has_permission(request.user, project, 'change_task'):
+        messages.error(request, "You are not a member of this project or lack the required permissions.")
+    
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Task updated successfully.")
+            return redirect('projects:dashboard')
+        
+    else:
+        form = TaskForm(instance=task)
+
+    context = {
+        "form": form,
+        "task": task
+    }
+    return render(request, "tasks/edit_task.html", context)
+
+def kanban_board(request):
+    form = TaskForm()
+    #Handle task creation form submission
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.save()
+            return redirect('projects:kanban-board')
+        
+        else:
+            form = TaskForm()
+            
+    # Group task by their status
+    task_todo = Task.objects.filter(status="To Do")
+    task_in_progress = Task.objects.filter(status="In Progress")
+    task_completed = Task.objects.filter(status="Completed")
+
+    context = {
+        "task_todo": task_todo,
+        "task_in_progress": task_in_progress,
+        "task_completed": task_completed,
+        "form": form
+    }
+
+    return render(request, "tasks/kanban_board.html", context)
+
+@csrf_exempt
+@login_required
+def add_comment(request, task_id):
+    """Allows users to add comment to a task."""
+    if request.method == 'POST':
+        task = get_object_or_404(Task, id=task_id)
+        text = request.POST.get('comment')
+
+        if text:
+            comment = Comment.objects.create(task=task, user=request.user, text=text)
+            return JsonResponse({"message": "Comment added", "comment": comment.text, "user": request.user.username}, status=201)
+        
+        return JsonResponse({"error": "Invalid request"}, status=400)
