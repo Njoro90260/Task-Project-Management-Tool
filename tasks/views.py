@@ -6,6 +6,7 @@ from projects.forms import TaskForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
@@ -30,23 +31,29 @@ def edit_task(request, task_id):
     }
     return render(request, "tasks/edit_task.html", context)
 
+@login_required
 def kanban_board(request):
     form = TaskForm()
-    #Handle task creation form submission
+    # Handle task creation form submission
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.save()
-            return redirect('projects:kanban-board')
+            return redirect('tasks:kanban-board')
         
         else:
             form = TaskForm()
             
-    # Group task by their status
-    task_todo = Task.objects.filter(status="To Do")
-    task_in_progress = Task.objects.filter(status="In Progress")
-    task_completed = Task.objects.filter(status="Completed")
+    # Group tasks by their status and filter by user permissions
+    task_todo = Task.objects.filter(status="To Do").filter(project__in=request.user.projects.all())
+    task_in_progress = Task.objects.filter(status="In Progress").filter(project__in=request.user.projects.all())
+    task_completed = Task.objects.filter(status="Completed").filter(project__in=request.user.projects.all())
+
+    # Filter tasks by user permissions
+    task_todo = [task for task in task_todo if user_has_permission(request.user, task.project, 'view_task')]
+    task_in_progress = [task for task in task_in_progress if user_has_permission(request.user, task.project, 'view_task')]
+    task_completed = [task for task in task_completed if user_has_permission(request.user, task.project, 'view_task')]
 
     context = {
         "task_todo": task_todo,
@@ -65,7 +72,6 @@ def task_detail(request, task_id):
         "task": task
     }
     return render(request, "tasks/task_detail.html", context)
-
 
 @csrf_exempt
 @login_required
