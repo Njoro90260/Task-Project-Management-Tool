@@ -26,7 +26,9 @@
     <h3>Overdue Tasks</h3>
     <ul>
         {% for task in overdue_tasks %}
-            <li>{{ task.title }} (Due: {{ task.due_date }})</li>
+        <li>
+            <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }} (Due: {{ task.due_date }})</a>
+        </li>
             <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
         {% empty %}
             <li>No overdue tasks.</li>
@@ -36,8 +38,11 @@
     <h3>Upcoming Tasks</h3>
     <ul>
         {% for task in upcoming_tasks %}
-            <li>{{ task.title }} (Due: {{ task.due_date }})</li>
-            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+            <!-- <li>{{ task.title }} (Due: {{ task.due_date }})</li> -->
+            <li>
+                <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }} (Due: {{ task.due_date }})</a>
+            </li>
+            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a><br>
         {% empty %}
             <li>No upcoming tasks.</li>
         {% endfor %}

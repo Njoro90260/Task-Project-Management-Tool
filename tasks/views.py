@@ -57,6 +57,16 @@ def kanban_board(request):
 
     return render(request, "tasks/kanban_board.html", context)
 
+@login_required
+def task_detail(request, task_id):
+    """Displays the task details along with its comments."""
+    task = get_object_or_404(Task, id=task_id)
+    context = {
+        "task": task
+    }
+    return render(request, "tasks/task_detail.html", context)
+
+
 @csrf_exempt
 @login_required
 def add_comment(request, task_id):

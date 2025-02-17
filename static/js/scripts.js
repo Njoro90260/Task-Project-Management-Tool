@@ -1,7 +1,7 @@
 document.getElementById("comment-form").addEventListener("submit", function(event) {
     event.preventDefault();
     let text = document.getElementById("comment-text").value;
-    
+
     fetch("{% url 'add_comment' task.id %}", {
         method: "POST",
         headers: {
@@ -19,5 +19,4 @@ document.getElementById("comment-form").addEventListener("submit", function(even
             document.getElementById("comment-text").value = "";
         }
     });
-    // comments
 });

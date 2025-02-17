@@ -9,4 +9,8 @@ class UsersConfig(AppConfig):
         import Users.signals
         from Users.models import Role
         for role_name in ['Admin', 'Manager', 'Team Member']:
-            Role.objects.get_or_create(name=role_name)
+            try:
+                Role.objects.get_or_create(name=role_name)
+            except Role.DoesNotExist:
+                pass
+            

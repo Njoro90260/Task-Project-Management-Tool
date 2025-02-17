@@ -16,7 +16,7 @@
         <div class="task-list">
             {% for task in task_todo %}
             <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
-                {{ task.title }}
+                <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
             </div>
             {% endfor %}
         </div>
@@ -27,7 +27,7 @@
         <div class="task-list">
             {% for task in task_in_progress %}
             <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
-                {{ task.title }}
+                <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
             </div>
             {% endfor %}
         </div>
@@ -38,7 +38,7 @@
         <div class="task-list">
             {% for task in task_completed %}
             <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
-                {{ task.title }}
+                <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
             </div>
             {% endfor %}
         </div>

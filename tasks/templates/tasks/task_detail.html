@@ -1,0 +1,30 @@
+{% extends 'projects/base.html' %}
+
+{% block title %}Task Detail{% endblock title %}
+
+{% block content %}
+
+
+<div class="container">
+    <h1>{{ task.title }}</h1>
+    <p>{{ task.task_description }}</p>
+    <p><strong>Assigned to:</strong> {{ task.assigned_to.username }}</p>
+    <p><strong>Created at:</strong> {{ task.created_at }}</p>
+
+    <hr>
+
+    <h3>Comments</h3>
+    <ul id="comment-list">
+        {% for comment in task.comments.all %}
+            <li><strong>{{ comment.user.username }}:</strong> {{ comment.text }}</li>
+        {% empty %}
+            <li>No comments yet.</li>
+        {% endfor %}
+    </ul>
+
+    <form id="comment-form">
+        <textarea id="comment-text" placeholder="Add a comment..." required></textarea>
+        <button type="submit">Post</button>
+    </form>
+</div>
+{% endblock content %}
