@@ -31,29 +31,26 @@ def edit_task(request, task_id):
     }
     return render(request, "tasks/edit_task.html", context)
 
+
 @login_required
 def kanban_board(request):
     form = TaskForm()
+
     # Handle task creation form submission
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
+            task.assigned_to = request.user  # Ensure task is assigned to the user creating it
             task.save()
             return redirect('tasks:kanban-board')
-        
-        else:
-            form = TaskForm()
-            
-    # Group tasks by their status and filter by user permissions
-    task_todo = Task.objects.filter(status="To Do").filter(project__in=request.user.projects.all())
-    task_in_progress = Task.objects.filter(status="In Progress").filter(project__in=request.user.projects.all())
-    task_completed = Task.objects.filter(status="Completed").filter(project__in=request.user.projects.all())
 
-    # Filter tasks by user permissions
-    task_todo = [task for task in task_todo if user_has_permission(request.user, task.project, 'view_task')]
-    task_in_progress = [task for task in task_in_progress if user_has_permission(request.user, task.project, 'view_task')]
-    task_completed = [task for task in task_completed if user_has_permission(request.user, task.project, 'view_task')]
+    user = request.user  
+
+    # Group tasks by their status (Only assigned tasks)
+    task_todo = Task.objects.filter(status="To Do", assigned_to=user)
+    task_in_progress = Task.objects.filter(status="In Progress", assigned_to=user)
+    task_completed = Task.objects.filter(status="Completed", assigned_to=user)
 
     context = {
         "task_todo": task_todo,
@@ -63,6 +60,7 @@ def kanban_board(request):
     }
 
     return render(request, "tasks/kanban_board.html", context)
+
 
 @login_required
 def task_detail(request, task_id):
