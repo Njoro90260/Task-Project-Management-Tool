@@ -153,24 +153,6 @@ def assign_role(request, project_id):
     }
     return render(request, "projects/assign_role.html", context)
 
-@csrf_exempt
-@login_required
-def add_comment(request, task_id):
-    """"Handles adding comments to a task and notifying mentioned users."""
-    if request.method == "POST":
-        task = Task.objects.get(id=task_id)
-        text = request.POST.get("content", "").strip()
-
-        if text:
-            comment = Comment.objects.create(task=task, author=request.user, content=text)
-            mentioned_users = comment.mentions.all()
-
-            return JsonResponse({"message": "Comment added!", "comment": text, "user": request.user.username, "mentions": [u.username for u in mentioned_users]})
-        
-        return JsonResponse({"error": "Invalid request"}, status=400)
-    
-        
-
 def get_notifications(request):
     """Fetch unread notifications for the logged-in user."""
     notifications = Notification.objects.filter(user=request.user, is_read=False)

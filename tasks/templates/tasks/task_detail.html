@@ -14,17 +14,17 @@
     <hr>
 
     <h3>Comments</h3>
+    <form id="comment-form" data-url="{% url 'tasks:add_comment' task.id %}">
+        {% csrf_token %}
+        <textarea id="comment-text" required></textarea>
+        <button type="submit">Post Comment</button>
+    </form>
+    
     <ul id="comment-list">
         {% for comment in task.comments.all %}
             <li><strong>{{ comment.user.username }}:</strong> {{ comment.text }}</li>
-        {% empty %}
-            <li>No comments yet.</li>
         {% endfor %}
     </ul>
-
-    <form id="comment-form">
-        <textarea id="comment-text" placeholder="Add a comment..." required></textarea>
-        <button type="submit">Post</button>
     </form>
 </div>
 {% endblock content %}

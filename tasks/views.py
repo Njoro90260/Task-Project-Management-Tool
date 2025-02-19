@@ -74,13 +74,16 @@ def task_detail(request, task_id):
 @csrf_exempt
 @login_required
 def add_comment(request, task_id):
-    """Allows users to add comment to a task."""
-    if request.method == 'POST':
-        task = get_object_or_404(Task, id=task_id)
-        text = request.POST.get('comment')
+    """"Handles adding comments to a task and notifying mentioned users."""
+    if request.method == "POST":
+        task = Task.objects.get(id=task_id)
+        text = request.POST.get("content", "").strip()
 
         if text:
-            comment = Comment.objects.create(task=task, user=request.user, text=text)
-            return JsonResponse({"message": "Comment added", "comment": comment.text, "user": request.user.username}, status=201)
+            comment = Comment.objects.create(task=task, author=request.user, content=text)
+            mentioned_users = comment.mentions.all()
+
+            return JsonResponse({"message": "Comment added!", "comment": text, "user": request.user.username, "mentions": [u.username for u in mentioned_users]})
         
         return JsonResponse({"error": "Invalid request"}, status=400)
+    
