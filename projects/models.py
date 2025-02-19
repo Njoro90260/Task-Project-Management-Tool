@@ -1,7 +1,8 @@
 from django.db import models
 from django.conf import settings
 from Users.models import Role
-from django.contrib.auth import get_user_model
+from django.utils.text import slugify
+import re
 
 # Create your models here.
 user = settings.AUTH_USER_MODEL
@@ -71,10 +72,35 @@ class Comment(models.Model):
     author = models.ForeignKey(user, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    mentions = models.ManyToManyField(user, related_name='mentioned_in_comments', blank=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.extract_mentions()
+
+    def extract_mentions(self):
+        """Extract @mentions from the comment text and notify users."""
+        mention_pattern=re.compile(r"@(\w+)")
+        mentioned_usernames = mention_pattern.findall(self.content)
+        mentioned_users = user.objects.filter(username__in=mentioned_usernames)
+        self.mentions.set(mentioned_users)
+        for user in mentioned_users:
+            Notification.objects.create(user=self.author, task=self.task, message=f"You were mentioned in a comment: {self.text}")
+
+        def __str__(self):
+            return f"Comment by {self.author.username}: {self.content[:50]}"
+    
+
+class Notification(models.Model):
+    user = models.ForeignKey(user, on_delete=models.CASCADE, related_name='notifications')
+    task = models.ForeignKey(Task, on_delete=models.CASCADE,null=True, blank=True)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.author.username}: {self.content[:50]}"
-    
+        return f"Notifications for {self.user.username} - {self.message[:50]}"
+
 class Feature(models.Model):
     title = models.CharField(max_length=100, help_text="Short title of the feature, e.g., 'Task Management'")
     description = models.TextField(help_text="Detailed description of the feature")

@@ -20,3 +20,26 @@ document.getElementById("comment-form").addEventListener("submit", function(even
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    function fetchNotifications() {
+        fetch("/notifications/")
+            .then(response => response.json())
+            .then(data => {
+                let notifCount = document.getElementById("notif-count");
+                let notifList = document.getElementById("notif-items");
+
+                notifList.innerHTML = "";
+                notifCount.textContent = data.count;
+
+                data.notifications.forEach(notif => {
+                    let li = document.createElement("li");
+                    li.textContent = notif.message;
+                    notifList.appendChild(li);
+                });
+            });
+    }
+
+    fetchNotifications();
+    setInterval(fetchNotifications, 5000);
+});
