@@ -6,6 +6,7 @@ from projects.forms import TaskForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+import json
 
 # Create your views here.
 def edit_task(request, task_id):
@@ -72,18 +73,27 @@ def task_detail(request, task_id):
     return render(request, "tasks/task_detail.html", context)
 
 @csrf_exempt
-@login_required
 def add_comment(request, task_id):
     """"Handles adding comments to a task and notifying mentioned users."""
     if request.method == "POST":
-        task = Task.objects.get(id=task_id)
-        text = request.POST.get("content", "").strip()
+        try:
+            data = json.loads(request.body)
+            text = data.get("text")
 
-        if text:
+            if not text:
+                return JsonResponse({"error": "Comment text is required."}, status=400)
+
+            task = Task.objects.get(id=task_id)
             comment = Comment.objects.create(task=task, author=request.user, content=text)
-            mentioned_users = comment.mentions.all()
 
-            return JsonResponse({"message": "Comment added!", "comment": text, "user": request.user.username, "mentions": [u.username for u in mentioned_users]})
+            return JsonResponse({
+                "message": "Comment added successfully",
+                "user": request.user.username,
+                "comment": comment.content
+            })
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+        except Task.DoesNotExist:
+            return JsonResponse({"error": "Task not found"}, status=404)
         
-        return JsonResponse({"error": "Invalid request"}, status=400)
-    
+    return JsonResponse({"error": "Invalid request method"}, status=405)

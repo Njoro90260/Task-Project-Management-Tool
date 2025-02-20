@@ -3,6 +3,7 @@ from django.conf import settings
 from Users.models import Role
 from django.utils.text import slugify
 import re
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 user = settings.AUTH_USER_MODEL
@@ -81,8 +82,8 @@ class Comment(models.Model):
     def extract_mentions(self):
         """Extract @mentions from the comment text and notify users."""
         mention_pattern=re.compile(r"@(\w+)")
-        mentioned_usernames = mention_pattern.findall(self.content)
-        mentioned_users = user.objects.filter(username__in=mentioned_usernames)
+        mentioned_usernames = re.findall(r'@(\w+)', self.content) # Extract mentioned usernames
+        mentioned_users = get_user_model().objects.filter(username__in=mentioned_usernames)
         self.mentions.set(mentioned_users)
         for user in mentioned_users:
             Notification.objects.create(user=self.author, task=self.task, message=f"You were mentioned in a comment: {self.text}")

@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Fetch notifications only when a new comment is added
                 fetchNotifications();
+            } else {
+                console.error("Error:", data.error);
             }
         })
         .catch(error => console.error("Error:", error));
