@@ -147,8 +147,15 @@ document.addEventListener("DOMContentLoaded", function () {
             notifCount.textContent = data.count;
 
             data.notifications.forEach(notif => {
-                const li = document.createElement("li");
-                li.textContent = notif.message;
+                let li = document.createElement("li");
+                let a = document.createElement("a");
+
+                a.href = notif.task_url;
+                a.textContent = notif.message;
+                a.style.textDecoration = "none";
+                a.style.color = "blue";
+
+                li.appendChild(a);
                 notifList.appendChild(li);
             });
         } catch (error) {

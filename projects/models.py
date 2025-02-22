@@ -105,6 +105,9 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notifications for {self.user.username} - {self.message[:50]}"
+    
+    def get_task_url(self):
+        return f"/tasks/{self.task.id}/" if self.task else "#"
 
 class Feature(models.Model):
     title = models.CharField(max_length=100, help_text="Short title of the feature, e.g., 'Task Management'")
@@ -155,5 +158,15 @@ class ProjectPermission(models.Model):
     def __str__(self):
         return f"Permissions for {self.project_role.user.username} in {self.project_role.project.name}"
     
+
+def create_notifications(task, mentioned_usernames):
+    mentioned_users = get_user_model().objects.filter(username__in=mentioned_usernames)
+    for user in mentioned_users:
+        Notification.objects.create(
+            user=user,
+            task=task,
+            message=f"You were mentioned in a task '{task.title}'"
+        )
+
 
 

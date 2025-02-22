@@ -156,6 +156,12 @@ def assign_role(request, project_id):
 def get_notifications(request):
     """Fetch unread notifications for the logged-in user."""
     notifications = Notification.objects.filter(user=request.user, is_read=False)
-    notif_list = [{"message": notif.message, "id": notif.id} for notif in notifications]
+    data = [
+        {
+            "message": notif.message,
+            "task_url": notif.get_task_url()
+        }
+        for notif in notifications
+    ]
 
-    return JsonResponse({"count": notifications.count(), "notifications": notif_list})
+    return JsonResponse({"count": notifications.count(), "notifications": data})
