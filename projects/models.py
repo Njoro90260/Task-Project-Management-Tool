@@ -86,7 +86,11 @@ class Comment(models.Model):
         mentioned_users = get_user_model().objects.filter(username__in=mentioned_usernames)
         self.mentions.set(mentioned_users)
         for user in mentioned_users:
-            Notification.objects.create(user=self.author, task=self.task, message=f"You were mentioned in a comment: {self.content}")
+            Notification.objects.create(
+                user=user,
+                task=self.task,
+                message=f"You were mentioned in a comment: {self.content}"
+            )
 
         def __str__(self):
             return f"Comment by {self.author.username}: {self.content[:50]}"
