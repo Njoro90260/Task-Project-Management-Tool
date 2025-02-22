@@ -16,7 +16,9 @@
     <h3>Comments</h3>
     <form id="comment-form" data-url="{% url 'tasks:add_comment' task.id %}">
         {% csrf_token %}
-        <textarea id="comment-text" placeholder="Add a comment..." required></textarea>
+        <textarea id="comment-text" placeholder="Add a comment..." required>@</textarea>
+        <ul id="mention-suggestions" class="suggestion-box"></ul> 
+        <!-- suggestion-list -->
         <button type="submit">Post Comment</button>
     </form>
 

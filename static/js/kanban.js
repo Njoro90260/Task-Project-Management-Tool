@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Remove dragging class (optional)
         taskElement.classList.remove("dragging");
 
-        // 🔥 **Now update the database**
+        //  **Now update the database**
         updateTaskStatus(taskId, newStatus);
     }
 

@@ -13,4 +13,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     # Logout page
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('search_users/', views.search_users, name='search_users'),
 ]
