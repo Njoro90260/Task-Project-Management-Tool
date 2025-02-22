@@ -67,8 +67,11 @@ def kanban_board(request):
 def task_detail(request, task_id):
     """Displays the task details along with its comments."""
     task = get_object_or_404(Task, id=task_id)
+    comments = Comment.objects.filter(task=task).order_by('-created_at')
     context = {
-        "task": task
+        "task": task,
+        "comments": comments
+        
     }
     return render(request, "tasks/task_detail.html", context)
 

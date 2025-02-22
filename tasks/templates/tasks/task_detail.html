@@ -21,8 +21,8 @@
     </form>
 
     <ul id="comment-list">
-        {% for comment in task.comments.all %}
-        <li><strong>{{ comment.user.username }}:</strong> {{ comment.text }}</li>
+        {% for comment in comments %}
+        <li><strong>{{ comment.author.username }}:</strong> {{ comment.content }}</li>
         {% empty %}
         <li>
             <p>No comments yet.</p>

@@ -32,6 +32,13 @@
                     <button type="submit">Logout</button>
                 </form>
             </li>
+            <div id="notification-icon" class="notification">
+                🔔 <span id="notif-count">0</span>
+            </div>
+            
+            <div id="notification-list" class="hidden">
+                <ul id="notif-items"></ul>
+            </div>    
             {% else %}
             <li>
                 <a href="{% url 'Users:register' %}">Register</a>
@@ -40,14 +47,7 @@
                 <a href="{% url 'Users:login' %}">Login</a>
             </li>
             {% endif %}
-        </ul>
-        <div id="notification-icon" class="notification">
-            🔔 <span id="notif-count">0</span>
-        </div>
-        
-        <div id="notification-list" class="hidden">
-            <ul id="notif-items"></ul>
-        </div>        
+        </ul>    
     </nav>
     <main>
         <div>
