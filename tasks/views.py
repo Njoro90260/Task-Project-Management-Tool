@@ -7,6 +7,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
+from .models import TaskFile
+from .forms import TaskFileUploadFrom
 
 # Create your views here.
 def edit_task(request, task_id):
@@ -100,3 +102,19 @@ def add_comment(request, task_id):
             return JsonResponse({"error": "Task not found"}, status=404)
         
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@login_required
+def upload_task_file(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+
+    if request.method == "POST":
+        form = TaskFileUploadFrom(request.POST, request.FILES)
+        if form.is_valid():
+            task_file = form.save(commit=False)
+            task_file.task = task
+            task_file.uploaded_by = request.user
+            task_file.save()
+            return JsonResponse({"message": "File uploaded successfully!"})
+        return JsonResponse({"error": "Invalid file upload"}, status=400)
+    
+    return JsonResponse({"error": "Invalid request"}, status=400)

@@ -7,4 +7,5 @@ urlpatterns = [
     path("kanban/", views.kanban_board, name="kanban-board"),
     path('<int:task_id>/', views.task_detail, name='task_detail'),
     path('<int:task_id>/add_comment/', views.add_comment, name='add_comment'),
+    path("<int:task_id>/upload/", views.upload_task_file, name="upload_task_file"),
 ]

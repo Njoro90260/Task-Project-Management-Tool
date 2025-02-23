@@ -32,5 +32,18 @@
         {% endfor %}
     </ul>
     </form>
+
+
+    <form id="file-upload-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" id="file-input" name="file" required>
+        <button type="submit">Upload File</button>
+    </form>
+    
+    <ul id="file-list">
+        {% for file in task.files.all %}
+            <li><a href="{{ file.file.url }}" download>{{ file.file.name }}</a></li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock content %}

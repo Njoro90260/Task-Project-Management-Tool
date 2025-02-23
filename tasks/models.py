@@ -59,3 +59,14 @@ class TaskChecklists(models.Model):
 
     def __str__(self):
         return f"{self.item_name} ({'Completed' if self.is_completed else 'Pending'}) - {self.task.title}"
+    
+from django.contrib.auth import get_user_model
+class TaskFile(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="files")
+    uploaded_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    file = models.FileField(upload_to="task_files/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.file.name} uploaded by {self.uploaded_by}"
+    
