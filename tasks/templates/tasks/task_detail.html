@@ -40,8 +40,21 @@
     
     <ul id="file-list">
         {% for file in task.files.all %}
-            <li><a href="{{ file.file.url }}" download>{{ file.file.name }}</a></li>
+            <li>
+                {% if file.file.url|lower|slice:"-3:" == "jpg" or file.file.url|lower|slice:"-3:" == "png" or file.file.url|lower|slice:"-4:" == "jpeg" %}
+                    <img src="{{ file.file.url }}" alt="Uploaded Image" style="width: 100px; border-radius: 5px;">
+                {% elif file.file.url|lower|slice:"-3:" == "mp4" or file.file.url|lower|slice:"-3:" == "mov" or file.file.url|lower|slice:"-3:" == "avi" %}
+                    <video src="{{ file.file.url }}" controls style="width: 150px;"></video>
+                {% elif file.file.url|lower|slice:"-3:" == "pdf" %}
+                    <iframe src="{{ file.file.url }}" width="150px" height="200px"></iframe>
+                {% else %}
+                    <a href="{{ file.file.url }}" download>{{ file.file.name }}</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No files uploaded yet.</li>
         {% endfor %}
     </ul>
+    
 </div>
 {% endblock content %}
