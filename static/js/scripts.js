@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let debounceTimeout;
     let selectedIndex = -1; // For keyboard navigation
 
+    // Get CSRF token from hidden input
+    function getCSRFToken() {
+        return document.querySelector("[name=csrfmiddlewaretoken]").value;
+    }
+
     // Event listener for comment input keyup
     commentInput.addEventListener("keyup", function (event) {
         clearTimeout(debounceTimeout);
@@ -112,11 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Get CSRF token from hidden input
-    function getCSRFToken() {
-        return document.querySelector("[name=csrfmiddlewaretoken]").value;
-    }
-
     // Handle comment form submission
     commentForm.addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -172,33 +172,72 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error fetching notifications:", error);
         }
     }
+    // Handle file upload form submission
+    document.getElementById("file-upload-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        let formData = new FormData();
+        let fileInput = document.getElementById("file-input");
+        let file = fileInput.files[0];
 
+        if (!file) {
+            alert("Please select a file!");
+            return;
+        }
+
+        formData.append("file", file);
+
+        const url = document.getElementById("file-upload-form").dataset.url;
+
+        fetch(url, {
+            method: "POST",
+            headers: { "X-CSRFToken": getCSRFToken() },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message && data.file_url ) {
+                displayUploadedFile(file, data.file_url);
+                fileInput.value = "";
+            } else {
+                console.error("Upload failed:", data.error);
+            }
+        });
+    });
+
+    function displayUploadedFile(file, fileUrl) {
+        let fileList = document.getElementById("file-list");
+        let listItem = document.createElement("li");
+
+        if (file.type.startsWith("image/")) {
+            let img = document.createElement("img");
+            img.src = fileUrl;
+            img.alt = file.name;
+            img.style.width = "100px";
+            img.style.borderRadius = "5px";
+            listItem.appendChild(img);
+        } else if (file.type.startsWith("video/")) {
+            let video = document.createElement("video");
+            video.src = fileUrl;
+            video.controls = true;
+            video.style.width = "150px";
+            listItem.appendChild(video);
+        } else if (file.type === "application/pdf") {
+            let iframe = document.createElement("iframe");
+            iframe.src = fileUrl;
+            iframe.width = "150px";
+            iframe.height = "200px";
+            listItem.appendChild(iframe);
+        } else {
+            let link = document.createElement("a");
+            link.href = fileUrl;
+            link.textContent = file.name;
+            link.target = "_blank";
+            listItem.appendChild(link);
+        }
+
+        fileList.appendChild(listItem);
+    }
     // Initial fetch of notifications and set interval for updates
     fetchNotifications();
     setInterval(fetchNotifications, 10000);
-});
-
-// Handle file upload form submission
-document.getElementById("file-upload-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-    let formData = new FormData();
-    let fileInput = document.getElementById("file-input");
-    formData.append("file", fileInput.files[0]);
-
-    fetch("{% url 'tasks:upload_task_file' task.id %}", {
-        method: "POST",
-        headers: { "X-CSRFToken": "{{ csrf_token }}" },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            let newFile = document.createElement("li");
-            newFile.innerHTML = `<a href="${URL.createObjectURL(fileInput.files[0])}" download>${fileInput.files[0].name}</a>`;
-            document.getElementById("file-list").appendChild(newFile);
-            fileInput.value = "";
-        } else {
-            console.error("Upload failed:", data.error);
-        }
-    });
 });

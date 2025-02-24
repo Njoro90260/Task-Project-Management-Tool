@@ -34,14 +34,6 @@ class SubTask(models.Model):
         return f"{self.title} (Subtask of {self.parent_task.title})"
 
 
-class TaskAttachment(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='attachments')
-    file = models.FileField(upload_to='task_attachments/')
-    uploaded_by = models.ForeignKey(user, on_delete=models.SET_NULL, null=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Attachment for {self.task.title} - {self.file.name}"
     
 class TaskHistory(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='history')

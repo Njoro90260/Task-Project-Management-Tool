@@ -4,7 +4,7 @@
 
 {% block content %}
 
-
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 <div class="container">
     <h1>{{ task.title }}</h1>
     <p>{{ task.task_description }}</p>
@@ -31,10 +31,8 @@
         </li>
         {% endfor %}
     </ul>
-    </form>
 
-
-    <form id="file-upload-form" enctype="multipart/form-data">
+    <form id="file-upload-form" enctype="multipart/form-data" data-url="{% url 'tasks:upload_task_file' task.id %}">
         {% csrf_token %}
         <input type="file" id="file-input" name="file" required>
         <button type="submit">Upload File</button>

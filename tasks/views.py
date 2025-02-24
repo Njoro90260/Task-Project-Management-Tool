@@ -114,7 +114,12 @@ def upload_task_file(request, task_id):
             task_file.task = task
             task_file.uploaded_by = request.user
             task_file.save()
-            return JsonResponse({"message": "File uploaded successfully!"})
+
+            response_data = {
+                "message": "File uploaded successfully!",
+                "file_url": task_file.file.url
+            }
+            return JsonResponse(response_data)
         return JsonResponse({"error": "Invalid file upload"}, status=400)
     
     return JsonResponse({"error": "Invalid request"}, status=400)
