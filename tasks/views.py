@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from .models import TaskFile
 from .forms import TaskFileUploadFrom
+import os
 
 # Create your views here.
 def edit_task(request, task_id):
@@ -69,12 +70,15 @@ def kanban_board(request):
 def task_detail(request, task_id):
     """Displays the task details along with its comments."""
     task = get_object_or_404(Task, id=task_id)
+    project = task.project
     files = task.files.all() 
+    can_delete_files = user_has_permission(request.user, project, "delete_task_file")
     comments = Comment.objects.filter(task=task).order_by('-created_at')
     context = {
         "task": task,
         "comments": comments,
-        "files": files
+        "files": files,
+        "can_delete_files": can_delete_files
     }
     return render(request, "tasks/task_detail.html", context)
 
@@ -124,3 +128,23 @@ def upload_task_file(request, task_id):
         return JsonResponse({"error": "Invalid file upload"}, status=400)
     
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+@login_required
+def delete_task_file(request, file_id):
+    """Deletes a task file if the user has the necessary permissions"""
+    file = get_object_or_404(TaskFile, id=file_id)
+    task = file.task 
+    project = task.project 
+
+    if not user_has_permission(request.user, project, "delete_task_file"):
+        return JsonResponse({"error": "You do not have permission to delete this file."}, status=403)
+
+    file_path = file.file.path  # Get the actual file path
+    file.delete()  # Remove the file record from the database
+
+    # Remove the actual file from storage
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    return JsonResponse({"message": "File deleted successfully!"})

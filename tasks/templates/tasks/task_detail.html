@@ -17,44 +17,49 @@
     <form id="comment-form" data-url="{% url 'tasks:add_comment' task.id %}">
         {% csrf_token %}
         <textarea id="comment-text" placeholder="Add a comment..." required>@</textarea>
-        <ul id="mention-suggestions" class="suggestion-box"></ul> 
+        <ul id="mention-suggestions" class="suggestion-box"></ul>
         <!-- suggestion-list -->
         <button type="submit">Post Comment</button>
     </form>
-
-    <ul id="comment-list">
-        {% for comment in comments %}
-        <li><strong>{{ comment.author.username }}:</strong> {{ comment.content }}</li>
-        {% empty %}
-        <li>
-            <p>No comments yet.</p>
-        </li>
-        {% endfor %}
-    </ul>
 
     <form id="file-upload-form" enctype="multipart/form-data" data-url="{% url 'tasks:upload_task_file' task.id %}">
         {% csrf_token %}
         <input type="file" id="file-input" name="file" required>
         <button type="submit">Upload File</button>
     </form>
-    
+
     <ul id="file-list">
         {% for file in task.files.all %}
             <li>
                 {% if file.file.url|lower|slice:"-3:" == "jpg" or file.file.url|lower|slice:"-3:" == "png" or file.file.url|lower|slice:"-4:" == "jpeg" %}
                     <img src="{{ file.file.url }}" alt="Uploaded Image" style="width: 100px; border-radius: 5px;">
-                {% elif file.file.url|lower|slice:"-3:" == "mp4" or file.file.url|lower|slice:"-3:" == "mov" or file.file.url|lower|slice:"-3:" == "avi" %}
+                {% endif %}
+                
+                {% if file.file.url|lower|slice:"-3:" == "mp4" or file.file.url|lower|slice:"-3:" == "mov" or file.file.url|lower|slice:"-3:" == "avi" %}
                     <video src="{{ file.file.url }}" controls style="width: 150px;"></video>
-                {% elif file.file.url|lower|slice:"-3:" == "pdf" %}
+                {% endif %}
+    
+                {% if file.file.url|lower|slice:"-3:" == "pdf" %}
                     <iframe src="{{ file.file.url }}" width="150px" height="200px"></iframe>
-                {% else %}
+                {% endif %}
+    
+                {% if not file.file.url|lower|slice:"-3:" in "jpgpngjpegmp4movavipdf" %}
                     <a href="{{ file.file.url }}" download>{{ file.file.name }}</a>
                 {% endif %}
+    
+                {% if can_delete_files %}
+                    <button class="delete-file-btn" data-file-id="{{ file.id }}" style="color: red; margin-left: 10px;">
+                        ❌ Delete
+                    </button>
+                {% endif %}
+
             </li>
         {% empty %}
             <li>No files uploaded yet.</li>
         {% endfor %}
     </ul>
     
+
+
 </div>
 {% endblock content %}

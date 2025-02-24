@@ -134,6 +134,19 @@ class Feature(models.Model):
     def __str__(self):
         return self.title
     
+class ProjectPermission(models.Model):
+    """" Custom model to define fine-grained access control."""
+    project_role = models.OneToOneField("projects.ProjectRole", on_delete=models.CASCADE, related_name="permission")
+    can_create_tasks = models.BooleanField(default=False)
+    can_edit_tasks = models.BooleanField(default=False)
+    can_delete_tasks = models.BooleanField(default=False)
+    can_manage_members = models.BooleanField(default=False)
+    can_delete_files = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Permissions for {self.project_role.user.username} in {self.project_role.project.name}"
+    
+
 
 class ProjectRole(models.Model):
     """This model links Users, Projects, and Roles, ensuring users have different roles in different projects."""
@@ -141,22 +154,12 @@ class ProjectRole(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
+    permissions = models.OneToOneField(ProjectPermission, on_delete=models.CASCADE, related_name="role_permissions", null=True, blank=True)
     class Meta:
         unique_together = ('user', 'project', 'role')
 
     def __str__(self):
         return f'{self.user.username} - {self.role.name} - {self.project.name}'
-    
-class ProjectPermission(models.Model):
-    """" Custom model to define fine-grained access control."""
-    project_role = models.ForeignKey(ProjectRole, on_delete=models.CASCADE)
-    can_create_tasks = models.BooleanField(default=False)
-    can_edit_tasks = models.BooleanField(default=False)
-    can_delete_tasks = models.BooleanField(default=False)
-    can_manage_members = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Permissions for {self.project_role.user.username} in {self.project_role.project.name}"
     
 
 def create_notifications(task, mentioned_usernames):

@@ -237,6 +237,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fileList.appendChild(listItem);
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function deleteFile(fileId, listItem) {
+            fetch('/tasks/file/${fileId}/delete/', {
+                method: "DELETE",
+                headers: { "X-CSRFToken": getCSRFToken() }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    listItem.remove();
+                } else {
+                    alert("Error: " + data.error);
+                    console.error("Delete failed:", data.error);
+                }
+            })
+            .catch(error => console.error("Error deleting file:", error));
+        }
+
+        document.querySelectorAll(".delete-file-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let fileId = this.dataset.fileId;
+                let listItem = this.closest("li");
+                deleteFile(fileId, listItem)
+            });
+        });
+    });
     // Initial fetch of notifications and set interval for updates
     fetchNotifications();
     setInterval(fetchNotifications, 10000);

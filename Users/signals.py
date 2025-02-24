@@ -9,30 +9,34 @@ def assign_default_role(sender, instance, created, **kwargs):
         default_role, _ = Role.objects.get_or_create(name='Team Member')
         instance.roles.add(default_role)
 
-@ receiver(post_save, sender=ProjectRole)
+@receiver(post_save, sender=ProjectRole)
 def set_default_permissions(sender, instance, created, **kwargs):
+    """Automatically assigns permissions when a ProjectRole is created."""
     if created:
+        permissions = ProjectPermission.objects.create(project_role=instance)
         if instance.role.name == "Admin":
             ProjectPermission.objects.create(
-                project_role=instance,
                 can_create_tasks=True,
                 can_edit_tasks=True,
                 can_delete_tasks=True,
-                can_manage_members=True
+                can_manage_members=True,
+                can_delete_files=True  
             )
         elif instance.role.name == "Manager":
             ProjectPermission.objects.create(
-                project_role=instance,
                 can_create_tasks=True,
                 can_edit_tasks=True,
                 can_delete_tasks=False,
-                can_manage_members=True
+                can_manage_members=True,
+                can_delete_files=True  
             )
         elif instance.role.name == "Team Member":
             ProjectPermission.objects.create(
-                project_role=instance,
                 can_create_tasks=True,
                 can_edit_tasks=False,
                 can_delete_tasks=False,
-                can_manage_members=False
+                can_manage_members=False,
+                can_delete_files=False 
             )
+
+        permissions.save()
