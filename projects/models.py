@@ -150,7 +150,7 @@ class ProjectPermission(models.Model):
 
 class ProjectRole(models.Model):
     """This model links Users, Projects, and Roles, ensuring users have different roles in different projects."""
-    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 

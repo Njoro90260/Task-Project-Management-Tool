@@ -5,11 +5,17 @@ def user_has_permission(user, project, permission_codename):
     project_roles = ProjectRole.objects.filter(user=user, project=project)
 
     for project_role in project_roles:
-        if project_role.permissions: 
-            if permission_codename == "delete_task_file" and project_role.permissions.can_delete_files:
-                return True  
-            if permission_codename == "delete_task" and project_role.permissions.can_delete_tasks:
-                return True  
+        if hasattr(project_role, "permissions") and project_role.permissions:
+            if permission_codename == "can_manage_members" and project_role.permissions.can_manage_members:
+                return True
+            if permission_codename == "can_create_tasks" and project_role.permissions.can_create_tasks:
+                return True
+            if permission_codename == "can_edit_tasks" and project_role.permissions.can_edit_tasks:
+                return True
+            if permission_codename == "can_delete_tasks" and project_role.permissions.can_delete_tasks:
+                return True
+            if permission_codename == "can_delete_files" and project_role.permissions.can_delete_files:
+                return True
 
     return False
 

@@ -57,6 +57,48 @@ def dashboard(request):
     }
     return render(request, 'projects/dashboard.html', context)
 
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from projects.models import Project, ProjectRole
+from projects.utils import user_has_permission
+
+@login_required
+def project_detail(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    # Get the user's role in the project
+    project_role = ProjectRole.objects.filter(user=request.user, project=project).first()
+    user_role_name = project_role.role.name if project_role else "No Role"
+
+    # Check if the user has specific permissions
+    can_manage_members = user_has_permission(request.user, project, "can_manage_members")
+    can_create_tasks = user_has_permission(request.user, project, "can_create_tasks")
+    can_edit_tasks = user_has_permission(request.user, project, "can_edit_tasks")
+    can_delete_tasks = user_has_permission(request.user, project, "can_delete_tasks")
+    can_delete_files = user_has_permission(request.user, project, "can_delete_files")
+
+     # Debugging: Print permissions
+    print(f"Permissions for {request.user.username}:")
+    print(f"  Manage Members: {can_manage_members}")
+    print(f"  Create Tasks: {can_create_tasks}")
+    print(f"  Edit Tasks: {can_edit_tasks}")
+    print(f"  Delete Tasks: {can_delete_tasks}")
+    print(f"  Delete Files: {can_delete_files}")
+
+
+    context = {
+        "project": project,
+        "user_role_name": user_role_name,  # User's role in the project
+        "can_manage_members": can_manage_members,
+        "can_create_tasks": can_create_tasks,
+        "can_edit_tasks": can_edit_tasks,
+        "can_delete_tasks": can_delete_tasks,
+        "can_delete_files": can_delete_files,
+    }
+
+    return render(request, "projects/project_detail.html", context)
+
+
 
 def create_project_and_tasks(request, project_id=None):
     """"View for creating a new project and optionally adding tasks."""

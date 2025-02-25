@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.addEventListener("DOMContentLoaded", function () {
         function deleteFile(fileId, listItem) {
-            fetch('/tasks/file/${fileId}/delete/', {
+            fetch('tasks/file/${fileId}/delete/', {
                 method: "DELETE",
                 headers: { "X-CSRFToken": getCSRFToken() }
             })

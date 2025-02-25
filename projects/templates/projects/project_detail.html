@@ -1,0 +1,36 @@
+{% extends "projects/base.html" %}
+{% block title %}{{ project.name }}{% endblock title %}
+
+
+{% block content %}
+
+
+<p>{{ project.project_description }}</p>
+<small>created by: {{ project.created_by }}</small>
+<small>deadline: {{ project.deadline }}</small>
+
+<h1>{{ project.name }}</h1>
+<p><strong>Your Role:</strong> {{ user_role_name }}</p>
+
+{% if can_manage_members %}
+    <button>Manage Team Members</button>
+{% endif %}
+
+{% if can_create_tasks %}
+    <button>Create Task</button>
+{% endif %}
+
+{% if can_edit_tasks %}
+    <button>Edit Task</button>
+{% endif %}
+
+{% if can_delete_tasks %}
+    <button>Delete Task</button>
+{% endif %}
+
+{% if can_delete_files %}
+    <button>Delete Files</button>
+{% endif %}
+
+
+{% endblock content %}

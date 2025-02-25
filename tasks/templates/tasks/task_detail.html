@@ -46,11 +46,11 @@
                 {% if not file.file.url|lower|slice:"-3:" in "jpgpngjpegmp4movavipdf" %}
                     <a href="{{ file.file.url }}" download>{{ file.file.name }}</a>
                 {% endif %}
-    
-                {% if can_delete_files %}
-                    <button class="delete-file-btn" data-file-id="{{ file.id }}" style="color: red; margin-left: 10px;">
-                        ❌ Delete
-                    </button>
+
+                {% if file.uploaded_by == request.user or request.user.is_superuser %}
+                <button class="delete-file-btn" data-file-id="{{ file.id }}" style="color: red; margin-left: 10px;">
+                    ❌ Delete
+                </button>
                 {% endif %}
 
             </li>
