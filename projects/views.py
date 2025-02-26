@@ -81,13 +81,6 @@ def project_detail(request, project_id):
     can_delete_tasks = user_has_permission(request.user, project, "can_delete_tasks")
     can_delete_files = user_has_permission(request.user, project, "can_delete_files")
 
-     # Debugging: Print permissions
-    print(f"Permissions for {request.user.username}:")
-    print(f"  Manage Members: {can_manage_members}")
-    print(f"  Create Tasks: {can_create_tasks}")
-    print(f"  Edit Tasks: {can_edit_tasks}")
-    print(f"  Delete Tasks: {can_delete_tasks}")
-    print(f"  Delete Files: {can_delete_files}")
 
 
     context = {
