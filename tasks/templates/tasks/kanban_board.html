@@ -1,0 +1,47 @@
+{% extends "projects/base.html" %}
+{% block title %}Kanban Board{% endblock title %}
+{% block content %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<h2>Kanban Board</h2>
+<!-- Task Creation Form -->
+<form method="post" class="task-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Task</button>
+</form>
+<h2>Manage Tasks.</h2>
+<div class="kanban-container">
+    <div class="kanban-column" data-status="To Do">
+        <h3>To Do</h3>
+        <div class="task-list">
+            {% for task in task_todo %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="kanban-column" data-status="In Progress">
+        <h3>In Progress</h3>
+        <div class="task-list">
+            {% for task in task_in_progress %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="kanban-column" data-status="Completed">
+        <h3>Completed</h3>
+        <div class="task-list">
+            {% for task in task_completed %}
+            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

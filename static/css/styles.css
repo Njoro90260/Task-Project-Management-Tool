@@ -1,0 +1,47 @@
+/* Kanban styles */
+.kanban-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.kanban-column {
+    width: 30%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+}
+
+.task-card {
+    background: white;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: grab;
+}
+/* kanban styles */
+
+/* comment form styles */
+.suggestions-list {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    max-height: 150px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 200px;
+    display: none; /* Initially hidden */
+}
+
+.suggestions-list li {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.suggestions-list li:hover {
+    background: #f0f0f0;
+}
+
+/* commment form styles */

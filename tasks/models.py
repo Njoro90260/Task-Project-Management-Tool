@@ -1,8 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
 from projects.models import Task
+from django.conf import settings
 
 # Create your models here.
+user = settings.AUTH_USER_MODEL
 class SubTask(models.Model):
     parent_task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='subtasks')
     title = models.CharField(max_length=255)
@@ -25,7 +26,7 @@ class SubTask(models.Model):
         ],
         default='Medium'
     )
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='subtasks')
+    assigned_to = models.ForeignKey(user, on_delete=models.SET_NULL, null=True, blank=True, related_name='subtasks')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -33,18 +34,10 @@ class SubTask(models.Model):
         return f"{self.title} (Subtask of {self.parent_task.title})"
 
 
-class TaskAttachment(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='attachments')
-    file = models.FileField(upload_to='task_attachments/')
-    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Attachment for {self.task.title} - {self.file.name}"
     
 class TaskHistory(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='history')
-    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    updated_by = models.ForeignKey(user, on_delete=models.SET_NULL, null=True)
     change_description = models.TextField()
     updated_at = models.DateTimeField(auto_now_add=True)
 
@@ -58,3 +51,14 @@ class TaskChecklists(models.Model):
 
     def __str__(self):
         return f"{self.item_name} ({'Completed' if self.is_completed else 'Pending'}) - {self.task.title}"
+    
+from django.contrib.auth import get_user_model
+class TaskFile(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="files")
+    uploaded_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    file = models.FileField(upload_to="task_files/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.file.name} uploaded by {self.uploaded_by}"
+    
