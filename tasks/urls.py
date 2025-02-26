@@ -9,4 +9,6 @@ urlpatterns = [
     path('<int:task_id>/add_comment/', views.add_comment, name='add_comment'),
     path("<int:task_id>/upload/", views.upload_task_file, name="upload_task_file"),
     path("file/<int:file_id>/delete/", views.delete_task_file, name="delete_task_file"),
+    path('start-timer/<int:task_id>/', views.start_timer, name="start_timer"),
+    path('stop-timer/<int:log_id>/', views.stop_timer, name="stop_timer"),
 ]

@@ -170,6 +170,3 @@ def create_notifications(task, mentioned_usernames):
             task=task,
             message=f"You were mentioned in a task '{task.title}'"
         )
-
-
-

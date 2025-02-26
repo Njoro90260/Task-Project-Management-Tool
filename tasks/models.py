@@ -62,3 +62,18 @@ class TaskFile(models.Model):
     def __str__(self):
         return f"{self.file.name} uploaded by {self.uploaded_by}"
     
+
+class TaskTimeLog(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="time_logs")
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField(null=True, blank=True)
+    duration = models.DurationField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.start_time and self.end_time:
+            self.duration = self.end_time - self.start_time
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user} - {self.task} ({self.duration})"

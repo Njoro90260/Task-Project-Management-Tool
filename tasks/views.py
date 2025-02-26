@@ -7,9 +7,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
-from .models import TaskFile
+from .models import TaskFile, TaskTimeLog
 from .forms import TaskFileUploadFrom
 import os
+from django.utils.timezone import now
 
 # Create your views here.
 def edit_task(request, task_id):
@@ -166,3 +167,18 @@ def delete_task_file(request, file_id):
         os.remove(file_path)
 
     return JsonResponse({"message": "File deleted successfully!"})
+
+@csrf_exempt
+def start_timer(request, task_id):
+    if request.method == "POST":
+        task = Task.objects.get(id=task_id)
+        time_log = TaskTimeLog.objects.create(task=task, user=request.user, start_time=now())
+        return JsonResponse({"message": "Timer started", "log_id": time_log.id})
+
+@csrf_exempt
+def stop_timer(request, log_id):
+    if request.method == "POST":
+        time_log = TaskTimeLog.objects.get(id=log_id, user=request.user)
+        time_log.end_time = now()
+        time_log.save()
+        return JsonResponse({"message": "Timer stopped", "duration": str(time_log.duration)})

@@ -10,6 +10,15 @@
     <p>{{ task.task_description }}</p>
     <p><strong>Assigned to:</strong> {{ task.assigned_to.username }}</p>
     <p><strong>Created at:</strong> {{ task.created_at }}</p>
+    <div id="time-tracking">
+        <button id="start-timer" class="btn btn-success" data-task-id="{{ task.id }}" data-csrf-token="{{ csrf_token }}">
+            Start Timer
+        </button>
+        <button id="stop-timer" class="btn btn-danger" disabled>Stop Timer</button>
+        <p id="timer-status"></p>
+    </div>
+    
+    
 
     <hr>
 

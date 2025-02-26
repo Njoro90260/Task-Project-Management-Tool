@@ -172,6 +172,11 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error fetching notifications:", error);
         }
     }
+    // Initial fetch of notifications and set interval for updates
+    fetchNotifications();
+    setInterval(fetchNotifications, 10000);
+
+
     // Handle file upload form submission
     document.getElementById("file-upload-form").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -264,7 +269,48 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     });
-    // Initial fetch of notifications and set interval for updates
-    fetchNotifications();
-    setInterval(fetchNotifications, 10000);
+
+    // timer function
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let logId = null;
+        const startButton = document.getElementById("start-timer");
+        const stopButton = document.getElementById("stop-timer");
+        const timerStatus = document.getElementById("timer-status");
+    
+        startButton.addEventListener("click", function() {
+            fetch(`/tasks/start-timer/${startButton.dataset.taskId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": startButton.dataset.csrfToken,
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                logId = data.log_id;
+                timerStatus.textContent = "Timer started!";
+                startButton.disabled = true;
+                stopButton.disabled = false;
+            });
+        });
+    
+        stopButton.addEventListener("click", function() {
+            if (!logId) return;
+            fetch(`/tasks/stop-timer/${logId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": startButton.dataset.csrfToken,
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                timerStatus.textContent = `Timer stopped! Duration: ${data.duration}`;
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            });
+        });
+    });
+    
 });
