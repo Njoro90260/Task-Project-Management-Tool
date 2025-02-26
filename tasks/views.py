@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 import json
 from .models import TaskFile
 from .forms import TaskFileUploadFrom
-from django.conf import settings
 import os
 
 # Create your views here.

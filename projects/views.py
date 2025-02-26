@@ -24,14 +24,18 @@ def index(request):
 @login_required
 def dashboard(request):
     """Dashboard view for the logged-in user."""
-    user_projects = Project.objects.filter(created_by=request.user).annotate(
+
+    # Get the projects where the user is a team member (not jus the creator )
+    user_projects = Project.objects.filter(
+        projectrole__user=request.user
+    ).annotate(
         total_tasks=Count('tasks'),
         completed_tasks=Count('tasks', filter=Q(tasks__status='Completed'))
-    ).order_by('-created_at')
+    ).order_by('-created_at').distinct()
 
+    # Get tasks assigned to the authenticated user
     user_tasks = Task.objects.filter(assigned_to=request.user).order_by('-created_at')
 
-    # Task filtering
     overdue_tasks = user_tasks.filter(due_date__lt=now(), status__in=['To Do', 'In Progress'])
     upcoming_tasks = user_tasks.filter(due_date__gte=now())
 
@@ -50,10 +54,10 @@ def dashboard(request):
         'user_tasks': user_tasks,
         'project_progress': project_progress,
         'overdue_tasks': overdue_tasks,
-        'upcoming_tasks': upcoming_tasks,
+        'upcomig_tasks': upcoming_tasks,
         'high_priority_tasks': high_priority_tasks,
         'medium_priority_tasks': medium_priority_tasks,
-        'low_priority_tasks': low_priority_tasks,
+        'low_priority_tasks': low_priority_tasks
     }
     return render(request, 'projects/dashboard.html', context)
 

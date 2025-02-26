@@ -1,21 +1,14 @@
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from .models import User, Role
+from django.apps import apps
 from projects.models import ProjectRole, ProjectPermission
-
-# @receiver(post_save, sender=User)
-# def assign_default_role(sender, instance, created, **kwargs):
-#     if created and not instance.roles.exists():
-#         default_role, _ = Role.objects.get_or_create(name='Team Member')
-#         instance.roles.add(default_role)
-
-print("🚀 Signals.py is being loaded...") # debug print statement
-
 
 @receiver(post_migrate)
 def set_default_permissions(sender, **kwargs):
-    """Ensure permissions are set correctly for all existing ProjectRoles after migrations."""
-    if sender.name == "projects": 
+    """Ensure all ProjectRole instances have permissions after migrations."""
+    if sender.name == "projects":  # ✅ Only run for the 'projects' app
+        print("🚀 Running `set_default_permissions` after migrations...")
+
         for role in ProjectRole.objects.all():
             permissions, created = ProjectPermission.objects.get_or_create(project_role=role)
 
@@ -41,5 +34,4 @@ def set_default_permissions(sender, **kwargs):
                 permissions.can_delete_files = False
 
             permissions.save()
-            print(f"Permissions updated for {role.user.username} - {role.role.name}")
-
+            print(f"✅ Permissions updated for {role.user.username} - {role.role.name}")
