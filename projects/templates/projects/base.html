@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block title %}
-    <title>Document</title>
-    {% endblock title %}
+    <title>{% block title %}Document{% endblock title %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
@@ -16,9 +14,6 @@
         <ul>
             <li>
                 <a href="{% url 'projects:index' %}">Home</a>
-            </li>
-            <li>
-                <a href="{% url 'projects:kanban-board' %}">Task Management</a>
             </li>
         </ul>
         <ul>
@@ -32,8 +27,18 @@
                 </button>
             </li>
             <li>
-                <a href="{% url 'Users:logout' %}">Logout</a>
+                <form id="logout-form" method="post" action="{% url 'Users:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
             </li>
+            <div id="notification-icon" class="notification">
+                🔔 <span id="notif-count">0</span>
+            </div>
+            
+            <div id="notification-list" class="hidden">
+                <ul id="notif-items"></ul>
+            </div>    
             {% else %}
             <li>
                 <a href="{% url 'Users:register' %}">Register</a>
@@ -42,7 +47,7 @@
                 <a href="{% url 'Users:login' %}">Login</a>
             </li>
             {% endif %}
-        </ul>
+        </ul>    
     </nav>
     <main>
         <div>

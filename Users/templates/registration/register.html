@@ -1,14 +1,22 @@
 {% extends "projects/base.html" %}
- 
+ {% block title %}Register{% endblock title %}
 {% block page_header %}
 <h2>Register an account</h2>
 {% endblock page_header %}
 
 {% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 <form action="{% url 'Users:register' %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button name="submit">Signup</button>
     <input type="hidden" name="next" value="{% url 'projects:dashboard' %}"/>
 </form>
+<a href="{% url 'Users:login' %}">Already have an account? Log in here.</a>
 {% endblock content %}
