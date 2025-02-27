@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from projects.utils import user_has_project_role
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
+from django.views.decorators.http import require_POST
 
 
 User = get_user_model()
@@ -81,13 +82,7 @@ def project_detail(request, project_id):
     can_delete_tasks = user_has_permission(request.user, project, "can_delete_tasks")
     can_delete_files = user_has_permission(request.user, project, "can_delete_files")
 
-     # Debugging: Print permissions
-    print(f"Permissions for {request.user.username}:")
-    print(f"  Manage Members: {can_manage_members}")
-    print(f"  Create Tasks: {can_create_tasks}")
-    print(f"  Edit Tasks: {can_edit_tasks}")
-    print(f"  Delete Tasks: {can_delete_tasks}")
-    print(f"  Delete Files: {can_delete_files}")
+    is_manager_or_admin = project_role and project_role.role.name in ["Manager", "Admin"]
 
 
     context = {
@@ -98,6 +93,7 @@ def project_detail(request, project_id):
         "can_edit_tasks": can_edit_tasks,
         "can_delete_tasks": can_delete_tasks,
         "can_delete_files": can_delete_files,
+        "is_manager_or_admin": is_manager_or_admin,
     }
 
     return render(request, "projects/project_detail.html", context)
@@ -180,11 +176,7 @@ def assign_role(request, project_id):
         user = get_object_or_404(User, id=user_id)
         role = get_object_or_404(Role, id=role_id)
 
-        # Remove any existing role for this user in the project
-        ProjectRole.objects.filter(project=project, user=user).delete()
-
-        # Assign the new role
-        ProjectRole.objects.create(project=project, user=user, role=role)
+        assign_role_to_user(project, user, role, request.user)
         messages.success(request, f"Role assigned successfully to {user.username} as {role.name}.")
 
         return redirect("projects:dashboard")
@@ -199,15 +191,108 @@ def assign_role(request, project_id):
     }
     return render(request, "projects/assign_role.html", context)
 
+def assign_role_to_user(project, user, role, change_by):
+    """Assigns a role to a user in a project and creates a notification."""
+    # Remove any existing role for this user in the project
+    ProjectRole.objects.filter(project=project, user=user).delete()
+
+    # Assign the new role
+    ProjectRole.objects.create(project=project, user=user, role=role)
+
+    # Create a notification for the user
+    Notification.objects.create(
+        user=user,
+        project=project,
+        message=f"Your role in project '{project.name}' has been changed to {role.name} by {change_by.username}.",
+        notification_type="role_changed"
+    )
+
+@login_required
+def add_user_and_assign_role(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if not user_has_project_role(request.user, project, "Admin"):
+        messages.error(request, "Only Admins can add users and assign roles.")
+        return redirect("projects:dashboard")
+
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        role_id = request.POST.get("role_id")
+
+        user = get_object_or_404(User, id=user_id)
+        role = get_object_or_404(Role, id=role_id)
+
+        # Add user to the project and assign the role
+        add_user_to_project(project, user, role, request.user)
+        messages.success(request, f"User {user.username} added to the project and assigned the role {role.name}.")
+
+        return redirect("projects:dashboard")
+
+    users = User.objects.exclude(id=project.created_by.id)
+    roles = Role.objects.all()
+
+    context = {
+        "users": users,
+        "roles": roles,
+        "project": project
+    }
+    return render(request, "projects/add_user_and_assign_role.html", context)
+
+def add_user_to_project(project, user, role, added_by):
+    """Adds a user to a project, assigns a role, and creates a notification."""
+    # Check if the user already has a role in the project
+    project_role, created = ProjectRole.objects.update_or_create(
+        project=project,
+        user=user,
+        defaults={'role': role}
+    )
+
+    if created:
+        # Create a notification for the user
+        Notification.objects.create(
+            user=user,
+            project=project,
+            message=f"You have been added to the project '{project.name}' by {added_by.username} as {role.name}.",
+            notification_type="project_added"
+        )
+    else:
+        # Create a notification for the user about the role change
+        Notification.objects.create(
+            user=user,
+            project=project,
+            message=f"Your role in project '{project.name}' has been changed to {role.name} by {added_by.username}.",
+            notification_type="role_changed"
+        )
+
 def get_notifications(request):
     """Fetch unread notifications for the logged-in user."""
-    notifications = Notification.objects.filter(user=request.user, is_read=False)
+    notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
+
     data = [
         {
+            "id": notif.id,
             "message": notif.message,
-            "task_url": notif.get_task_url()
+            "url": notif.get_notification_url(),
+            "created_at": notif.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+
         }
         for notif in notifications
     ]
 
     return JsonResponse({"count": notifications.count(), "notifications": data})
+
+@require_POST
+def mark_notification_as_read(request, notification_id):
+    """Mark a single notification as read."""
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.is_read = True
+    notification.save()
+    return JsonResponse({"success": True})
+
+@require_POST
+def clear_notifications(request):
+    """Mark all notifications as read for the logged-in user."""
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+    return JsonResponse({"success": True})
+
+

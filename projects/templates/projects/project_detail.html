@@ -1,36 +1,24 @@
 {% extends "projects/base.html" %}
 {% block title %}{{ project.name }}{% endblock title %}
 
-
 {% block content %}
-
-
-<p>{{ project.project_description }}</p>
-<small>created by: {{ project.created_by }}</small>
-<small>deadline: {{ project.deadline }}</small>
-
-<h1>{{ project.name }}</h1>
+<h2>Project Details</h2>
+<p><strong>Project Name:</strong> {{ project.name }}</p>
+<p><strong>Description:</strong> {{ project.description }}</p>
+<p><strong>Created By:</strong> {{ project.created_by.username }}</p>
 <p><strong>Your Role:</strong> {{ user_role_name }}</p>
 
-{% if can_manage_members %}
-    <button>Manage Team Members</button>
+<h3>Permissions</h3>
+<ul>
+    <li>Can Manage Members: {{ can_manage_members }}</li>
+    <li>Can Create Tasks: {{ can_create_tasks }}</li>
+    <li>Can Edit Tasks: {{ can_edit_tasks }}</li>
+    <li>Can Delete Tasks: {{ can_delete_tasks }}</li>
+    <li>Can Delete Files: {{ can_delete_files }}</li>
+</ul>
+
+{% if is_manager_or_admin %}
+    <a href="{% url 'projects:assign_role' project.id %}">Assign Roles</a>
+    <a href="{% url 'projects:add_user_and_assign_role' project.id %}">Add User and Assign Role</a>
 {% endif %}
-
-{% if can_create_tasks %}
-    <button>Create Task</button>
-{% endif %}
-
-{% if can_edit_tasks %}
-    <button>Edit Task</button>
-{% endif %}
-
-{% if can_delete_tasks %}
-    <button>Delete Task</button>
-{% endif %}
-
-{% if can_delete_files %}
-    <button>Delete Files</button>
-{% endif %}
-
-
 {% endblock content %}

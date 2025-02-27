@@ -34,4 +34,16 @@ Create Project and Task
         <button type="submit" name="save_task">Save</button>
         <button type="submit" name="save_add_another">Save and Add Another</button>
     </form>
+<!--     
+    <h2>Create Project and Tasks</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ project_form.as_p }}
+    {% if task_form %}
+    <h3>Add Task</h3>
+    {{ task_form.as_p }}
+    <button type="submit" name="save_add_another">Save and Add Another Task</button>
+    {% endif %}
+    <button type="submit">Save</button>
+</form> -->
 {% endblock content %}
