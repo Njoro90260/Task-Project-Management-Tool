@@ -97,17 +97,35 @@ class Comment(models.Model):
     
 
 class Notification(models.Model):
-    user = models.ForeignKey(user, on_delete=models.CASCADE, related_name='notifications')
-    task = models.ForeignKey(Task, on_delete=models.CASCADE,null=True, blank=True)
+    NOTIFICATION_TYPES = [
+        ("project_added", "Added to a Project"),
+        ("role_assigned", "Role Assigned"),
+        ("mentioned", "Mentioned in a Task"),
+        ("member_added", "Team Member Added"),
+        ("role_changed", "Role Changed"),
+    ]
+
+    user = models.ForeignKey(user, on_delete=models.CASCADE, related_name="notifications")
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
+    notification_type = models.CharField(
+        max_length=20, 
+        choices=NOTIFICATION_TYPES, 
+        default="project_added"  
+    )
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Notifications for {self.user.username} - {self.message[:50]}"
-    
-    def get_task_url(self):
-        return f"/tasks/{self.task.id}/" if self.task else "#"
+        return f"Notification for {self.user.username} - {self.message[:50]}"
+
+    def get_notification_url(self):
+        if self.task:
+            return f"/tasks/{self.task.id}/"
+        elif self.project:
+            return f"/project-details/{self.project.id}/"
+        return "#"
 
 class Feature(models.Model):
     title = models.CharField(max_length=100, help_text="Short title of the feature, e.g., 'Task Management'")

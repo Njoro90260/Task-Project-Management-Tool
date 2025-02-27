@@ -14,13 +14,14 @@
     <hr>
 
     <h3>Comments</h3>
-    <form id="comment-form" data-url="{% url 'tasks:add_comment' task.id %}">
+    <form id="comment-form" data-comment-id="{{ task.id }}">
         {% csrf_token %}
         <textarea id="comment-text" placeholder="Add a comment..." required>@</textarea>
         <ul id="mention-suggestions" class="suggestion-box"></ul>
         <!-- suggestion-list -->
         <button type="submit">Post Comment</button>
     </form>
+</form>
 
     <form id="file-upload-form" enctype="multipart/form-data" data-url="{% url 'tasks:upload_task_file' task.id %}">
         {% csrf_token %}

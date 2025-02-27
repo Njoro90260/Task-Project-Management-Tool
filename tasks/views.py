@@ -84,7 +84,7 @@ def task_detail(request, task_id):
 
 @csrf_exempt
 def add_comment(request, task_id):
-    """"Handles adding comments to a task and notifying mentioned users."""
+    """Handles adding comments to a task and notifying mentioned users."""
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -105,6 +105,8 @@ def add_comment(request, task_id):
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except Task.DoesNotExist:
             return JsonResponse({"error": "Task not found"}, status=404)
+        except Exception as e:
+                        return JsonResponse({"error": str(e)}, status=500)
         
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
