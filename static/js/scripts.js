@@ -14,6 +14,38 @@ document.addEventListener("DOMContentLoaded", function () {
     function getCSRFToken() {
         return document.querySelector("[name=csrfmiddlewaretoken]").value;
     }
+    const searchForm = document.getElementById("search-form");
+    const resultContainer = document.getElementById("results");
+
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        if (!resultContainer) {
+            window.location.href = "/tasks/search/?q=" + encodeURIComponent(searchForm.q.value);
+            return;
+        }
+
+        let formData = new FormData(searchForm);
+        let url = `/tasks/api/search/?` + new URLSearchParams(formData).toString();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                resultContainer.innerHTML = "";
+
+                if (data.tasks.length === 0) {
+                    resultContainer.innerHTML = "<p>No results found.</p>";
+                    return;
+                }
+
+                data.tasks.forEach(task => {
+                    let taskElement = document.createElement("p");
+                    taskElement.textContent = `${task.title} - ${task.status} - ${task.priority}`;
+                    resultContainer.appendChild(taskElement);
+                });
+            })
+            .catch(error => console.error("Error fetching search results:", error));
+    });
 
     // Event listener for comment input keyup
     if (commentInput) {

@@ -36,6 +36,28 @@
                 </form>
             </li>
 
+            <form id="search-form">
+                <input type="text" name="q" placeholder="Search tasks...">
+                
+                <select name="status">
+                    <option value="">All Status</option>
+                    <option value="todo">To Do</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+            
+                <select name="priority">
+                    <option value="">All Priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            
+                <input type="date" name="deadline">
+                
+                <button type="submit">Search</button>
+            </form>
+
             <div id="notification-list" class="hidden">
                 <ul id="notif-items"></ul>
             </div>

@@ -10,6 +10,8 @@ import json
 from .models import TaskFile
 from .forms import TaskFileUploadFrom
 import os
+from django.db.models import Q
+
 
 # Create your views here.
 def edit_task(request, task_id):
@@ -168,3 +170,36 @@ def delete_task_file(request, file_id):
         os.remove(file_path)
 
     return JsonResponse({"message": "File deleted successfully!"})
+
+def search_tasks_api(request):
+    query = request.GET.get("q", "")
+    status = request.GET.get("status", "")
+    priority = request.GET.get("priority", "")
+    deadline = request.GET.get("deadline", "")
+
+    tasks = Task.objects.all()
+
+    if query:
+        tasks = tasks.filter(
+            Q(title__icontains=query) |
+            Q(task_description__icontains=query)
+        )
+
+    if status:
+        tasks = tasks.filter(status=status)
+
+    if priority:
+        tasks = tasks.filter(priority=priority)
+
+    if deadline:
+        tasks = tasks.filter(due_date__lte=deadline)
+
+    tasks_data = [
+        {"id": task.id, "title": task.title, "status": task.status, "priority": task.priority}
+        for task in tasks
+    ]
+
+    return JsonResponse({"tasks": tasks_data})
+
+def search_view(request):
+    return render(request, "tasks/search.html")
