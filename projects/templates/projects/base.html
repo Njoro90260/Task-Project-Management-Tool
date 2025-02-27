@@ -35,13 +35,29 @@
                     <button type="submit">Logout</button>
                 </form>
             </li>
-            <div id="notification-icon" class="notification">
-                🔔 <span id="notif-count">0</span>
-            </div>
 
             <div id="notification-list" class="hidden">
                 <ul id="notif-items"></ul>
             </div>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-bell"></i>
+                    <span id="notificationCount" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">0</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown">
+                    <li>
+                        <div id="notificationList" class="list-group" style="max-height: 300px; overflow-y: auto;">
+                            <p class="text-muted text-center">No new notifications</p>
+                        </div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <button class="dropdown-item text-center text-danger" id="clearNotifications">Clear All</button>
+                    </li>
+                </ul>
+            </li>
+            
             {% else %}
             <li>
                 <a href="{% url 'Users:register' %}">Register</a>

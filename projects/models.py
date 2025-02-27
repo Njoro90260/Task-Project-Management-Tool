@@ -120,11 +120,11 @@ class Notification(models.Model):
     def __str__(self):
         return f"Notification for {self.user.username} - {self.message[:50]}"
 
-    def get_url(self):
+    def get_notification_url(self):
         if self.task:
             return f"/tasks/{self.task.id}/"
         elif self.project:
-            return f"/projects/{self.project.id}/"
+            return f"/project-details/{self.project.id}/"
         return "#"
 
 class Feature(models.Model):

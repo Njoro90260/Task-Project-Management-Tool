@@ -16,10 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Event listener for comment input keyup
-    commentInput.addEventListener("keyup", function (event) {
-        clearTimeout(debounceTimeout);
-        debounceTimeout = setTimeout(() => handleKeyUp(event), 300);
-    });
+    if (commentInput) {
+        commentInput.addEventListener("keyup", function (event) {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => handleKeyUp(event), 300);
+        });
+    }
 
     // Handle keyup event for comment input
     async function handleKeyUp(event) {
@@ -118,92 +120,143 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Handle comment form submission
-    commentForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
-        const text = commentInput.value;
-        const url = commentForm.dataset.url;
+    if (commentForm) {
+        commentForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const text = commentInput.value;
+            const commentId = commentForm.dataset.commentId; // Assuming commentId is stored in data-comment-id attribute
 
-        try {
-            const response = await fetch(url, {
+            try {
+                const response = await fetch(`/tasks/${commentId}/add_comment/`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": getCSRFToken(),
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+                const data = await response.json();
+                if (data.message) {
+                    if (commentList) {
+                        const newComment = document.createElement("li");
+                        newComment.innerHTML = `<strong>${data.user}:</strong> ${data.comment}`;
+                        commentList.appendChild(newComment);
+                        commentInput.value = "";
+                    }
+
+                    fetchNotifications();
+                } else {
+                    console.error("Error:", data.error);
+                }
+            } catch (error) {
+                console.error("Error submitting comment:", error);
+            }
+        });
+    }
+
+    // Fetch notifications
+    function fetchNotifications() {
+        fetch("/notifications/")
+            .then(response => response.json())
+            .then(data => {
+                let notificationList = document.getElementById("notificationList");
+                let notificationCount = document.getElementById("notificationCount");
+
+                notificationList.innerHTML = "";
+
+                if (data.count > 0) {
+                    notificationCount.textContent = data.count;
+                    data.notifications.forEach(notif => {
+                        let item = document.createElement("a");
+                        item.href = notif.url;
+                        item.className = "list-group-item list-group-item-action";
+                        item.innerHTML =  `
+                        <div class="d-flex justify-content-between">
+                            <span>${notif.message}</span>
+                            <small class="text-muted">${notif.created_at}</small>
+                        </div>
+                    `;
+                        item.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            markAsRead(notif.id, notif.url);
+                        });
+                        notificationList.appendChild(item);
+                    });
+                } else {
+                    notificationCount.textContent = "0";
+                    notificationList.innerHTML = `<p class="text-muted text-center">No new notifications</p>`;
+                }
+            })
+            .catch(error => console.error("Error fetching notifications:", error));
+    }
+
+    function markAsRead(notificationId, redirectUrl) {
+        fetch(`/notifications/mark-as-read/${notificationId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRFToken(),
+                "Content-Type": "application/json"
+            }
+        })
+            .then(() => {
+                window.location.href = redirectUrl;  // Redirect to notification URL
+            })
+            .catch(error => console.error("Error marking notification as read:", error));
+    }
+
+    const clearNotificationsButton = document.getElementById("clearNotifications");
+    if (clearNotificationsButton) {
+        clearNotificationsButton.addEventListener("click", function () {
+            fetch("/notifications/clear/", {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": getCSRFToken(),
                     "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ text: text })
-            });
-            const data = await response.json();
-            if (data.message) {
-                const newComment = document.createElement("li");
-                newComment.innerHTML = `<strong>${data.user}:</strong> ${data.comment}`;
-                commentList.appendChild(newComment);
-                commentInput.value = "";
-
-                fetchNotifications();
-            } else {
-                console.error("Error:", data.error);
-            }
-        } catch (error) {
-            console.error("Error submitting comment:", error);
-        }
-    });
-
-    // Fetch notifications
-    async function fetchNotifications() {
-        try {
-            const response = await fetch("/notifications/");
-            const data = await response.json();
-            notifList.innerHTML = "";
-            notifCount.textContent = data.count;
-
-            data.notifications.forEach(notif => {
-                let li = document.createElement("li");
-                let a = document.createElement("a");
-
-                a.href = notif.task_url;
-                a.textContent = notif.message;
-                a.style.textDecoration = "none";
-                a.style.color = "blue";
-
-                li.appendChild(a);
-                notifList.appendChild(li);
-            });
-        } catch (error) {
-            console.error("Error fetching notifications:", error);
-        }
+                }
+            })
+                .then(() => fetchNotifications())
+                .catch(error => console.error("Error clearing notifications:", error));
+        });
     }
 
+    // Initial fetch of notifications and set interval for updates
+    fetchNotifications();
+    setInterval(fetchNotifications, 10000);
+
     // Handle file upload form submission
-    document.getElementById("file-upload-form").addEventListener("submit", function (event) {
-        event.preventDefault();
-        let formData = new FormData();
-        let fileInput = document.getElementById("file-input");
-        let file = fileInput.files[0];
+    const fileUploadForm = document.getElementById("file-upload-form");
+    if (fileUploadForm) {
+        fileUploadForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            let formData = new FormData();
+            let fileInput = document.getElementById("file-input");
+            let file = fileInput.files[0];
 
-        if (!file) {
-            alert("Please select a file!");
-            return;
-        }
-
-        formData.append("file", file);
-
-        const url = document.getElementById("file-upload-form").dataset.url;
-
-        fetch(url, {
-            method: "POST",
-            headers: { "X-CSRFToken": getCSRFToken() },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message && data.file_url) {
-                displayUploadedFile(file, data.file_url);
-                fileInput.value = "";
-            } else {
-                console.error("Upload failed:", data.error);
+            if (!file) {
+                alert("Please select a file!");
+                return;
             }
+
+            formData.append("file", file);
+
+            const url = fileUploadForm.dataset.url;
+
+            fetch(url, {
+                method: "POST",
+                headers: { "X-CSRFToken": getCSRFToken() },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message && data.file_url) {
+                        displayUploadedFile(file, data.file_url);
+                        fileInput.value = "";
+                    } else {
+                        console.error("Upload failed:", data.error);
+                    }
+                });
         });
-    });
+    }
 
     // Display uploaded file
     function displayUploadedFile(file, fileUrl) {
@@ -246,16 +299,16 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "DELETE",
             headers: { "X-CSRFToken": getCSRFToken() }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                listItem.remove();
-            } else {
-                alert("Error: " + data.error);
-                console.error("Delete failed:", data.error);
-            }
-        })
-        .catch(error => console.error("Error deleting file:", error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    listItem.remove();
+                } else {
+                    alert("Error: " + data.error);
+                    console.error("Delete failed:", data.error);
+                }
+            })
+            .catch(error => console.error("Error deleting file:", error));
     }
 
     // Add event listeners to delete buttons
@@ -266,8 +319,4 @@ document.addEventListener("DOMContentLoaded", function () {
             deleteFile(fileId, listItem);
         });
     });
-
-    // Initial fetch of notifications and set interval for updates
-    fetchNotifications();
-    setInterval(fetchNotifications, 10000);
 });

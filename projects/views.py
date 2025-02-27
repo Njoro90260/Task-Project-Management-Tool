@@ -82,6 +82,7 @@ def project_detail(request, project_id):
     can_delete_tasks = user_has_permission(request.user, project, "can_delete_tasks")
     can_delete_files = user_has_permission(request.user, project, "can_delete_files")
 
+    is_manager_or_admin = project_role and project_role.role.name in ["Manager", "Admin"]
 
 
     context = {
@@ -92,6 +93,7 @@ def project_detail(request, project_id):
         "can_edit_tasks": can_edit_tasks,
         "can_delete_tasks": can_delete_tasks,
         "can_delete_files": can_delete_files,
+        "is_manager_or_admin": is_manager_or_admin,
     }
 
     return render(request, "projects/project_detail.html", context)
@@ -238,19 +240,29 @@ def add_user_and_assign_role(request, project_id):
 
 def add_user_to_project(project, user, role, added_by):
     """Adds a user to a project, assigns a role, and creates a notification."""
-    # Add user to the project with the specified role
-    ProjectRole.objects.create(project=project, user=user, role=role)
-
-    # Create a notification for the user
-    Notification.objects.create(
-        user=user,
+    # Check if the user already has a role in the project
+    project_role, created = ProjectRole.objects.update_or_create(
         project=project,
-        sender=added_by,
-        message=f"You have been added to the project '{project.name}' by {added_by.username} as {role.name}.",
-        notification_type="project_added"
+        user=user,
+        defaults={'role': role}
     )
 
-
+    if created:
+        # Create a notification for the user
+        Notification.objects.create(
+            user=user,
+            project=project,
+            message=f"You have been added to the project '{project.name}' by {added_by.username} as {role.name}.",
+            notification_type="project_added"
+        )
+    else:
+        # Create a notification for the user about the role change
+        Notification.objects.create(
+            user=user,
+            project=project,
+            message=f"Your role in project '{project.name}' has been changed to {role.name} by {added_by.username}.",
+            notification_type="role_changed"
+        )
 
 def get_notifications(request):
     """Fetch unread notifications for the logged-in user."""
