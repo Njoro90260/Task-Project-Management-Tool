@@ -9,6 +9,6 @@ urlpatterns = [
     path('<int:task_id>/add_comment/', views.add_comment, name='add_comment'),
     path("<int:task_id>/upload/", views.upload_task_file, name="upload_task_file"),
     path("file/<int:file_id>/delete/", views.delete_task_file, name="delete_task_file"),
-    path("api/search/", views.search_tasks_api, name="search_tasks_api"),
+    path("api/search/", views.search_api, name="search_tasks_api"),
     path("search/", views.search_view, name="search_view"),
 ]

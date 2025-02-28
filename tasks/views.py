@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from projects.models import Task, Comment
+from projects.models import Task, Comment, Project
 from projects.utils import user_has_permission
 from django.contrib import messages
 from projects.forms import TaskForm
@@ -11,6 +11,8 @@ from .models import TaskFile
 from .forms import TaskFileUploadFrom
 import os
 from django.db.models import Q
+from django.contrib.auth import get_user_model
+
 
 
 # Create your views here.
@@ -171,35 +173,59 @@ def delete_task_file(request, file_id):
 
     return JsonResponse({"message": "File deleted successfully!"})
 
-def search_tasks_api(request):
-    query = request.GET.get("q", "")
+def search_api(request):
+    query = request.GET.get("q", "").strip()
     status = request.GET.get("status", "")
     priority = request.GET.get("priority", "")
     deadline = request.GET.get("deadline", "")
 
-    tasks = Task.objects.all()
+    results = {"tasks": [], "projects": [], "users": []}
 
     if query:
-        tasks = tasks.filter(
-            Q(title__icontains=query) |
-            Q(task_description__icontains=query)
-        )
+        # Search in Tasks
+        task_filters = Q(title__icontains=query) | Q(task_description__icontains=query)
+        if status:
+            task_filters &= Q(status=status)
+        if priority:
+            task_filters &= Q(priority=priority)
+        if deadline:
+            task_filters &= Q(due_date=deadline)
 
-    if status:
-        tasks = tasks.filter(status=status)
+        # Search in Projects
+        projects = Project.objects.filter(Q(name__icontains=query) | Q(project_description__icontains=query))
+        results["projects"] = [
+            {
+                "name": proj.name,
+                "description": proj.project_description,
+                "url": f"/projects/{proj.id}/"
+            }
+            for proj in projects
+        ]
 
-    if priority:
-        tasks = tasks.filter(priority=priority)
+        # Search in Tasks
+        tasks = Task.objects.filter(Q(title__icontains=query) | Q(task_description__icontains=query))
+        results["tasks"] = [
+            {
+                "title": task.title,
+                "description": task.task_description,
+                "url": f"/tasks/{task.id}/"
+            }
+            for task in tasks
+        ]
 
-    if deadline:
-        tasks = tasks.filter(due_date__lte=deadline)
+        # Search in Users
+        users = User.objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
+        results["users"] = [
+            {
+                "username": user.username,
+                "email": user.email,
+                "url": f"/users/{user.id}/"
+            }
+            for user in users
+        ]
 
-    tasks_data = [
-        {"id": task.id, "title": task.title, "status": task.status, "priority": task.priority}
-        for task in tasks
-    ]
 
-    return JsonResponse({"tasks": tasks_data})
+    return JsonResponse(results)
 
 def search_view(request):
     return render(request, "tasks/search.html")

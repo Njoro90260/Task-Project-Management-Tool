@@ -10,86 +10,92 @@
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/main.js' %}" defer></script>
 </head>
 
-<body>
-    <nav>
-        <ul>
-            <li>
-                <a href="{% url 'projects:index' %}">Home</a>
-            </li>
-        </ul>
-        <ul>
-            {% if user.is_authenticated %}
-            <li>
-                <span>Hello, {{user.username}}.</span>
-            </li>
-            <li>
-                <button>
-                    <a href="{% url 'projects:dashboard' %}">Go to Dashboard</a>
-                </button>
-            </li>
-            <li>
-                <form id="logout-form" method="post" action="{% url 'Users:logout' %}">
-                    {% csrf_token %}
-                    <button type="submit">Logout</button>
+<body data-page="{% block page %}{% endblock %}" data-global="search notifications">
+    <header>
+        <nav>
+            <ul>
+                <li>
+                    <a href="{% url 'projects:index' %}">Home</a>
+                </li>
+            </ul>
+            <ul>
+                {% if user.is_authenticated %}
+                <li>
+                    <span>Hello, {{user.username}}.</span>
+                </li>
+                <li>
+                    <button>
+                        <a href="{% url 'projects:dashboard' %}">Go to Dashboard</a>
+                    </button>
+                </li>
+                <li>
+                    <form id="logout-form" method="post" action="{% url 'Users:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                </li>
+    
+                <form id="search-form">
+                    <input type="text" name="q" placeholder="Search tasks, projects, users...">
+                    
+                    <select name="status">
+                        <option value="">All Status</option>
+                        <option value="todo">To Do</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="done">Done</option>
+                    </select>
+                
+                    <select name="priority">
+                        <option value="">All Priorities</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                
+                    <input type="date" name="deadline">
+                    
+                    <button type="submit">Search</button>
                 </form>
-            </li>
-
-            <form id="search-form">
-                <input type="text" name="q" placeholder="Search tasks...">
                 
-                <select name="status">
-                    <option value="">All Status</option>
-                    <option value="todo">To Do</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="done">Done</option>
-                </select>
-            
-                <select name="priority">
-                    <option value="">All Priorities</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
-            
-                <input type="date" name="deadline">
+    
+                <div id="notification-list" class="hidden">
+                    <ul id="notif-items"></ul>
+                </div>
+    
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell"></i>
+                        <span id="notificationCount" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown">
+                        <li>
+                            <div id="notificationList" class="list-group" style="max-height: 300px; overflow-y: auto;">
+                                <p class="text-muted text-center">No new notifications</p>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <button class="dropdown-item text-center text-danger" id="clearNotifications">Clear All</button>
+                        </li>
+                    </ul>
+                </li>
                 
-                <button type="submit">Search</button>
-            </form>
+                {% else %}
+                <li>
+                    <a href="{% url 'Users:register' %}">Register</a>
+                </li>
+                <li>
+                    <a href="{% url 'Users:login' %}">Login</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
 
-            <div id="notification-list" class="hidden">
-                <ul id="notif-items"></ul>
-            </div>
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-bell"></i>
-                    <span id="notificationCount" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">0</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown">
-                    <li>
-                        <div id="notificationList" class="list-group" style="max-height: 300px; overflow-y: auto;">
-                            <p class="text-muted text-center">No new notifications</p>
-                        </div>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <button class="dropdown-item text-center text-danger" id="clearNotifications">Clear All</button>
-                    </li>
-                </ul>
-            </li>
-            
-            {% else %}
-            <li>
-                <a href="{% url 'Users:register' %}">Register</a>
-            </li>
-            <li>
-                <a href="{% url 'Users:login' %}">Login</a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
     <main>
         <div>
             {% block page_header %}{% endblock page_header %}
@@ -99,9 +105,6 @@
         </div>
     </main>
 
-
-    <script src="{% static 'js/scripts.js' %}"></script>
-    <script src="{% static 'js/kanban.js' %}" defer></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 </body>
