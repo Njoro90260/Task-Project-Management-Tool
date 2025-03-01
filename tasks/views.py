@@ -12,6 +12,16 @@ from .forms import TaskFileUploadFrom
 import os
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import TaskSerializer
+
+@api_view(['GET'])
+def get_tasks(request):
+    tasks = Task.objects.all()
+    serializer = TaskSerializer(tasks, many=True)
+    return Response(serializer.data)
+
 
 
 

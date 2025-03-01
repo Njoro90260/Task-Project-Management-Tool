@@ -138,6 +138,8 @@ venv.bak/
 
 # media files
 media/
+# React files
+frontend/
 
 # Spyder project settings
 .spyderproject
