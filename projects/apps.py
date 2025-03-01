@@ -7,4 +7,4 @@ class ProjectsConfig(AppConfig):
 
     def ready(self):
         import projects.signals
-        print("✅ Projects app is ready, signals loaded!")
+        

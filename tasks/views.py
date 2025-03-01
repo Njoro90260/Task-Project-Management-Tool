@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from projects.models import Task, Comment
+from projects.models import Task, Comment, Project
 from projects.utils import user_has_permission
 from django.contrib import messages
 from projects.forms import TaskForm
@@ -10,6 +10,10 @@ import json
 from .models import TaskFile
 from .forms import TaskFileUploadFrom
 import os
+from django.db.models import Q
+from django.contrib.auth import get_user_model
+
+
 
 # Create your views here.
 def edit_task(request, task_id):
@@ -168,3 +172,60 @@ def delete_task_file(request, file_id):
         os.remove(file_path)
 
     return JsonResponse({"message": "File deleted successfully!"})
+
+def search_api(request):
+    query = request.GET.get("q", "").strip()
+    status = request.GET.get("status", "")
+    priority = request.GET.get("priority", "")
+    deadline = request.GET.get("deadline", "")
+
+    results = {"tasks": [], "projects": [], "users": []}
+
+    if query:
+        # Search in Tasks
+        task_filters = Q(title__icontains=query) | Q(task_description__icontains=query)
+        if status:
+            task_filters &= Q(status=status)
+        if priority:
+            task_filters &= Q(priority=priority)
+        if deadline:
+            task_filters &= Q(due_date=deadline)
+
+        # Search in Projects
+        projects = Project.objects.filter(Q(name__icontains=query) | Q(project_description__icontains=query))
+        results["projects"] = [
+            {
+                "name": proj.name,
+                "description": proj.project_description,
+                "url": f"/projects/{proj.id}/"
+            }
+            for proj in projects
+        ]
+
+        # Search in Tasks
+        tasks = Task.objects.filter(Q(title__icontains=query) | Q(task_description__icontains=query))
+        results["tasks"] = [
+            {
+                "title": task.title,
+                "description": task.task_description,
+                "url": f"/tasks/{task.id}/"
+            }
+            for task in tasks
+        ]
+
+        # Search in Users
+        users = get_user_model().objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
+        results["users"] = [
+            {
+                "username": user.username,
+                "email": user.email,
+                "url": f"/users/{user.id}/"
+            }
+            for user in users
+        ]
+
+
+    return JsonResponse(results)
+
+def search_view(request):
+    return render(request, "tasks/search.html")
