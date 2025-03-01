@@ -1,13 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
     const fileUploadForm = document.getElementById("file-upload-form");
-
-    function getCSRFToken() {
-        return document.querySelector("[name=csrfmiddlewaretoken]").value;
-    }
-
     if (fileUploadForm) {
         fileUploadForm.addEventListener("submit", function (event) {
             event.preventDefault();
+
+            const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+            if (!csrfToken) {
+                console.error("CSRF token is missing");
+                return;
+            }
+
             let formData = new FormData();
             let fileInput = document.getElementById("file-input");
             let file = fileInput.files[0];
@@ -23,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             fetch(url, {
                 method: "POST",
-                headers: { "X-CSRFToken": getCSRFToken() },
+                headers: { "X-CSRFToken": csrfToken },
                 body: formData
             })
                 .then(response => response.json())
@@ -34,11 +36,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     } else {
                         console.error("Upload failed:", data.error);
                     }
-                });
+                })
+                .catch(error => console.error("Error uploading file:", error));
         });
     }
 
-    // Display uploaded file
     function displayUploadedFile(file, fileUrl) {
         let fileList = document.getElementById("file-list");
         let listItem = document.createElement("li");
@@ -73,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
         fileList.appendChild(listItem);
     }
 
-    // Handle file deletion
     function deleteFile(fileId, listItem) {
         fetch(`/tasks/file/${fileId}/delete/`, {
             method: "DELETE",
@@ -91,7 +92,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Error deleting file:", error));
     }
 
-    // Add event listeners to delete buttons
     document.querySelectorAll(".delete-file-btn").forEach(button => {
         button.addEventListener("click", function () {
             let fileId = this.dataset.fileId;

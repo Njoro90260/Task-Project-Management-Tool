@@ -214,7 +214,7 @@ def search_api(request):
         ]
 
         # Search in Users
-        users = User.objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
+        users = get_user_model().objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
         results["users"] = [
             {
                 "username": user.username,
