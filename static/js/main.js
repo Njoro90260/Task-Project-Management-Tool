@@ -20,18 +20,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const pages = page.split(" ");
 
     pages.forEach(function (p) {
-        switch (p) {
-            case "comments":
-                loadScript("/static/js/comment.js");
-                break;
-            case "file_upload":
-                loadScript("/static/js/file_upload.js");
-                break;
-            case "kanban":
-                loadScript("/static/js/kanban.js");
-                break;
-            default:
-                console.warn(`No specific script to load for "${p}"`);
+        if (p === "comments") {
+            loadScript("/static/js/comment.js");
+        } else if (p === "file_upload") {
+            loadScript("/static/js/file_upload.js");
+        } else if (p === "kanban") {
+            loadScript("/static/js/kanban.js");
+        } else if (p === "dashboard") {
+            loadScript("/static/js/dashboard.js");
+        } else {
+            console.warn(`No specific script to load for "${p}"`);
         }
     });
 });

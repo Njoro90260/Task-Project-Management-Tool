@@ -2,23 +2,33 @@
 {% block title %}{{ project.name }}{% endblock title %}
 
 {% block content %}
-<h2>Project Details</h2>
-<p><strong>Project Name:</strong> {{ project.name }}</p>
-<p><strong>Description:</strong> {{ project.description }}</p>
-<p><strong>Created By:</strong> {{ project.created_by.username }}</p>
-<p><strong>Your Role:</strong> {{ user_role_name }}</p>
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h2 class="text-primary mb-3">Project Details</h2>
+        <p><strong>Project Name:</strong> <span class="badge bg-secondary">{{ project.name }}</span></p>
+        <p><strong>Description:</strong> {{ project.description }}</p>
+        <p><strong>Created By:</strong> <span class="badge bg-info">{{ project.created_by.username }}</span></p>
+        <p><strong>Your Role:</strong> <span class="badge bg-success">{{ user_role_name }}</span></p>
+    </div>
 
-<h3>Permissions</h3>
-<ul>
-    <li>Can Manage Members: {{ can_manage_members }}</li>
-    <li>Can Create Tasks: {{ can_create_tasks }}</li>
-    <li>Can Edit Tasks: {{ can_edit_tasks }}</li>
-    <li>Can Delete Tasks: {{ can_delete_tasks }}</li>
-    <li>Can Delete Files: {{ can_delete_files }}</li>
-</ul>
+    <div class="card shadow-sm p-4 mt-4">
+        <h3 class="text-secondary mb-3">Permissions</h3>
+        <ul class="list-group">
+            <li class="list-group-item">Can Manage Members: <strong>{{ can_manage_members }}</strong></li>
+            <li class="list-group-item">Can Create Tasks: <strong>{{ can_create_tasks }}</strong></li>
+            <li class="list-group-item">Can Edit Tasks: <strong>{{ can_edit_tasks }}</strong></li>
+            <li class="list-group-item">Can Delete Tasks: <strong>{{ can_delete_tasks }}</strong></li>
+            <li class="list-group-item">Can Delete Files: <strong>{{ can_delete_files }}</strong></li>
+        </ul>
+    </div>
 
-{% if is_manager_or_admin %}
-    <a href="{% url 'projects:assign_role' project.id %}">Assign Roles</a>
-    <a href="{% url 'projects:add_user_and_assign_role' project.id %}">Add User and Assign Role</a>
-{% endif %}
+    {% if is_manager_or_admin %}
+    <div class="card shadow-sm p-4 mt-4 text-center">
+        <h3 class="text-danger mb-3">Admin Actions</h3>
+        <a href="{% url 'projects:assign_role' project.id %}" class="btn btn-primary me-2">Assign Roles</a>
+        <a href="{% url 'projects:add_user_and_assign_role' project.id %}" class="btn btn-success">Add User & Assign Role</a>
+    </div>
+    {% endif %}
+</div>
+
 {% endblock content %}

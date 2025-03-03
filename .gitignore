@@ -139,6 +139,9 @@ venv.bak/
 # media files
 media/
 
+# static files
+staticfiles/
+
 # Spyder project settings
 .spyderproject
 .spyproject
