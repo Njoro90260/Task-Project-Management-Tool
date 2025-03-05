@@ -94,10 +94,14 @@ def project_detail(request, project_id):
 
     is_manager_or_admin = project_role and project_role.role.name in ["Manager", "Admin"]
 
+    # Get tasks related to the project
+    tasks = Task.objects.filter(project=project).select_related("assigned_to").order_by("status", "priority", "due_date")
+
 
     context = {
         "project": project,
-        "user_role_name": user_role_name,  # User's role in the project
+        "tasks": tasks,
+        "user_role_name": user_role_name, 
         "can_manage_members": can_manage_members,
         "can_create_tasks": can_create_tasks,
         "can_edit_tasks": can_edit_tasks,

@@ -214,6 +214,9 @@ main {
     background: linear-gradient(135deg, #6610f2, #0d6efd);
     transform: scale(1.05);
 }
+.card-link:hover {
+    cursor: pointer;
+}
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
