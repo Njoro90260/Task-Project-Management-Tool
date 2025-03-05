@@ -10,12 +10,12 @@
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/project-management.png' %}">
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="{% static 'js/main.js' %}" defer></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet"> -->
 </head>
 
-<body data-page="{% block page %}{% endblock %}" data-global="search notifications" class="{% if request.theme == 'dark' %}bg-dark text-white{% endif %}">
+<body data-page="{% block page %}{% endblock %}" data-global="search notifications theme" class="{% if request.theme == 'dark' %}bg-dark text-white{% endif %}">
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
@@ -130,48 +130,10 @@
         </div>
     </div>
 
+    <script type="module" src="{% static 'js/main.js' %}"></script>
     <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const themeSwitch = document.getElementById('theme-switch');
-            let theme = "{{ request.session.theme }}";
-            function toggleTheme() {
-                theme = theme === "dark" ? "light" : "dark";
-                document.body.classList.toggle("bg-dark");
-                document.body.classList.toggle("text-white");
-
-                fetch("{% url 'projects:toggle_theme' %}", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": "{{ csrf_token }}",
-                    },
-                    body: JSON.stringify({ theme: theme }),
-                }).then(response => {
-                    if (response.ok) {
-                        if (theme === "dark") {
-                            themeSwitch.innerHTML = '<i class="bi bi-moon-stars"></i> Toggle Theme';
-                        } else {
-                            themeSwitch.innerHTML = '<i class="bi bi-sun"></i> Toggle Theme';
-                        }
-                    } else {
-                        console.error("Failed to update theme.");
-                    }
-                }).catch(error => {
-                    console.error("Error:", error);
-                });
-            }
-
-            if (theme === "dark") {
-                themeSwitch.innerHTML = '<i class="bi bi-moon-stars"></i> Toggle Theme';
-            } else {
-                themeSwitch.innerHTML = '<i class="bi bi-sun"></i> Toggle Theme';
-            }
-
-            themeSwitch.addEventListener('click', toggleTheme);
-        });
-    </script>
 </body>
 
 </html>

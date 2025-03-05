@@ -82,7 +82,8 @@ def task_detail(request, task_id):
         "task": task,
         "comments": comments,
         "files": files,
-        "can_delete_files": can_delete_files
+        "can_delete_files": can_delete_files,
+        "project": project
     }
     return render(request, "tasks/task_detail.html", context)
 
