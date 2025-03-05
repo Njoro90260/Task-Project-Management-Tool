@@ -13,4 +13,5 @@ urlpatterns = [
     path('projects/<int:project_id>/add_user_and_assign_role/', views.add_user_and_assign_role, name='add_user_and_assign_role'),
     path('notifications/', views.get_notifications, name='get_notifications'),
     path('project-details/<int:project_id>/', views.project_detail, name="project_detail"),
+    path('toggle_theme/', views.toggle_theme, name='toggle_theme'),
 ]

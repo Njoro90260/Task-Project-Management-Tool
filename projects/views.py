@@ -12,10 +12,24 @@ from projects.utils import user_has_project_role
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 from projects.utils import user_has_permission
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+
+# Create your views here.
+@csrf_exempt
+def toggle_theme(request):
+    """"View function to change the theme."""
+    if request.method == "POST":
+        data = json.loads(request.body)
+        theme = data.get('theme', 'light')
+        request.session['theme'] = theme
+        return JsonResponse({"status": "success", "theme": theme})
+    return JsonResponse({"status": "error"}, status=400)
 
 
 User = get_user_model()
-# Create your views here.
 def index(request):
     features = Feature.objects.filter(is_active=True)
     context = {'features': features}

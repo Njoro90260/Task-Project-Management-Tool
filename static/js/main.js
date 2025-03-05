@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.head.appendChild(script);
     }
 
-    // Load global scripts (search, notifications) if they exist
     if (globalScripts.includes("search")) {
         loadScript("/static/js/search.js");
     }
@@ -16,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
         loadScript("/static/js/notifications.js");
     }
 
-    // Handle multiple values in `data-page`
     const pages = page.split(" ");
 
     pages.forEach(function (p) {
