@@ -9,9 +9,9 @@ from django.db.models import Count, Q
 from django.utils.timezone import now
 from django.http import JsonResponse
 from projects.utils import user_has_project_role
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
+from projects.utils import user_has_permission
 
 
 User = get_user_model()
@@ -62,10 +62,6 @@ def dashboard(request):
     }
     return render(request, 'projects/dashboard.html', context)
 
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from projects.models import Project, ProjectRole
-from projects.utils import user_has_permission
 
 @login_required
 def project_detail(request, project_id):
@@ -294,5 +290,3 @@ def clear_notifications(request):
     """Mark all notifications as read for the logged-in user."""
     request.user.notifications.filter(is_read=False).update(is_read=True)
     return JsonResponse({"success": True})
-
-
