@@ -1,84 +1,148 @@
 {% extends "projects/base.html" %}
 {% block title %} Dashboard {% endblock title %}
-
+{% block page %}dashboard{% endblock %}
 
 {% load custom_filters %}
 
 {% block content %}
-<div class="container">
-    <h2>Dashboard</h2>
-    <p>Welcome, {{ user.username }}!</p>
-    
-    <h3>Your Projects</h3>
-    <a href="{% url 'projects:create_project_and_tasks' %}">Create a new project and tasks</a><br>
-    <a href="{% url 'tasks:kanban-board' %}">Manage Tasks</a>
-    <ul>
-        {% for project in user_projects %}
-            <li>
-                <strong><a href="{% url 'projects:project_detail' project_id=project.id %}">{{ project.name }}</a></strong> - Progress: {{ project_progress|get_item:project.id|floatformat:2 }}%
-                <a href="{% url 'projects:assign_role' project.id %}">Manage</a>
-            </li>
-        {% empty %}
-            <li>No projects found.</li>
-        {% endfor %}
-    </ul>
+<div class="container mt-4">
+    <h2 class="mb-3">Dashboard</h2>
+    <p>Welcome, <strong>{{ user.username }}</strong>!</p>
 
-    <h3>Overdue Tasks</h3>
-    <ul>
-        {% for task in overdue_tasks %}
-        <li>
-            <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }} (Due: {{ task.due_date }})</a>
-            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
-        </li>
-        {% empty %}
-            <li>No overdue tasks.</li>
-        {% endfor %}
-    </ul>
+    <!-- Projects Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">Your Projects</div>
+        <div class="card-body">
+            <a href="{% url 'projects:create_project_and_tasks' %}" class="btn btn-success btn-sm">Create a new project</a>
+        
+            <div class="row mt-3">
+                {% for project in user_projects %}
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <a href="{% url 'projects:project_detail' project_id=project.id %}" class="text-white">
+                                <strong>{{ project.name }}</strong>
+                            </a>
+                        </div>
+                        <div class="card-body text-center">
+                            <canvas id="projectChart{{ project.id }}" width="150" height="150"></canvas>
+                            <div class="mt-2">
+                                <span class="badge bg-success">{{ project_progress|get_item:project.id|floatformat:2 }}% Completed</span>
+                                <a href="{% url 'projects:assign_role' project.id %}" class="btn btn-sm btn-primary">Manage</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p class="text-muted">No projects found.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+                
+    </div>
 
-    <h3>Upcoming Tasks</h3>
-    <ul>
-        {% for task in upcoming_tasks %}
-            <!-- <li>{{ task.title }} (Due: {{ task.due_date }})</li> -->
-            <li>
-                <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }} (Due: {{ task.due_date }})</a>
-                <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a><br>
-            </li>
-        {% empty %}
-            <li>No upcoming tasks.</li>
-        {% endfor %}
-    </ul>
+    <!-- Overdue & Upcoming Tasks -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Overdue Tasks</div>
+                <ul class="list-group list-group-flush">
+                    {% for task in overdue_tasks %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }} (Due: {{ task.due_date }})</a>
+                            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-warning">Edit</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">No overdue tasks.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
 
-    <h3>Tasks by Priority</h3>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">Upcoming Tasks</div>
+                <ul class="list-group list-group-flush">
+                    {% for task in upcoming_tasks %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }} (Due: {{ task.due_date }})</a>
+                            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">No upcoming tasks.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
-    <h4>High Priority</h4>
-    <ul>
-        {% for task in high_priority_tasks %}
-            <li>{{ task.title }}</li>
-            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
-        {% empty %}
-            <li>No high-priority tasks.</li>
-        {% endfor %}
-    </ul>
+    <!-- Tasks by Priority -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">Tasks by Priority</div>
+        <div class="card-body">
+            <h5 class="text-danger">High Priority</h5>
+            <ul class="list-group mb-3">
+                {% for task in high_priority_tasks %}
+                    <li class="list-group-item">
+                        {{ task.title }}
+                        <span class="badge bg-danger float-end">High</span>
+                        <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No high-priority tasks.</li>
+                {% endfor %}
+            </ul>
 
-    <h4>Medium Priority</h4>
-    <ul>
-        {% for task in medium_priority_tasks %}
-            <li>{{ task.title }}</li>
-            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
-        {% empty %}
-            <li>No medium-priority tasks.</li>
-        {% endfor %}
-    </ul>
+            <h5 class="text-warning">Medium Priority</h5>
+            <ul class="list-group mb-3">
+                {% for task in medium_priority_tasks %}
+                    <li class="list-group-item">
+                        {{ task.title }}
+                        <span class="badge bg-warning float-end">Medium</span>
+                        <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No medium-priority tasks.</li>
+                {% endfor %}
+            </ul>
 
-    <h4>Low Priority</h4>
-    <ul>
-        {% for task in low_priority_tasks %}
-            <li>{{ task.title }}</li>
-            <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
-        {% empty %}
-            <li>No low-priority tasks.</li>
-        {% endfor %}
-    </ul>
+            <h5 class="text-success">Low Priority</h5>
+            <ul class="list-group">
+                {% for task in low_priority_tasks %}
+                    <li class="list-group-item">
+                        {{ task.title }}
+                        <span class="badge bg-success float-end">Low</span>
+                        <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No low-priority tasks.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">Task Distribution</div>
+                <div class="card-body">
+                    <canvas id="taskDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">Monthly Task Completion</div>
+                <div class="card-body">
+                    <canvas id="monthlyTaskChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
-{% endblock %}
+{% endblock content %}

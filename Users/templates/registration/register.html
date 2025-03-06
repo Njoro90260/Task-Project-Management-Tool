@@ -1,22 +1,26 @@
 {% extends "projects/base.html" %}
- {% block title %}Register{% endblock title %}
+{% block title %}Register{% endblock title %}
 {% block page_header %}
-<h2>Register an account</h2>
+<h2 class="mb-4">Register an account</h2>
 {% endblock page_header %}
 
 {% block content %}
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-<form action="{% url 'Users:register' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button name="submit">Signup</button>
-    <input type="hidden" name="next" value="{% url 'projects:dashboard' %}"/>
-</form>
-<a href="{% url 'Users:login' %}">Already have an account? Log in here.</a>
+<div class="container mt-4">
+    {% if messages %}
+    <ul class="messages list-group mb-4">
+        {% for message in messages %}
+        <li class="list-group-item {% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="card shadow-sm p-4">
+        <form action="{% url 'Users:register' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mt-3">Signup</button>
+            <input type="hidden" name="next" value="{% url 'projects:dashboard' %}"/>
+        </form>
+        <a href="{% url 'Users:login' %}" class="btn btn-link mt-3">Already have an account? Log in here.</a>
+    </div>
+</div>
 {% endblock content %}

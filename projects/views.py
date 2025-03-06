@@ -9,13 +9,27 @@ from django.db.models import Count, Q
 from django.utils.timezone import now
 from django.http import JsonResponse
 from projects.utils import user_has_project_role
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
+from projects.utils import user_has_permission
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+
+# Create your views here.
+@csrf_exempt
+def toggle_theme(request):
+    """"View function to change the theme."""
+    if request.method == "POST":
+        data = json.loads(request.body)
+        theme = data.get('theme', 'light')
+        request.session['theme'] = theme
+        return JsonResponse({"status": "success", "theme": theme})
+    return JsonResponse({"status": "error"}, status=400)
 
 
 User = get_user_model()
-# Create your views here.
 def index(request):
     features = Feature.objects.filter(is_active=True)
     context = {'features': features}
@@ -62,10 +76,6 @@ def dashboard(request):
     }
     return render(request, 'projects/dashboard.html', context)
 
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from projects.models import Project, ProjectRole
-from projects.utils import user_has_permission
 
 @login_required
 def project_detail(request, project_id):
@@ -84,10 +94,14 @@ def project_detail(request, project_id):
 
     is_manager_or_admin = project_role and project_role.role.name in ["Manager", "Admin"]
 
+    # Get tasks related to the project
+    tasks = Task.objects.filter(project=project).select_related("assigned_to").order_by("status", "priority", "due_date")
+
 
     context = {
         "project": project,
-        "user_role_name": user_role_name,  # User's role in the project
+        "tasks": tasks,
+        "user_role_name": user_role_name, 
         "can_manage_members": can_manage_members,
         "can_create_tasks": can_create_tasks,
         "can_edit_tasks": can_edit_tasks,
@@ -294,5 +308,3 @@ def clear_notifications(request):
     """Mark all notifications as read for the logged-in user."""
     request.user.notifications.filter(is_read=False).update(is_read=True)
     return JsonResponse({"success": True})
-
-

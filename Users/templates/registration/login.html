@@ -1,14 +1,27 @@
 {% extends "projects/base.html" %}
 
+{% block title %}Login{% endblock title %}
 {% block page_header %}
-<h2>Login to your account</h2>
+<h2 class="mb-4">Login to your account</h2>
 {% endblock page_header %}
 
 {% block content %}
-<form action="{% url 'Users:login' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button name="submit">Login</button>
-    <input type="hidden" name="next" value="{% url 'projects:dashboard' %}"/>
-</form>
+<div class="container mt-4">
+    {% if messages %}
+    <ul class="messages list-group mb-4">
+        {% for message in messages %}
+        <li class="list-group-item {% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="card shadow-sm p-4">
+        <form action="{% url 'Users:login' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mt-3">Login</button>
+            <input type="hidden" name="next" value="{% url 'projects:dashboard' %}"/>
+        </form>
+        <a href="{% url 'Users:register' %}" class="btn btn-link mt-3">Don't have an account? Register here.</a>
+    </div>
+</div>
 {% endblock content %}

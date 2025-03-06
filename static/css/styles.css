@@ -1,6 +1,45 @@
 /* base/nav styles */
 /* Custom CSS for Sidebar and Layout */
 
+/* Dashboard Custom Styles */
+body {
+    background-color: #f8f9fa;
+}
+
+h2, h3 {
+    font-weight: bold;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.progress {
+    height: 20px;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    background-color: #f8f9fa;
+    border-left: 5px solid #0d6efd;
+}
+
+.badge {
+    font-size: 1rem;
+    padding: 8px 12px;
+}
+
+/* Chart Containers */
+canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+
 /* Sidebar Styling */
 #sidebar {
     height: 100vh; /* Full height */
@@ -83,7 +122,15 @@ main {
     padding: 20px;
 }
 
-/* base/nav styles */
+/* Content Container Styling */
+.content-container {
+    margin-top: 20px;
+    margin-left: 20px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
 
 /* Kanban styles */
 .kanban-container {
@@ -106,7 +153,6 @@ main {
     border-radius: 5px;
     cursor: grab;
 }
-/* kanban styles */
 
 /* comment form styles */
 .suggestions-list {
@@ -131,7 +177,46 @@ main {
     background: #f0f0f0;
 }
 
-/* commment form styles */
+/* Custom Styling for Form */
+.custom-input, .custom-textarea, .custom-select, .custom-date, .form-select {
+    border: 2px solid #dee2e6;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.custom-input:focus, 
+.custom-textarea:focus, 
+.custom-select:focus, 
+.custom-date:focus, 
+.form-select:focus {
+    border-color: #0d6efd; /* Bootstrap primary color */
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
+}
+
+.custom-textarea {
+    resize: none; /* Prevent resizing */
+}
+
+.custom-date {
+    max-width: 250px;
+}
+
+.custom-btn, .btn {
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+.custom-btn:hover, .btn:hover {
+    background: linear-gradient(135deg, #6610f2, #0d6efd);
+    transform: scale(1.05);
+}
+.card-link:hover {
+    cursor: pointer;
+}
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {

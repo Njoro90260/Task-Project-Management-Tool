@@ -1,24 +1,37 @@
 {% extends "projects/base.html" %}
 
 {% block title %} Add User and Assign A Role {% endblock title %}
+
 {% block content %}
-<h2>Add User to Project and Assign Role</h2>
-<form method="post">
-    {% csrf_token %}
-    <div>
-        <label for="user_id">Select User:</label>
-        <select name="user_id" id="user_id" required>
-            {% for user in users %}
-            <option value="{{ user.id }}">{{ user.username }}</option>
-            {% endfor %}
-        </select>
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h2 class="text-primary mb-3">Add User to Project and Assign Role</h2>
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="user_id" class="form-label">Select User:</label>
+                <select name="user_id" id="user_id" class="form-select" required>
+                    <option value="" disabled selected>-- Select a User --</option>
+                    {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="role_id" class="form-label">Select Role:</label>
+                <select name="role_id" id="role_id" class="form-select" required>
+                    <option value="" disabled selected>-- Select a Role --</option>
+                    {% for role in roles %}
+                    <option value="{{ role.id }}">{{ role.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-success w-100">Add User and Assign Role</button>
+        </form>
     </div>
-    <label for="role_id">Select Role:</label>
-    <select name="role_id" id="role_id" required>
-        {% for role in roles %}
-        <option value="{{ role.id }}">{{ role.name }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Add User and Assign Role</button>
-</form>
+</div>
+
 {% endblock content %}
