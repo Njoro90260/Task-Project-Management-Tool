@@ -14,7 +14,9 @@ from django.views.decorators.http import require_POST
 from projects.utils import user_has_permission
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from google_auth_oauthlib.flow import Flow
+from googleapiclient.discovery import build
+import os
 
 
 # Create your views here.
@@ -308,3 +310,56 @@ def clear_notifications(request):
     """Mark all notifications as read for the logged-in user."""
     request.user.notifications.filter(is_read=False).update(is_read=True)
     return JsonResponse({"success": True})
+
+
+def google_calendar_auth(request):
+    flow = Flow.from_client_secrets_file(
+        "path/to/credentials.json",
+        scopes=["https://www.googleapis.com/auth/calendar"],
+        redirect_uri=os.getenv("GOOGLE_REDIRECT_URI"),
+    )
+    auth_url, _ = flow.authorization_url(prompt="consent")
+    return redirect(auth_url)
+
+
+
+def google_calendar_callback(request):
+    # Helper function to convert credentials
+    def credentials_to_dict(credentials):
+        return {
+            "token": credentials.token,
+            "refresh_token": credentials.refresh_token,
+            "token_uri": credentials.token_uri,
+            "client_id": credentials.client_id,
+            "client_secret": credentials.client_secret,
+            "scopes": credentials.scopes,
+        }
+
+    flow = Flow.from_client_secrets_file(
+        "path/to/credentials.json",
+        scopes=["https://www.googleapis.com/auth/calendar"],
+        redirect_uri=os.getenv("GOOGLE_REDIRECT_URI"),
+    )
+    
+    flow.fetch_token(code=request.GET.get("code"))
+    credentials = flow.credentials
+    
+    # Store credentials in session
+    request.session["credentials"] = credentials_to_dict(credentials)
+
+    return redirect("projects:dashboard")
+
+
+def create_google_Calender_event(user, task):
+    credentials = user.google_credentials
+    service = build("calender", "v3", credentials=credentials)
+
+    event_data = {
+        "summary": task.title,
+        "description": task.task_description,
+        "start": {"dateTime": task.start_date.isoformat(), "timeZone": "UTC"},
+        "end": {"dateTime": task.due_date.isoformat(), "timeZone": "UTC"},
+    }
+    
+    event = service.events().insert(calendarId="primary", body=event_data).execute()
+    return event
