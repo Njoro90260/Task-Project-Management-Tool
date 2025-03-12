@@ -1,5 +1,7 @@
 {% extends "projects/base.html" %}
 {% block title %}Kanban Board{% endblock title %}
+
+{% block page %}kanban{% endblock %}
 {% block content %}
 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 <h2>Kanban Board</h2>
