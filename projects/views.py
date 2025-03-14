@@ -314,7 +314,7 @@ def clear_notifications(request):
 
 def google_calendar_auth(request):
     flow = Flow.from_client_secrets_file(
-        "path/to/credentials.json",
+        "client_secret.json",
         scopes=["https://www.googleapis.com/auth/calendar"],
         redirect_uri=os.getenv("GOOGLE_REDIRECT_URI"),
     )
@@ -336,7 +336,7 @@ def google_calendar_callback(request):
         }
 
     flow = Flow.from_client_secrets_file(
-        "path/to/credentials.json",
+        "client_secret.json",
         scopes=["https://www.googleapis.com/auth/calendar"],
         redirect_uri=os.getenv("GOOGLE_REDIRECT_URI"),
     )

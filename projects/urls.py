@@ -14,6 +14,6 @@ urlpatterns = [
     path('notifications/', views.get_notifications, name='get_notifications'),
     path('project-details/<int:project_id>/', views.project_detail, name="project_detail"),
     path('toggle_theme/', views.toggle_theme, name='toggle_theme'),
-    path('google-calender/auth/', views.google_calendar_auth, name='google_calender_auth'),
-    path('google-calender/callback/', views.google_calendar_callback, name='google_calender_callback'),
+    path('google-calendar/auth/', views.google_calendar_auth, name='google_calendar_auth'),
+    path('google-calendar/callback/', views.google_calendar_callback, name='google_calendar_callback'),
 ]

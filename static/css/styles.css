@@ -39,6 +39,25 @@ canvas {
     max-width: 100%;
     height: auto !important;
 }
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.progress-bar {
+    transition: width 0.5s ease-in-out;
+}
+.task-list a {
+    text-decoration: none;
+    color: inherit;
+}
+.task-list a:hover {
+    text-decoration: underline;
+}
 
 /* Sidebar Styling */
 #sidebar {
