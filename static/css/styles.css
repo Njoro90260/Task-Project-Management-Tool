@@ -1,3 +1,19 @@
+@font-face {
+    font-family: 'Comfortaa';
+    src: url('static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
+}
+#sidebar-wrapper {
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-hidden #sidebar-wrapper {
+    display: none;
+}
+
+.sidebar-hidden #mainContent {
+    width: 100%;
+}
+
 /* base/nav styles */
 /* Custom CSS for Sidebar and Layout */
 
@@ -5,7 +21,11 @@
 body {
     background-color: #f8f9fa;
 }
-
+h1 {
+    font-family: 'Comfortaa', sans-serif ;
+    font-size: 3.5rem;
+    color: #333;
+}
 h2, h3 {
     font-weight: bold;
 }

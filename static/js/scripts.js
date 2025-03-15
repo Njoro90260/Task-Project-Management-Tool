@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // toggle sidebar
+    const sidebar = document.getElementById("sidebar-wrapper");
+    const mainContent = document.getElementById("mainContent");
+    const sidebarToggle = document.getElementById("sidebarToggle");
+
+    sidebarToggle.addEventListener("click", function () {
+        document.body.classList.toggle("sidebar-hidden");
+    });
     // Elements for comment input and suggestions
     const commentInput = document.getElementById("comment-text");
     const suggestionBox = document.getElementById("mention-suggestions");

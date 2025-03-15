@@ -35,18 +35,24 @@ def index(request):
     context = {'features': features}
     return render(request, 'projects/index.html', context)
 
-
 @login_required
 def dashboard(request):
     """Dashboard view for the logged-in user."""
 
-    # Get the projects where the user is a team member (not jus the creator )
+    # Get projects where the user is a creator or a team member
     user_projects = Project.objects.filter(
-        projectrole__user=request.user
+        Q(created_by=request.user) | Q(projectrole__user=request.user)
     ).annotate(
         total_tasks=Count('tasks'),
         completed_tasks=Count('tasks', filter=Q(tasks__status='Completed'))
     ).order_by('-created_at').distinct()
+    user_projects_header = user_projects[:3]
+
+    # Calculate overall progress
+    total_tasks = sum(project.total_tasks for project in user_projects)
+    completed_tasks = sum(project.completed_tasks for project in user_projects)
+
+    overall_progress = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
 
     # Get tasks assigned to the authenticated user
     user_tasks = Task.objects.filter(assigned_to=request.user).order_by('-created_at')
@@ -64,15 +70,23 @@ def dashboard(request):
         for project in user_projects
     }
 
+    # Get team members for the projects the user is part of (excluding the user)
+    team_members = User.objects.filter(
+        Q(teammember__project__in=user_projects) | Q(projectrole__project__in=user_projects)
+    ).exclude(id=request.user.id).distinct()
+
     context = {
         'user_projects': user_projects,
+        'overall_progress': overall_progress, 
         'user_tasks': user_tasks,
         'project_progress': project_progress,
         'overdue_tasks': overdue_tasks,
         'upcomig_tasks': upcoming_tasks,
         'high_priority_tasks': high_priority_tasks,
         'medium_priority_tasks': medium_priority_tasks,
-        'low_priority_tasks': low_priority_tasks
+        'low_priority_tasks': low_priority_tasks,
+        'team_members': team_members,
+        'user_projects_header': user_projects_header
     }
     return render(request, 'projects/dashboard.html', context)
 
