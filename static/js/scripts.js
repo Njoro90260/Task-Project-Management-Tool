@@ -1,4 +1,30 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // comments in the dashboard
+    let showMoreButton = document.getElementById("show-more-comments");
+    let modal = document.getElementById("comments-modal");
+    let closeButton = document.querySelector(".close");
+
+    if (showMoreButton) {
+        showMoreButton.addEventListener("click", function () {
+            console.log("Show More button clicked!"); // Debugging check
+            modal.style.display = "block"; // Show the modal
+        });
+    }
+
+    if (closeButton) {
+        closeButton.addEventListener("click", function () {
+            modal.style.display = "none"; // Hide the modal
+        });
+    }
+
+    // Close the modal if the user clicks outside it
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+    // comments in the dashboard
+
     // toggle sidebar
     const sidebar = document.getElementById("sidebar-wrapper");
     const mainContent = document.getElementById("mainContent");
