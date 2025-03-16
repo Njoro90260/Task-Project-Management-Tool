@@ -23,16 +23,23 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.style.display = "none";
         }
     };
-    // comments in the dashboard
+    
 
     // toggle sidebar
-    const sidebar = document.getElementById("sidebar-wrapper");
-    const mainContent = document.getElementById("mainContent");
+    const sidebar = document.getElementById('sidebar-wrapper');
+    const mainContent = document.getElementById('mainContent');
+    const navbar = document.querySelector('.navbar');
+
+    // sidebar.classList.toggle('hidden');
+    // mainContent.classList.toggle('expanded');
+    // navbar.classList.toggle('expanded');
     const sidebarToggle = document.getElementById("sidebarToggle");
 
     sidebarToggle.addEventListener("click", function () {
         document.body.classList.toggle("sidebar-hidden");
     });
+
+    // comments in the dashboard
     // Elements for comment input and suggestions
     const commentInput = document.getElementById("comment-text");
     const suggestionBox = document.getElementById("mention-suggestions");
