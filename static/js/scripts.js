@@ -1,4 +1,45 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // comments in the dashboard
+    let showMoreButton = document.getElementById("show-more-comments");
+    let modal = document.getElementById("comments-modal");
+    let closeButton = document.querySelector(".close");
+
+    if (showMoreButton) {
+        showMoreButton.addEventListener("click", function () {
+            console.log("Show More button clicked!"); // Debugging check
+            modal.style.display = "block"; // Show the modal
+        });
+    }
+
+    if (closeButton) {
+        closeButton.addEventListener("click", function () {
+            modal.style.display = "none"; // Hide the modal
+        });
+    }
+
+    // Close the modal if the user clicks outside it
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+    
+
+    // toggle sidebar
+    const sidebar = document.getElementById('sidebar-wrapper');
+    const mainContent = document.getElementById('mainContent');
+    const navbar = document.querySelector('.navbar');
+
+    // sidebar.classList.toggle('hidden');
+    // mainContent.classList.toggle('expanded');
+    // navbar.classList.toggle('expanded');
+    const sidebarToggle = document.getElementById("sidebarToggle");
+
+    sidebarToggle.addEventListener("click", function () {
+        document.body.classList.toggle("sidebar-hidden");
+    });
+
+    // comments in the dashboard
     // Elements for comment input and suggestions
     const commentInput = document.getElementById("comment-text");
     const suggestionBox = document.getElementById("mention-suggestions");
