@@ -139,6 +139,9 @@ venv.bak/
 # media files
 media/
 
+# static files
+staticfiles/
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -172,3 +175,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+# secrets
+
+client_secret.json

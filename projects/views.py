@@ -9,30 +9,58 @@ from django.db.models import Count, Q
 from django.utils.timezone import now
 from django.http import JsonResponse
 from projects.utils import user_has_project_role
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
+from projects.utils import user_has_permission
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+
+# Create your views here.
+@csrf_exempt
+def toggle_theme(request):
+    """"View function to change the theme."""
+    if request.method == "POST":
+        data = json.loads(request.body)
+        theme = data.get('theme', 'light')
+        request.session['theme'] = theme
+        return JsonResponse({"status": "success", "theme": theme})
+    return JsonResponse({"status": "error"}, status=400)
 
 
 User = get_user_model()
-# Create your views here.
 def index(request):
     features = Feature.objects.filter(is_active=True)
     context = {'features': features}
     return render(request, 'projects/index.html', context)
 
-
 @login_required
 def dashboard(request):
     """Dashboard view for the logged-in user."""
 
-    # Get the projects where the user is a team member (not jus the creator )
+    # Get projects where the user is a creator or a team member
     user_projects = Project.objects.filter(
-        projectrole__user=request.user
+        Q(created_by=request.user) | Q(projectrole__user=request.user)
     ).annotate(
         total_tasks=Count('tasks'),
-        completed_tasks=Count('tasks', filter=Q(tasks__status='Completed'))
+        completed_tasks=Count('tasks', filter=Q(tasks__status='Completed')),
+        in_progress_tasks=Count('tasks', filter=Q(tasks__status='In Progress')),
+        not_started_tasks=Count('tasks', filter=Q(tasks__status='To Do'))
     ).order_by('-created_at').distinct()
+    user_projects_header = user_projects[:3]
+
+    # Calculate overall progress
+    total_tasks = sum(project.total_tasks for project in user_projects)
+    completed_tasks = sum(project.completed_tasks for project in user_projects)
+    in_progress_tasks = sum(project.in_progress_tasks for project in user_projects)
+    not_started_tasks = sum(project.not_started_tasks for project in user_projects)
+
+    completed_percentage = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
+    in_progress_percentage = (in_progress_tasks / total_tasks) * 100 if total_tasks > 0 else 0
+    not_started_percentage = (not_started_tasks / total_tasks) * 100 if total_tasks > 0 else 0
+
+    overall_progress = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
 
     # Get tasks assigned to the authenticated user
     user_tasks = Task.objects.filter(assigned_to=request.user).order_by('-created_at')
@@ -50,22 +78,36 @@ def dashboard(request):
         for project in user_projects
     }
 
+    # Get team members for the projects the user is part of (excluding the user)
+    team_members = User.objects.filter(
+        Q(teammember__project__in=user_projects) | Q(projectrole__project__in=user_projects)
+    ).exclude(id=request.user.id).distinct()
+
+    # Get comments on tasks the user is supposed to see
+    visible_comments = Comment.objects.filter(
+        Q(task__assigned_to=request.user) | 
+        Q(task__project__in=user_projects)
+    ).select_related('author', 'task').order_by('-created_at')
+
     context = {
         'user_projects': user_projects,
+        'overall_progress': overall_progress, 
         'user_tasks': user_tasks,
         'project_progress': project_progress,
         'overdue_tasks': overdue_tasks,
         'upcomig_tasks': upcoming_tasks,
         'high_priority_tasks': high_priority_tasks,
         'medium_priority_tasks': medium_priority_tasks,
-        'low_priority_tasks': low_priority_tasks
+        'low_priority_tasks': low_priority_tasks,
+        'team_members': team_members,
+        'user_projects_header': user_projects_header,
+        'visible_comments': visible_comments,
+        'completed_percentage': completed_percentage,
+        'in_progress_percentage': in_progress_percentage,
+        'not_started_percentage': not_started_percentage,
     }
     return render(request, 'projects/dashboard.html', context)
 
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from projects.models import Project, ProjectRole
-from projects.utils import user_has_permission
 
 @login_required
 def project_detail(request, project_id):
@@ -84,10 +126,14 @@ def project_detail(request, project_id):
 
     is_manager_or_admin = project_role and project_role.role.name in ["Manager", "Admin"]
 
+    # Get tasks related to the project
+    tasks = Task.objects.filter(project=project).select_related("assigned_to").order_by("status", "priority", "due_date")
+
 
     context = {
         "project": project,
-        "user_role_name": user_role_name,  # User's role in the project
+        "tasks": tasks,
+        "user_role_name": user_role_name, 
         "can_manage_members": can_manage_members,
         "can_create_tasks": can_create_tasks,
         "can_edit_tasks": can_edit_tasks,
@@ -294,5 +340,3 @@ def clear_notifications(request):
     """Mark all notifications as read for the logged-in user."""
     request.user.notifications.filter(is_read=False).update(is_read=True)
     return JsonResponse({"success": True})
-
-
