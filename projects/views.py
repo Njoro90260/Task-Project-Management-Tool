@@ -335,8 +335,11 @@ def mark_notification_as_read(request, notification_id):
     notification.save()
     return JsonResponse({"success": True})
 
+@login_required
 @require_POST
 def clear_notifications(request):
-    """Mark all notifications as read for the logged-in user."""
-    request.user.notifications.filter(is_read=False).update(is_read=True)
-    return JsonResponse({"success": True})
+    """Clear all notifications for the logged-in user."""
+    if request.method == "POST":
+        Notification.objects.filter(user=request.user).delete()
+        return JsonResponse({"message": "Notifications cleared successfully!"})
+    return JsonResponse({"error": "Invalid request."}, status=400)

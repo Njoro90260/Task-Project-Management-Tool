@@ -12,6 +12,7 @@ urlpatterns = [
     path('projects/<int:project_id>/assign_role/', views.assign_role, name='assign_role'),
     path('projects/<int:project_id>/add_user_and_assign_role/', views.add_user_and_assign_role, name='add_user_and_assign_role'),
     path('notifications/', views.get_notifications, name='get_notifications'),
+    path('notifications/clear/', views.clear_notifications, name='clear_notifications'),
     path('project-details/<int:project_id>/', views.project_detail, name="project_detail"),
     path('toggle_theme/', views.toggle_theme, name='toggle_theme'),
 ]
