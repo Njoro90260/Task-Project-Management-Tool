@@ -32,7 +32,7 @@ def toggle_theme(request):
 User = get_user_model()
 def index(request):
     features = Feature.objects.filter(is_active=True)
-    context = {'features': features}
+    context = {'features': features, "show_sidebar": False}
     return render(request, 'projects/index.html', context)
 
 @login_required

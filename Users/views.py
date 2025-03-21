@@ -24,7 +24,7 @@ def register(request):
                 messages.error(request, error)
 
     # Display a blank or invalid form.
-    context = {'form': form}
+    context = {'form': form, "show_sidebar": False}
     return render(request, 'registration/register.html', context)
 
 
