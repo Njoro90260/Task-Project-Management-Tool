@@ -125,11 +125,13 @@ canvas {
     color: white;
     /* White text for better contrast */
     transition: left 0.3s ease, width 0.3s ease;
+    overflow: visible;
+    /* Prevent scrolling within the navbar */
 }
 
-.navbar.expanded {
-    left: 0;
-    width: 100%;
+.navbar .navbar-nav .nav-item {
+    margin-right: 15px;
+    /* Add space between navbar items */
 }
 
 .navbar .navbar-nav .nav-link {
@@ -283,14 +285,35 @@ main {
     position: relative;
 }
 
-#notificationCount {
-    position: absolute;
-    top: -10px;
-    right: -10px;
+#notificationDropdown .dropdown-menu {
+    position: absolute !important;
+    top: 120%; /* Move it further down */
+    right: 0;
+    width: 320px; /* Adjusted width */
+    z-index: 1050; /* Ensure it appears above other elements */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for better visibility */
+    background-color: #fff; /* Ensure the background is white */
+    border: 1px solid #dee2e6; /* Add a border for better separation */
+    padding: 0.5rem; /* Add padding for better spacing */
 }
 
-.dropdown-menu {
-    width: 300px;
+#notificationDropdown .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: 10px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #fff transparent; /* Create a small arrow pointing up */
+}
+
+/* Navbar Item Spacing */
+.navbar-nav .nav-item {
+    margin-right: 25px; /* Increase spacing between navbar items */
+}
+
+.navbar-nav .nav-link {
+    padding: 10px 15px; /* Add more padding for better spacing */
 }
 
 /* Main Content Styling */
@@ -655,6 +678,37 @@ main {
     cursor: pointer;
 }
 
+/* Notifications Modal */
+#notificationsModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    width: 400px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
 /* Ensure no horizontal scrolling */
 body,
 html {
@@ -717,4 +771,10 @@ html {
         left: 0;
         width: 100%;
     }
+}
+
+/* Prevent navbar from becoming scrollable */
+.navbar-collapse {
+    overflow: visible !important;
+    /* Ensure dropdowns do not affect navbar layout */
 }

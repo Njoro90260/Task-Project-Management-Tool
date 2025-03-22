@@ -48,7 +48,8 @@
                             <form id="search-form" class="d-flex">
                                 <input class="form-control me-2" type="search"
                                     placeholder="Search tasks, projects, users..." aria-label="Search" name="q">
-                                <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
+                                <button class="btn btn-outline-success" type="submit"><i
+                                        class="bi bi-search"></i></button>
                             </form>
                             <li class="nav-item">
                                 <form id="logout-form" method="post" action="{% url 'Users:logout' %}">
@@ -58,6 +59,27 @@
                                     </button>
                                 </form>
                             </li>
+                            <li class="nav-item ms-3">
+                                <a class="nav-link" href="#" id="openNotifications">
+                                    <i class="bi bi-bell"></i> Notifications
+                                    <span id="notificationCount" class="badge bg-danger rounded-pill">0</span>
+                                </a>
+                            </li>
+
+                            <!-- Notifications Modal -->
+                            <div id="notificationsModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" id="closeNotifications">&times;</span>
+                                    <h5>Notifications</h5>
+                                    <div id="notificationList" class="list-group"
+                                        style="max-height: 300px; overflow-y: auto;">
+                                        <p class="text-muted text-center">No new notifications</p>
+                                    </div>
+                                    <hr>
+                                    <button class="btn btn-danger w-100" id="clearNotifications">Clear All</button>
+                                </div>
+                            </div>
+
                             {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'Users:register' %}">
@@ -71,28 +93,6 @@
                             </li>
                             {% endif %}
                         </ul>
-                        <div class="nav-item dropdown ms-3">
-                            <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-bell"></i> Notifications
-                                <span id="notificationCount" class="badge bg-danger rounded-pill">0</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown">
-                                <li>
-                                    <div id="notificationList" class="list-group"
-                                        style="max-height: 300px; overflow-y: auto;">
-                                        <p class="text-muted text-center">No new notifications</p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <button class="dropdown-item text-center text-danger" id="clearNotifications">Clear
-                                        All</button>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </nav>
@@ -113,9 +113,23 @@
         </div>
     </div>
 
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeNotifications">&times;</span>
+            <h5>Notifications</h5>
+            <div id="notificationList" class="list-group" style="max-height: 300px; overflow-y: auto;">
+                <p class="text-muted text-center">No new notifications</p>
+            </div>
+            <hr>
+            <button class="btn btn-danger w-100" id="clearNotifications">Clear All</button>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="{% static 'js/scripts.js' %}"></script>
     <script src="{% static 'js/kanban.js' %}"></script>
     {% bootstrap_javascript %}
 </body>
+
 </html>

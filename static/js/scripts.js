@@ -1,26 +1,45 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Notifications Modal Logic
+    let modal = document.getElementById("notificationsModal");
+    let openBtn = document.getElementById("openNotifications");
+    let closeBtn = document.getElementById("closeNotifications");
+
+    openBtn.addEventListener("click", function () {
+        modal.style.display = "flex";
+    });
+
+    closeBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
     // comments in the dashboard
     let showMoreButton = document.getElementById("show-more-comments");
-    let modal = document.getElementById("comments-modal");
+    let modalComments = document.getElementById("comments-modal");
     let closeButton = document.querySelector(".close");
 
     if (showMoreButton) {
         showMoreButton.addEventListener("click", function () {
             console.log("Show More button clicked!"); // Debugging check
-            modal.style.display = "block"; // Show the modal
+            modalComments.style.display = "block"; // Show the modal
         });
     }
 
     if (closeButton) {
         closeButton.addEventListener("click", function () {
-            modal.style.display = "none"; // Hide the modal
+            modalComments.style.display = "none"; // Hide the modal
         });
     }
 
     // Close the modal if the user clicks outside it
     window.onclick = function (event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
+        if (event.target === modalComments) {
+            modalComments.style.display = "none";
         }
     };
 
