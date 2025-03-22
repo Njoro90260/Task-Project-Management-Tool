@@ -145,7 +145,7 @@ def project_detail(request, project_id):
     return render(request, "projects/project_detail.html", context)
 
 
-
+@login_required
 def create_project_and_tasks(request, project_id=None):
     """"View for creating a new project and optionally adding tasks."""
     if project_id:

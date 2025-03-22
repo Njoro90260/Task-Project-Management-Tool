@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Comfortaa';
-    src: url('static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
+    src: url('/static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
 }
 
 
@@ -23,11 +23,16 @@ h3 {
 
 /* Gradient background for cards and sections */
 .card {
-    background: linear-gradient(135deg, #e8bdf9, #d8ded6); /* Gradient background */
-    border: none; /* Remove border */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow */
-    color: #333; /* Dark text for better contrast */
+    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    /* Gradient background */
+    border: none;
+    /* Remove border */
+    border-radius: 10px;
+    /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* Subtle shadow */
+    color: #333;
+    /* Dark text for better contrast */
 }
 
 .progress {
@@ -40,9 +45,12 @@ h3 {
     justify-content: space-between;
     align-items: center;
     font-size: 1.1rem;
-    background: linear-gradient(135deg, #e8bdf9, #d8ded6); /* Gradient background */
-    border: none; /* Remove border */
-    color: #333; /* Dark text for better contrast */
+    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    /* Gradient background */
+    border: none;
+    /* Remove border */
+    color: #333;
+    /* Dark text for better contrast */
     border-left: 5px solid #0d6efd;
 }
 
@@ -61,18 +69,26 @@ canvas {
 #sidebar-wrapper {
     width: 250px;
     transition: transform 0.3s ease;
-    position: fixed; /* Make sidebar fixed */
-    height: 100vh; /* Full height */
-    z-index: 1000; /* Ensure it's above other content */
-    background: linear-gradient(135deg, #eed991, #ccf7f4); /* Gradient background */
-    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-    color: white; /* White text for better contrast */
+    position: fixed;
+    /* Make sidebar fixed */
+    height: 100vh;
+    /* Full height */
+    z-index: 1000;
+    /* Ensure it's above other content */
+    background: linear-gradient(135deg, #eed991, #ccf7f4);
+    /* Gradient background */
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+    /* Shadow for depth */
+    color: white;
+    /* White text for better contrast */
     padding: 20px;
-    border-right: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    /* Subtle border */
 }
 
 #sidebar-wrapper .nav-link {
-    color: white; /* White text for links */
+    color: white;
+    /* White text for links */
     padding: 10px 15px;
     border-radius: 5px;
     margin-bottom: 5px;
@@ -80,15 +96,18 @@ canvas {
 }
 
 #sidebar-wrapper .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Light hover effect */
 }
 
 #sidebar-wrapper .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.2); /* Active link background */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Active link background */
 }
 
 #sidebar-wrapper .nav-link i {
-    margin-right: 10px; /* Space between icon and text */
+    margin-right: 10px;
+    /* Space between icon and text */
 }
 
 /* Navbar Styling */
@@ -97,10 +116,14 @@ canvas {
     top: 0;
     left: 250px;
     width: calc(100% - 250px);
-    z-index: 1000; /* Ensure it's above other content */
-    background: linear-gradient(135deg, #eed991, #ccf7f4); /* Gradient background */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-    color: white; /* White text for better contrast */
+    z-index: 1000;
+    /* Ensure it's above other content */
+    background: linear-gradient(135deg, #eed991, #ccf7f4);
+    /* Gradient background */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    /* Shadow for depth */
+    color: white;
+    /* White text for better contrast */
     transition: left 0.3s ease, width 0.3s ease;
 }
 
@@ -110,11 +133,13 @@ canvas {
 }
 
 .navbar .navbar-nav .nav-link {
-    color: white; /* White text for links */
+    color: white;
+    /* White text for links */
 }
 
 .navbar .navbar-toggler {
-    border-color: rgba(255, 255, 255, 0.1); /* Light border for toggler */
+    border-color: rgba(255, 255, 255, 0.1);
+    /* Light border for toggler */
 }
 
 .navbar .navbar-toggler-icon {
@@ -122,27 +147,34 @@ canvas {
 }
 
 .navbar .form-control {
-    background-color: rgba(255, 255, 255, 0.1); /* Light background for search */
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Light background for search */
     border: none;
-    color: white; /* White text for search */
+    color: white;
+    /* White text for search */
 }
 
 .navbar .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.5); /* Light placeholder text */
+    color: rgba(255, 255, 255, 0.5);
+    /* Light placeholder text */
 }
 
 .navbar .btn-outline-success {
-    border-color: rgba(255, 255, 255, 0.5); /* Light border for button */
-    color: white; /* White text for button */
+    border-color: rgba(255, 255, 255, 0.5);
+    /* Light border for button */
+    color: white;
+    /* White text for button */
 }
 
 .navbar .btn-outline-success:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Light hover effect */
 }
 
 /* Adjust main content padding to account for fixed navbar */
 main {
-    padding-top: 60px; /* Adjust based on navbar height */
+    padding-top: 60px;
+    /* Adjust based on navbar height */
 }
 
 /* When sidebar is hidden */
@@ -195,7 +227,8 @@ main {
 #mainContent {
     margin-left: 250px;
     transition: margin-left 0.3s ease;
-    overflow-x: hidden; /* Prevents main content from causing overflow */
+    overflow-x: hidden;
+    /* Prevents main content from causing overflow */
 }
 
 #mainContent.expanded {
@@ -296,7 +329,10 @@ main {
     border-radius: 5px;
     cursor: grab;
 }
-
+.task-list:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 /* comment form styles */
 .suggestions-list {
     position: absolute;
@@ -350,9 +386,12 @@ main {
 /* Gradient background for cards and sections */
 .custom-btn,
 .btn {
-    background: linear-gradient(135deg, #e8bdf9, #d8ded6); /* Gradient background for buttons */
-    border: none; /* Remove border */
-    color: #333; /* Dark text for better contrast */
+    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    /* Gradient background for buttons */
+    border: none;
+    /* Remove border */
+    color: #333;
+    /* Dark text for better contrast */
     padding: 10px 20px;
     font-weight: bold;
     transition: 0.3s;
@@ -362,8 +401,10 @@ main {
 /* Gradient background for cards and sections */
 .custom-btn:hover,
 .btn:hover {
-    background: linear-gradient(135deg, #d8ded6, #e8bdf9); /* Reverse gradient on hover */
-    color: #000; /* Darker text on hover */
+    background: linear-gradient(135deg, #d8ded6, #e8bdf9);
+    /* Reverse gradient on hover */
+    color: #000;
+    /* Darker text on hover */
     transform: scale(1.05);
 }
 
@@ -535,7 +576,14 @@ main {
 
 /* modal */
 .header {
-    background-color: #e0e0e0;
+    background: #E6DADA;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #274046, #E6DADA);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #274046, #E6DADA);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: #f3f3f3;
+    border-radius: 15px;
 }
 
 .progress-bar-vertical {
@@ -548,8 +596,10 @@ main {
 
 /* Gradient background for cards and sections */
 .progress-bar-vertical .progress-bar {
-    background: linear-gradient(135deg, #e8bdf9, #d8ded6); /* Gradient background for progress bars */
-    color: #333; /* Dark text for better contrast */
+    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    /* Gradient background for progress bars */
+    color: #333;
+    /* Dark text for better contrast */
     width: 100%;
     height: 0;
     transition: height 0.6s ease;
@@ -557,10 +607,13 @@ main {
 
 /* Gradient background for cards and sections */
 .card-header {
-    background: linear-gradient(135deg, #e8bdf9, #d8ded6); /* Gradient background */
-    color: #333; /* Dark text for better contrast */
+    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    /* Gradient background */
+    color: #333;
+    /* Dark text for better contrast */
     font-weight: bold;
-    border-bottom: none; /* Remove border */
+    border-bottom: none;
+    /* Remove border */
 }
 
 .badge {
@@ -603,8 +656,10 @@ main {
 }
 
 /* Ensure no horizontal scrolling */
-body, html {
-    overflow-x: hidden; /* Prevents horizontal overflow */
+body,
+html {
+    overflow-x: hidden;
+    /* Prevents horizontal overflow */
     width: 100%;
 }
 
@@ -612,12 +667,14 @@ body, html {
 #mainContent {
     margin-left: 250px;
     transition: margin-left 0.3s ease;
-    overflow-x: hidden; /* Prevents main content from causing overflow */
+    overflow-x: hidden;
+    /* Prevents main content from causing overflow */
 }
 
 /* When sidebar is hidden */
 #mainContent.col-12 {
-    margin-left: 0; /* Take full width */
+    margin-left: 0;
+    /* Take full width */
 }
 
 /* Navbar default when sidebar is present */
@@ -636,9 +693,12 @@ body, html {
 }
 
 /* Prevent other elements from exceeding screen width */
-.container-fluid, .row, .content-container {
+.container-fluid,
+.row,
+.content-container {
     max-width: 100%;
-    overflow-x: hidden; /* Ensures no content stretches beyond screen */
+    overflow-x: hidden;
+    /* Ensures no content stretches beyond screen */
 }
 
 /* Handle responsiveness */

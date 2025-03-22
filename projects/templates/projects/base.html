@@ -101,7 +101,7 @@
             <main id="mainContent"
                 class="{% if show_sidebar is False %}col-12{% else %}col-md-9 ms-sm-auto col-lg-10{% endif %} px-md-4">
                 <div class="content-container pt-3 mt-3">
-                    <div class="header">
+                    <div class="header shadow-sm p-3 mb-3 bg-body">
                         {% block page_header %}{% endblock page_header %}
                     </div>
                     <hr>
@@ -118,5 +118,4 @@
     <script src="{% static 'js/kanban.js' %}"></script>
     {% bootstrap_javascript %}
 </body>
-
 </html>
