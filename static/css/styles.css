@@ -21,8 +21,12 @@ section {
 
 /* base/nav styles */
 /* Custom CSS for Sidebar and Layout */
-body {
-    background-color: #f8f9fa;
+body,
+html {
+    overflow-x: hidden;
+    /* Prevents horizontal overflow */
+    width: 100%;
+    background-image: var(--primary-color);
 }
 
 h1 {
@@ -729,12 +733,6 @@ main {
 }
 
 /* Ensure no horizontal scrolling */
-body,
-html {
-    overflow-x: hidden;
-    /* Prevents horizontal overflow */
-    width: 100%;
-}
 
 /* Ensure main content expands fully when sidebar is hidden */
 #mainContent {
