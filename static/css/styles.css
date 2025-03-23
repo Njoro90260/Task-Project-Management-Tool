@@ -1,6 +1,21 @@
+:root {
+    --primary-color: linear-gradient( 174.2deg,  rgba(255,244,228,1) 7.1%, rgba(240,246,238,1) 67.4% );
+    --text-color-primary: #f3f3f3 !important;
+}
 @font-face {
     font-family: 'Comfortaa';
     src: url('/static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
+}
+.home {
+    background-image: var(--primary-color);
+    /* color: #f3f3f3; */
+    padding: 20px;
+}
+section {
+    min-height: 80vh; /* Each section takes at least 80% of the viewport height */
+    display: flex;
+    align-items: center; /* Centers content vertically */
+    justify-content: center; /* Centers content horizontally */
 }
 
 
@@ -23,7 +38,7 @@ h3 {
 
 /* Gradient background for cards and sections */
 .card {
-    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    background-image: var(--primary-color);
     /* Gradient background */
     border: none;
     /* Remove border */
@@ -75,7 +90,8 @@ canvas {
     /* Full height */
     z-index: 1000;
     /* Ensure it's above other content */
-    background: linear-gradient(135deg, #eed991, #ccf7f4);
+    /* background: linear-gradient(135deg, #eed991, #ccf7f4); */
+    background-image: var(--primary-color);
     /* Gradient background */
     box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
     /* Shadow for depth */
@@ -118,7 +134,7 @@ canvas {
     width: calc(100% - 250px);
     z-index: 1000;
     /* Ensure it's above other content */
-    background: linear-gradient(135deg, #eed991, #ccf7f4);
+    background-image: var(--primary-color);
     /* Gradient background */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     /* Shadow for depth */
@@ -269,10 +285,11 @@ main {
 
 /* Search Form Styling */
 #search-form {
-    background-color: #fff;
-    padding: 15px;
+    /* background-color: #fff; */
+    border-style: solid;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+    color: var(--text-color-primary);
 }
 
 #search-form .form-control,
@@ -292,7 +309,7 @@ main {
     width: 320px; /* Adjusted width */
     z-index: 1050; /* Ensure it appears above other elements */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for better visibility */
-    background-color: #fff; /* Ensure the background is white */
+    background-image: var(--primary-color); /* Ensure the background is white */
     border: 1px solid #dee2e6; /* Add a border for better separation */
     padding: 0.5rem; /* Add padding for better spacing */
 }
@@ -341,12 +358,12 @@ main {
 .kanban-column {
     width: 30%;
     padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f4f4f4;
+    border: none;
+    border-radius: 15px;
+    background-image: var(--primary-color);
 }
 
 .task-card {
-    background: white;
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
@@ -478,7 +495,7 @@ main {
 
 #comment-list li,
 #all-comments-list li {
-    background-color: #fff;
+    background-image: var(--primary-color);
     padding: 1rem;
     margin-bottom: 0.75rem;
     border-radius: 0.5rem;
@@ -574,7 +591,7 @@ main {
 }
 
 #all-comments-list li {
-    background-color: #f8f9fa;
+    background-image: var(--primary-color);
     padding: 1rem;
     margin-bottom: 0.75rem;
     border-radius: 0.5rem;
@@ -630,7 +647,7 @@ main {
 
 /* Gradient background for cards and sections */
 .card-header {
-    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    background-image: var(--primary-color);
     /* Gradient background */
     color: #333;
     /* Dark text for better contrast */
@@ -644,7 +661,7 @@ main {
 }
 
 .comments-section {
-    background-color: #f8f9fa;
+    background-image: var(--primary-color);
     padding: 1rem;
     border-radius: 0.5rem;
 }
@@ -691,9 +708,11 @@ main {
     justify-content: center;
     align-items: center;
 }
-
+.notification-list-item {
+    background-image: var(--primary-color);
+}
 .modal-content {
-    background-color: white;
+    background-image: var(--primary-color);
     padding: 20px;
     width: 400px;
     border-radius: 10px;

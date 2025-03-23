@@ -274,11 +274,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     data.notifications.forEach(notif => {
                         let item = document.createElement("a");
                         item.href = notif.url;
-                        item.className = "list-group-item list-group-item-action";
+                        item.className = "list-group-item list-group-item-action notification-list-item";
                         item.innerHTML =  `
                         <div class="d-flex justify-content-between">
                             <span>${notif.message}</span>
                             <small class="text-muted">${notif.created_at}</small>
+                            <hr>
                         </div>
                     `;
                         item.addEventListener("click", function (event) {
