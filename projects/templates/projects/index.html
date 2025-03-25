@@ -1,7 +1,7 @@
 {% extends "projects/base.html" %}
 {% block title %}Home{% endblock title %}
 
-{% block main_content_class %}col-12{% endblock %}
+{% load cache %}
 
 {% block content %}
 <div class="home">
@@ -176,6 +176,7 @@
 
     <hr class="my-5">
 
+    {% cache 3600 features_section %}
     <!-- Features Section -->
     <section class="py-5">
         <div class="container">
@@ -207,9 +208,10 @@
             {% endif %}
         </div>
     </section>
-
+    {% endcache %}
     <hr class="my-5">
 
+    {% cache 3600 why_use_section %}
     <!-- Why Use This Tool Section -->
     <section class="py-5">
         <div class="container">
@@ -220,7 +222,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-6"> <!-- Increased from col-md-5 -->
                             <img src="static/images/IntuitiveUI.webp" class="img-fluid d-block mx-auto"
-                                alt="Intuitive UI">
+                                alt="Intuitive UI" loading="lazy">
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Intuitive UI</h5>
@@ -234,7 +236,7 @@
                     <div class="row align-items-center flex-md-row-reverse">
                         <div class="col-md-6"> <!-- Increased from col-md-5 -->
                             <img src="static/images/Efficient-Collaboration.webp" class="img-fluid d-block mx-auto"
-                                alt="Efficient Collaboration">
+                                alt="Efficient Collaboration" loading="lazy">
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Efficient Collaboration</h5>
@@ -248,7 +250,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-6"> <!-- Increased from col-md-5 -->
                             <img src="static/images/Real-time-Updates.webp" class="img-fluid d-block mx-auto"
-                                alt="Real-time Updates">
+                                alt="Real-time Updates" loading="lazy">
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Real-time Updates</h5>
@@ -261,7 +263,8 @@
                 <div class="col-md-12 mb-4">
                     <div class="row align-items-center flex-md-row-reverse">
                         <div class="col-md-6"> <!-- Increased from col-md-5 -->
-                            <img src="static\images\ie2zkucrmkpalhuczr4t.webp" class="img-fluid d-block mx-auto" alt="No Unnecessary Complexity">
+                            <img src="static\images\ie2zkucrmkpalhuczr4t.webp" class="img-fluid d-block mx-auto"
+                                alt="No Unnecessary Complexity" loading="lazy">
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ No Unnecessary Complexity</h5>
@@ -275,7 +278,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-6"> <!-- Increased from col-md-5 -->
                             <img src="static/images/Role-based-permission-one.webp" class="img-fluid d-block mx-auto"
-                                alt="Role-based Permissions">
+                                alt="Role-based Permissions" loading="lazy">
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Role-based Permissions</h5>
@@ -289,7 +292,7 @@
                     <div class="row align-items-center flex-md-row-reverse">
                         <div class="col-md-6"> <!-- Increased from col-md-5 -->
                             <img src="static/images/Google-Calendar-Integration.webp" class="img-fluid d-block mx-auto"
-                                alt="Google Calendar Integration">
+                                alt="Google Calendar Integration" loading="lazy">
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Google Calendar Integration</h5>
@@ -300,12 +303,14 @@
             </div>
         </div>
     </section>
+    {% endcache %}
 
     <hr class="my-5">
 
     <!-- Call to Action Section -->
     <section class="py-5">
-        <div class="container text-center">
+        <!-- <div class="container text-center" id="balls-container"> -->
+        <div class="container text-center" id="balls-container">
             <h2 class="mb-4 display-5">Ready to take control of your projects?</h2>
             <a href="{% url 'Users:register' %}" class="btn btn-success btn-lg">Sign Up Now</a>
         </div>
@@ -345,5 +350,42 @@
         </div>
     </div>
 </div>
-
+<footer class="footer mt-auto py-4">
+    <div class="container">
+        <div class="row">
+            <!-- About, Privacy & Contact -->
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/privacy-policy">Privacy Policy</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Social Media Icons -->
+            <div class="col-md-4 text-center">
+                <h5>Connect with Me</h5>
+                <a href="https://linkedin.com/in/yourprofile" class="social-icon" target="_blank">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+                <a href="https://github.com/yourgithub" class="social-icon" target="_blank">
+                    <i class="bi bi-github"></i>
+                </a>
+                <a href="https://instagram.com/yourinstagram" class="social-icon" target="_blank">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://facebook.com/yourfacebook" class="social-icon" target="_blank">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="mailto:your@email.com" class="social-icon">
+                    <i class="bi bi-envelope-fill"></i>
+                </a>
+            </div>
+            <!-- Copyright -->
+            <div class="col-md-4 text-md-end text-center">
+                <p class="mb-0">&copy; 2025 Your Project Name. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
 {% endblock content %}

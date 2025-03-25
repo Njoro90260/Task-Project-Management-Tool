@@ -14,7 +14,8 @@ from django.views.decorators.http import require_POST
 from projects.utils import user_has_permission
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 
 # Create your views here.
@@ -30,13 +31,19 @@ def toggle_theme(request):
 
 
 User = get_user_model()
+
+@cache_page(60 * 15)
 def index(request):
-    features = Feature.objects.filter(is_active=True)
+    features = cache.get('active_features')
+    if not features:
+        features = Feature.objects.filter(is_active=True)
+        cache.set('active_features', features, 60 * 60)
     display_features = features[:3]
     context = {'features': features, 
                "show_sidebar": False,
                "display_features": display_features,
                "content_container": False,
+               "show_footer": True,
             }
     return render(request, 'projects/index.html', context)
 
