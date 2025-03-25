@@ -7,6 +7,34 @@
     font-family: 'Comfortaa';
     src: url('/static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
 }
+/* General Styles */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    background-image: var(--primary-color);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 3.5rem;
+    color: #333;
+}
+
+h2, h3 {
+    font-weight: bold;
+}
+
+.container-fluid, .row, .content-container {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 /* balls style */
 /* Enhanced Balls Style */
 #balls-container {
@@ -69,9 +97,15 @@
     /* color: #f3f3f3; */
     padding: 20px;
 }
+/* Footer Styles */
 .footer {
     background-image: var(--primary-color);
     color: white;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
 }
 
 .footer a {

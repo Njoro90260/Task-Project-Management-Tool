@@ -51,14 +51,6 @@
                                 <button class="btn btn-outline-success" type="submit"><i
                                         class="bi bi-search"></i></button>
                             </form>
-                            <li class="nav-item">
-                                <form id="logout-form" method="post" action="{% url 'Users:logout' %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="nav-link btn btn-link">
-                                        <i class="bi bi-box-arrow-right"></i> Logout
-                                    </button>
-                                </form>
-                            </li>
                             <li class="nav-item ms-3">
                                 <a class="nav-link" href="#" id="openNotifications">
                                     <i class="bi bi-bell"></i> Notifications

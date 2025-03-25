@@ -18,6 +18,14 @@
                     <i class="bi bi-kanban"></i> Manage Tasks
                 </a>
             </li>
+            <li class="nav-item">
+                <form id="logout-form" method="post" action="{% url 'Users:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </li>
             {% endif %}
         </ul>
     </div>
