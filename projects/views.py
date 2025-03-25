@@ -34,6 +34,9 @@ User = get_user_model()
 
 @cache_page(60 * 15)
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('projects:dashboard')
+    
     features = cache.get('active_features')
     if not features:
         features = Feature.objects.filter(is_active=True)

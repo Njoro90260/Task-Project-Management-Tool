@@ -9,6 +9,11 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
+                <span class="nav-link">
+                    <i class="bi bi-person"></i> Hello, {{ user.username }}
+                </span>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'projects:dashboard' %}">
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
