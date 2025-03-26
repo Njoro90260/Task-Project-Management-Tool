@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const body = document.body;
     const page = body.getAttribute('data-page');
     const globalFeatures = body.getAttribute('data-global').split(' ');
-    
+
     // Load global features
     globalFeatures.forEach(feature => {
-        switch(feature) {
+        switch (feature) {
             case 'search':
                 import('./modules/search.js');
                 break;
@@ -18,17 +18,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         }
     });
-    
+
     // Load page-specific modules
     if (page) {
-        switch(page) {
+        switch (page) {
             case 'dashboard':
-                import('./modules/balls.js');
                 import('./modules/comments.js');
                 break;
             case 'task-detail':
                 import('./modules/comments.js');
                 import('./modules/files.js');
+                break;
+            case 'kanban':
+                import('./modules/kanban.js');
                 break;
             // Add more cases as needed
         }
