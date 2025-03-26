@@ -1,37 +1,36 @@
+// Main entry point that loads modules based on data-page attribute
 document.addEventListener("DOMContentLoaded", function () {
-    const page = document.body.getAttribute("data-page") || "";
-    const globalScripts = document.body.getAttribute("data-global") || "";
-
-    function loadScript(src) {
-        const script = document.createElement("script");
-        script.src = src;
-        document.head.appendChild(script);
-    }
-
-    // Load global scripts (search, notifications) if they exist
-    if (globalScripts.includes("search")) {
-        loadScript("/static/js/search.js");
-    }
-    if (globalScripts.includes("notifications")) {
-        loadScript("/static/js/notifications.js");
-    }
-
-    // Handle multiple values in `data-page`
-    const pages = page.split(" ");
-
-    pages.forEach(function (p) {
-        switch (p) {
-            case "comments":
-                loadScript("/static/js/comment.js");
+    const body = document.body;
+    const page = body.getAttribute('data-page');
+    const globalFeatures = body.getAttribute('data-global').split(' ');
+    
+    // Load global features
+    globalFeatures.forEach(feature => {
+        switch(feature) {
+            case 'search':
+                import('./modules/search.js');
                 break;
-            case "file_upload":
-                loadScript("/static/js/file_upload.js");
+            case 'notifications':
+                import('./modules/notifications.js');
                 break;
-            case "kanban":
-                loadScript("/static/js/kanban.js");
+            case 'theme':
+                // Theme handling if needed
                 break;
-            default:
-                console.warn(`No specific script to load for "${p}"`);
         }
     });
+    
+    // Load page-specific modules
+    if (page) {
+        switch(page) {
+            case 'dashboard':
+                import('./modules/balls.js');
+                import('./modules/comments.js');
+                break;
+            case 'task-detail':
+                import('./modules/comments.js');
+                import('./modules/files.js');
+                break;
+            // Add more cases as needed
+        }
+    }
 });
