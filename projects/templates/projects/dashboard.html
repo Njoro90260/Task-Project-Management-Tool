@@ -4,13 +4,14 @@
 
 {% load custom_filters %}
 
-{% block page_header %}
+{% block content %}
+<div class="header shadow-sm p-3 mb-3 bg-body">
 <div class="container">
     <div class="row align-items-center">
         <!-- Welcome Section -->
         <div class="col-md-4 text-center">
-            <h2 class="mb-3">Track your projects with ease</h2>
-            <h1 class="display-4">{{ overall_progress|floatformat:2 }}%</h1>
+            <h2 class="mb-3 welcome-text">Track your projects with ease</h2>
+            <h1 class="display-4 welcome-text">{{ overall_progress|floatformat:2 }}%</h1>
         </div>
 
         <!-- Project Progress Bars -->
@@ -20,7 +21,7 @@
                 <div class="col-md-2 col-sm-3 col-4 p-1"> <!-- Reduce padding for tighter spacing -->
                     <!-- progress bar -->
                     <div class="progress" style="height: 200px; width: 30px; position: relative; margin: 0 auto;">
-                        <div class="progress-bar bg-success" role="progressbar"
+                        <div class="progress-bar" role="progressbar"
                             style="height: {{ project_progress|get_item:project.id|floatformat:0 }}%; width: 100%; position: absolute; bottom: 0;"
                             aria-valuenow="{{ project_progress|get_item:project.id|floatformat:0 }}" aria-valuemin="0"
                             aria-valuemax="100">
@@ -59,42 +60,53 @@
         </div>
     </div>
 </div>
-{% endblock page_header %}
-
-{% block content %}
+</div>
+<hr>
 <!-- Overdue & Upcoming Tasks -->
 <div class="row mt-4">
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-header bg-danger text-white">Overdue Tasks</div>
-            <ul class="list-group list-group-flush">
+            <div class="card-body">
                 {% for task in overdue_tasks %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }} (Due: {{ task.due_date
-                        }})</a>
-                    <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-warning">Edit</a>
-                </li>
+                <div class="card mb-2 border-danger h-auto p-2 task-list">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1">
+                            <a href="{% url 'tasks:task_detail' task_id=task.id %}" class="text-danger">{{ task.title }}</a>
+                        </h6>
+                        <p class="card-text text-muted mb-1">Due: {{ task.due_date }}</p>
+                        <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    </div>
+                </div>
                 {% empty %}
-                <li class="list-group-item text-muted">No overdue tasks.</li>
+                <p class="text-muted">No overdue tasks.</p>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
     </div>
 
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-header bg-info text-white">Upcoming Tasks</div>
-            <ul class="list-group list-group-flush">
+            <div class="card-body">
                 {% for task in upcoming_tasks %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }} (Due: {{ task.due_date
-                        }})</a>
-                    <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
-                </li>
+                <div class="card mb-2 border-info h-auto p-2">
+                    <div class="card-body p-2 task-list">
+                        <h6 class="card-title mb-1">
+                            <a href="{% url 'tasks:task_detail' task_id=task.id %}" class="text-info">{{ task.title
+                                }}</a>
+                        </h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="card-text text-muted mb-0">Due: {{ task.due_date }}</p>
+                            <a href="{% url 'tasks:edit_task' task_id=task.id %}"
+                                class="btn btn-primary btn-sm">Edit</a>
+                        </div>
+                    </div>
+                </div>
                 {% empty %}
-                <li class="list-group-item text-muted">No upcoming tasks.</li>
+                <p class="text-muted">No upcoming tasks.</p>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
     </div>
 </div>
@@ -103,49 +115,65 @@
 <div class="row mt-4">
     <div class="col-md-8">
         <div class="card mb-4">
-            <div class="card-header bg-secondary text-white">Tasks by Priority</div>
+            <div class="card-header bg-secondary">Tasks by Priority</div>
             <div class="card-body">
                 <h5 class="text-danger">High Priority</h5>
-                <ul class="list-group mb-3">
+                <div class="row">
                     {% for task in high_priority_tasks %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ task.title }}
-                        <span class="badge bg-danger">High</span>
-                        <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-warning">Edit</a>
-                    </li>
+                    <div class="col-md-6">
+                        <div class="card mb-2 border-danger h-auto p-2 task-list">
+                            <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">{{ task.title }}</span>
+                                <span class="badge bg-danger">High</span>
+                                <a href="{% url 'tasks:edit_task' task_id=task.id %}"
+                                    class="btn btn-warning btn-sm">Edit</a>
+                            </div>
+                        </div>
+                    </div>
                     {% empty %}
-                    <li class="list-group-item text-muted">No high-priority tasks.</li>
+                    <p class="text-muted">No high-priority tasks.</p>
                     {% endfor %}
-                </ul>
+                </div>
 
                 <h5 class="text-warning">Medium Priority</h5>
-                <ul class="list-group mb-3">
+                <div class="row">
                     {% for task in medium_priority_tasks %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ task.title }}
-                        <span class="badge bg-warning">Medium</span>
-                        <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
-                    </li>
+                    <div class="col-md-6">
+                        <div class="card mb-2 border-warning h-auto p-2 task-list">
+                            <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">{{ task.title }}</span>
+                                <span class="badge bg-warning">Medium</span>
+                                <a href="{% url 'tasks:edit_task' task_id=task.id %}"
+                                    class="btn btn-primary btn-sm">Edit</a>
+                            </div>
+                        </div>
+                    </div>
                     {% empty %}
-                    <li class="list-group-item text-muted">No medium-priority tasks.</li>
+                    <p class="text-muted">No medium-priority tasks.</p>
                     {% endfor %}
-                </ul>
+                </div>
 
                 <h5 class="text-success">Low Priority</h5>
-                <ul class="list-group">
+                <div class="row">
                     {% for task in low_priority_tasks %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ task.title }}
-                        <span class="badge bg-success">Low</span>
-                        <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-sm btn-primary">Edit</a>
-                    </li>
+                    <div class="col-md-6">
+                        <div class="card mb-2 border-success h-auto p-2">
+                            <div class="card-body p-2 d-flex justify-content-between align-items-center task-list">
+                                <span class="fw-bold">{{ task.title }}</span>
+                                <span class="badge bg-success">Low</span>
+                                <a href="{% url 'tasks:edit_task' task_id=task.id %}"
+                                    class="btn btn-primary btn-sm">Edit</a>
+                            </div>
+                        </div>
+                    </div>
                     {% empty %}
-                    <li class="list-group-item text-muted">No low-priority tasks.</li>
+                    <p class="text-muted">No low-priority tasks.</p>
                     {% endfor %}
-                </ul>
+                </div>
             </div>
         </div>
     </div>
+
 
     <!-- Recent Comments Section -->
     <div class="col-md-4">
@@ -166,7 +194,7 @@
             <button id="show-more-comments" class="btn btn-primary mt-2">Show More</button>
             {% endif %}
         </div>
-        
+
         <!-- Modal -->
         <div id="comments-modal" class="modal">
             <div class="modal-content">
@@ -192,7 +220,7 @@
 <div class="row mt-4">
     <div class="col-12">
         <div class="card mb-4" id="projects">
-            <div class="card-header bg-primary text-white">Your Projects</div>
+            <div class="card-header bg-primary">Your Projects</div>
             <div class="card-body">
                 <a href="{% url 'projects:create_project_and_tasks' %}" class="btn btn-success btn-sm mb-3">Create a new
                     project</a>
@@ -201,13 +229,13 @@
                     <div class="col-md-6 mb-3">
                         <div class="card">
                             <div class="card-header bg-primary text-white">
-                                <a href="{% url 'projects:project_detail' project_id=project.id %}" class="text-white">
+                                <a href="{% url 'projects:project_detail' project_id=project.id %}">
                                     <strong>{{ project.name }}</strong>
                                 </a>
                             </div>
                             <div class="card-body text-center">
                                 <div class="progress mb-3">
-                                    <div class="progress-bar bg-success" role="progressbar"
+                                    <div class="progress-bar" role="progressbar"
                                         style="width: {{ project_progress|get_item:project.id|floatformat:0 }}%"
                                         aria-valuenow="{{ project_progress|get_item:project.id|floatformat:0 }}"
                                         aria-valuemin="0" aria-valuemax="100">
@@ -224,67 +252,46 @@
                         <p class="text-muted">No projects found.</p>
                     </div>
                     {% endfor %}
-    <!-- Progress Bars Section -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">Task Progress</div>
-                <div class="card-body">
-                    <!-- Progress bar for completed tasks -->
-                    <h5>Completed Tasks</h5>
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">60%</div>
-                    </div>
-
-                    <!-- Progress bar for in-progress tasks -->
-                    <h5>In Progress Tasks</h5>
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">30%</div>
-                    </div>
-
-                    <!-- Progress bar for not started tasks -->
-                    <h5>Not Started Tasks</h5>
-                    <div class="progress">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10%</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Progress Bars Section -->
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">Task Progress</div>
-            <div class="card-body">
-                <h5>Completed Tasks</h5>
-                <div class="progress mb-3">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ completed_percentage }}%"
-                        aria-valuenow="{{ completed_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                        {{ completed_percentage|floatformat:2 }}%
-                    </div>
                 </div>
 
-                <h5>In Progress Tasks</h5>
-                <div class="progress mb-3">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ in_progress_percentage }}%"
-                        aria-valuenow="{{ in_progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                        {{ in_progress_percentage|floatformat:2 }}%
+                <!-- Progress Bars Section -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">Task Progress</div>
+                            <div class="card-body">
+                                <h5>Completed Tasks</h5>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                        style="width: {{ completed_percentage }}%"
+                                        aria-valuenow="{{ completed_percentage }}" aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        {{ completed_percentage|floatformat:2 }}%
+                                    </div>
+                                </div>
+
+                                <h5>In Progress Tasks</h5>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-warning" role="progressbar"
+                                        style="width: {{ in_progress_percentage }}%"
+                                        aria-valuenow="{{ in_progress_percentage }}" aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        {{ in_progress_percentage|floatformat:2 }}%
+                                    </div>
+                                </div>
+
+                                <h5>Not Started Tasks</h5>
+                                <div class="progress">
+                                    <div class="progress-bar bg-danger" role="progressbar"
+                                        style="width: {{ not_started_percentage }}%"
+                                        aria-valuenow="{{ not_started_percentage }}" aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        {{ not_started_percentage|floatformat:2 }}%
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <h5>Not Started Tasks</h5>
-                <div class="progress">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ not_started_percentage }}%"
-                        aria-valuenow="{{ not_started_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                        {{ not_started_percentage|floatformat:2 }}%
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock content %}
+                {% endblock content %}

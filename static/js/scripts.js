@@ -1,43 +1,91 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+    // balls
+    const container = document.getElementById('balls-container');
+        const balls = [];
+        
+        // Create 10 balls
+        for (let i = 0; i < 10; i++) {
+            const ball = document.createElement('div');
+            ball.className = 'ball';
+            ball.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 50%)`;
+            container.appendChild(ball);
+            
+            // gsap.set(ball, {
+            //     x: Math.random() * window.innerWidth,
+            //     y: Math.random() * window.innerHeight * 0.5
+            // });
+            
+            // animateBall(ball);
+        }
+
+        // function animateBall(ball) {
+        //     const duration = 2 + Math.random() * 1;
+            
+        //     gsap.to(ball, {
+        //         y: window.innerHeight - 40,
+        //         duration: duration,
+        //         ease: "bounce.out",
+        //         yoyo: true,
+        //         repeat: -1,
+        //         delay: Math.random() * 2
+        //     });
+            
+            // gsap.to(ball, {
+            //     x: "+=" + (Math.random() * 200 - 100),
+            //     duration: duration * 1.5,
+            //     yoyo: true,
+            //     repeat: -1,
+            //     ease: "sine.inOut"
+            // });
+        // }
+    // balls
+
+
+
+    // Notifications Modal Logic
+    let modal = document.getElementById("notificationsModal");
+    let openBtn = document.getElementById("openNotifications");
+    let closeBtn = document.getElementById("closeNotifications");
+
+    openBtn.addEventListener("click", function () {
+        modal.style.display = "flex";
+    });
+
+    closeBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
     // comments in the dashboard
     let showMoreButton = document.getElementById("show-more-comments");
-    let modal = document.getElementById("comments-modal");
+    let modalComments = document.getElementById("comments-modal");
     let closeButton = document.querySelector(".close");
 
     if (showMoreButton) {
         showMoreButton.addEventListener("click", function () {
             console.log("Show More button clicked!"); // Debugging check
-            modal.style.display = "block"; // Show the modal
+            modalComments.style.display = "block"; // Show the modal
         });
     }
 
     if (closeButton) {
         closeButton.addEventListener("click", function () {
-            modal.style.display = "none"; // Hide the modal
+            modalComments.style.display = "none"; // Hide the modal
         });
     }
 
     // Close the modal if the user clicks outside it
     window.onclick = function (event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
+        if (event.target === modalComments) {
+            modalComments.style.display = "none";
         }
     };
-    
-
-    // toggle sidebar
-    const sidebar = document.getElementById('sidebar-wrapper');
-    const mainContent = document.getElementById('mainContent');
-    const navbar = document.querySelector('.navbar');
-
-    // sidebar.classList.toggle('hidden');
-    // mainContent.classList.toggle('expanded');
-    // navbar.classList.toggle('expanded');
-    const sidebarToggle = document.getElementById("sidebarToggle");
-
-    sidebarToggle.addEventListener("click", function () {
-        document.body.classList.toggle("sidebar-hidden");
-    });
 
     // comments in the dashboard
     // Elements for comment input and suggestions
@@ -270,11 +318,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     data.notifications.forEach(notif => {
                         let item = document.createElement("a");
                         item.href = notif.url;
-                        item.className = "list-group-item list-group-item-action";
-                        item.innerHTML =  `
+                        item.className = "list-group-item list-group-item-action notification-list-item";
+                        item.innerHTML = `
                         <div class="d-flex justify-content-between">
                             <span>${notif.message}</span>
                             <small class="text-muted">${notif.created_at}</small>
+                            <hr>
                         </div>
                     `;
                         item.addEventListener("click", function (event) {

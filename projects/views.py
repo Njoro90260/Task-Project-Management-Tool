@@ -14,7 +14,8 @@ from django.views.decorators.http import require_POST
 from projects.utils import user_has_permission
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 
 # Create your views here.
@@ -30,9 +31,23 @@ def toggle_theme(request):
 
 
 User = get_user_model()
+
+@cache_page(60 * 15)
 def index(request):
-    features = Feature.objects.filter(is_active=True)
-    context = {'features': features}
+    if request.user.is_authenticated:
+        return redirect('projects:dashboard')
+    
+    features = cache.get('active_features')
+    if not features:
+        features = Feature.objects.filter(is_active=True)
+        cache.set('active_features', features, 60 * 60)
+    display_features = features[:3]
+    context = {'features': features, 
+               "show_sidebar": False,
+               "display_features": display_features,
+               "content_container": False,
+               "show_footer": True,
+            }
     return render(request, 'projects/index.html', context)
 
 @login_required
@@ -145,7 +160,7 @@ def project_detail(request, project_id):
     return render(request, "projects/project_detail.html", context)
 
 
-
+@login_required
 def create_project_and_tasks(request, project_id=None):
     """"View for creating a new project and optionally adding tasks."""
     if project_id:
@@ -335,8 +350,11 @@ def mark_notification_as_read(request, notification_id):
     notification.save()
     return JsonResponse({"success": True})
 
+@login_required
 @require_POST
 def clear_notifications(request):
-    """Mark all notifications as read for the logged-in user."""
-    request.user.notifications.filter(is_read=False).update(is_read=True)
-    return JsonResponse({"success": True})
+    """Clear all notifications for the logged-in user."""
+    if request.method == "POST":
+        Notification.objects.filter(user=request.user).delete()
+        return JsonResponse({"message": "Notifications cleared successfully!"})
+    return JsonResponse({"error": "Invalid request."}, status=400)

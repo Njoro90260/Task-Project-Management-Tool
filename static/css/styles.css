@@ -1,42 +1,200 @@
+:root {
+    --primary-color: radial-gradient( circle farthest-corner at 10% 20%,  rgba(234,249,249,0.67) 0.1%, rgba(239,249,251,0.63) 90.1% );
+    --text-color-primary: #0a0909 !important;
+    --ball-color: rgba(234,249,249,0.67);
+    --text-color-disabled: #6c757d;
+    --nav-text-color: #333;
+    --bg-btn-start: #007bff;
+    --bg-btn-end: #00c2ff;
+    --headers-light: #f3f3f3;
+    --headers-dark: #0a0909;
+    --progress-bar-color: radial-gradient( circle farthest-corner at 10% 20%,  rgba(120,170,0,1) 0%, rgba(200,227,121,1) 90% );
+    --secondary-color: radial-gradient( circle farthest-corner at 50.3% 44.5%,  rgba(116,147,179,1) 0%, rgba(62,83,104,1) 100.2% );
+}
 @font-face {
     font-family: 'Comfortaa';
-    src: url('static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
+    src: url('/static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
+}
+/* General Styles */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    background-image: var(--primary-color);
 }
 
-
-/* base/nav styles */
-/* Custom CSS for Sidebar and Layout */
 body {
-    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
     font-family: 'Comfortaa', sans-serif;
     font-size: 3.5rem;
-    color: #333;
+    color: var(--headers-dark);
+}
+.welcome-text {
+    color: var(--headers-light);
 }
 
-h2,
-h3 {
+h2, h3, h4, h5 {
     font-weight: bold;
+    color: var(--text-color-primary);
+}
+.container-fluid, .row, .content-container {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+.progress-bar {
+    background-image: var(--progress-bar-color);
+}
+/* balls style */
+/* Enhanced Balls Style */
+#balls-container {
+    min-height: 300px;
+    position: relative;
+    height: 300px; /* Fixed height for container */
+    overflow: hidden;
+    /* background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%); */
+    /* border-radius: 12px; */
+    margin: 2rem 0;
+    /* box-shadow: inset 0 0 20px rgba(0,0,0,0.1); */
 }
 
+.ball {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: absolute;
+    background: radial-gradient(circle at 30% 30%, 
+                rgba(255,255,255,0.9) 0%, 
+                var(--ball-color) 70%);
+    box-shadow: 
+        0 4px 8px rgba(0,0,0,0.2),
+        inset -5px -5px 10px rgba(0,0,0,0.1),
+        inset 2px 2px 5px rgba(255,255,255,0.5);
+    will-change: transform;
+    z-index: 1;
+}
+
+/* Shadow that follows each ball */
+.ball::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    width: 30px;
+    /* height: 10px; */
+    /* background: rgba(0,0,0,0.15); */
+    /* border-radius: 50%; */
+    transform: translateX(-50%) scale(0.8);
+    filter: blur(4px);
+    z-index: 0;
+    transition: all 0.3s ease;
+}
+
+/* CTA button styling */
+#balls-container .btn-success {
+    position: relative;
+    z-index: 10;
+    transform: translateY(-50%);
+    /* box-shadow: 0 4px 15px rgba(0,0,0,0.2); */
+    transition: all 0.3s ease;
+}
+
+#balls-container .btn-success:hover {
+    transform: translateY(-50%) scale(1.05);
+}
+.home {
+    background-image: var(--primary-color);
+    /* color: #f3f3f3; */
+    padding: 20px;
+}
+/* Footer Styles */
+.footer {
+    background-image: var(--primary-color);
+    color: var(--text-color-primary);
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.footer a {
+    color: var(--text-color-primary);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.social-icon {
+    font-size: 1.5rem;
+    margin: 0 10px;
+    color: var(--text-color-primary);
+    transition: 0.3s;
+}
+
+.social-icon:hover {
+    color: var(--nav-text-color);
+    transform: scale(1.1);
+}
+
+section {
+    min-height: 80vh; /* Each section takes at least 80% of the viewport height */
+    display: flex;
+    align-items: center; /* Centers content vertically */
+    justify-content: center; /* Centers content horizontally */
+}
+
+
+/* base/nav styles */
+/* Custom CSS for Sidebar and Layout */
+body,
+html {
+    overflow-x: hidden;
+    /* Prevents horizontal overflow */
+    width: 100%;
+    background-image: var(--primary-color);
+}
+
+
+
+
+/* Gradient background for cards and sections */
 .card {
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-image: var(--primary-color);
+    /* Gradient background */
     border: none;
+    /* Remove border */
+    border-radius: 10px;
+    /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* Subtle shadow */
+    color: var(--text-color-primary);
+    /* Dark text for better contrast */
 }
 
 .progress {
     height: 20px;
 }
 
+/* Gradient background for cards and sections */
 .list-group-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 1.1rem;
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    /* Gradient background */
+    border: none;
+    /* Remove border */
+    color: #333;
+    /* Dark text for better contrast */
     border-left: 5px solid #0d6efd;
 }
 
@@ -55,18 +213,27 @@ canvas {
 #sidebar-wrapper {
     width: 250px;
     transition: transform 0.3s ease;
-    position: fixed; /* Make sidebar fixed */
-    height: 100vh; /* Full height */
-    z-index: 1000; /* Ensure it's above other content */
-    background: linear-gradient(135deg, #eed991, #ccf7f4); /* Gradient background */
-    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-    color: white; /* White text for better contrast */
+    position: fixed;
+    /* Make sidebar fixed */
+    height: 100vh;
+    /* Full height */
+    z-index: 1000;
+    /* Ensure it's above other content */
+    /* background: linear-gradient(135deg, #eed991, #ccf7f4); */
+    background-image: var(--primary-color);
+    /* Gradient background */
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+    /* Shadow for depth */
+    color: white;
+    /* White text for better contrast */
     padding: 20px;
-    border-right: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    /* Subtle border */
 }
 
 #sidebar-wrapper .nav-link {
-    color: white; /* White text for links */
+    color: white;
+    /* White text for links */
     padding: 10px 15px;
     border-radius: 5px;
     margin-bottom: 5px;
@@ -74,35 +241,52 @@ canvas {
 }
 
 #sidebar-wrapper .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Light hover effect */
 }
 
 #sidebar-wrapper .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.2); /* Active link background */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Active link background */
 }
 
 #sidebar-wrapper .nav-link i {
-    margin-right: 10px; /* Space between icon and text */
+    margin-right: 10px;
+    /* Space between icon and text */
 }
 
 /* Navbar Styling */
 .navbar {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000; /* Ensure it's above other content */
-    background: linear-gradient(135deg, #eed991, #ccf7f4); /* Gradient background */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-    color: white; /* White text for better contrast */
+    left: 250px;
+    width: calc(100% - 250px);
+    z-index: 1000;
+    /* Ensure it's above other content */
+    background-image: var(--primary-color);
+    /* Gradient background */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    /* Shadow for depth */
+    color: white;
+    /* White text for better contrast */
+    transition: left 0.3s ease, width 0.3s ease;
+    overflow: visible;
+    /* Prevent scrolling within the navbar */
+}
+
+.navbar .navbar-nav .nav-item {
+    margin-right: 15px;
+    /* Add space between navbar items */
 }
 
 .navbar .navbar-nav .nav-link {
-    color: white; /* White text for links */
+    color: var(--nav-text-color) !important;
+    /* White text for links */
 }
 
 .navbar .navbar-toggler {
-    border-color: rgba(255, 255, 255, 0.1); /* Light border for toggler */
+    border-color: rgba(255, 255, 255, 0.1);
+    /* Light border for toggler */
 }
 
 .navbar .navbar-toggler-icon {
@@ -110,27 +294,34 @@ canvas {
 }
 
 .navbar .form-control {
-    background-color: rgba(255, 255, 255, 0.1); /* Light background for search */
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Light background for search */
     border: none;
-    color: white; /* White text for search */
+    color: var(--text-color-disabled);
+    /* White text for search */
 }
 
 .navbar .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.5); /* Light placeholder text */
+    color: rgba(255, 255, 255, 0.5);
+    /* Light placeholder text */
 }
 
 .navbar .btn-outline-success {
-    border-color: rgba(255, 255, 255, 0.5); /* Light border for button */
-    color: white; /* White text for button */
+    border-color: rgba(255, 255, 255, 0.5);
+    /* Light border for button */
+    color: white;
+    /* White text for button */
 }
 
 .navbar .btn-outline-success:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Light hover effect */
 }
 
 /* Adjust main content padding to account for fixed navbar */
 main {
-    padding-top: 60px; /* Adjust based on navbar height */
+    padding-top: 60px;
+    /* Adjust based on navbar height */
 }
 
 /* When sidebar is hidden */
@@ -160,7 +351,7 @@ main {
 }
 
 #sidebar-wrapper .nav-link {
-    color: #333;
+    color: var(--nav-text-color);
     padding: 10px 15px;
     border-radius: 5px;
     margin-bottom: 5px;
@@ -168,12 +359,11 @@ main {
 
 #sidebar-wrapper .nav-link:hover {
     background-color: #e9ecef;
-    color: #000;
+    color: var(--nav-text-color);
 }
 
 #sidebar-wrapper .nav-link.active {
-    background-color: #e9ecef;
-    color: #007bff;
+    color: var(--nav-text-color);
 }
 
 #sidebar-wrapper .nav-link i {
@@ -183,9 +373,15 @@ main {
 #mainContent {
     margin-left: 250px;
     transition: margin-left 0.3s ease;
+    overflow-x: hidden;
+    /* Prevents main content from causing overflow */
 }
 
 #mainContent.expanded {
+    margin-left: 0;
+}
+
+#mainContent.col-12 {
     margin-left: 0;
 }
 
@@ -217,10 +413,11 @@ main {
 
 /* Search Form Styling */
 #search-form {
-    background-color: #fff;
-    padding: 15px;
+    /* background-color: #fff; */
+    border-style: solid;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+    color: var(--text-color-primary);
 }
 
 #search-form .form-control,
@@ -233,14 +430,35 @@ main {
     position: relative;
 }
 
-#notificationCount {
-    position: absolute;
-    top: -10px;
-    right: -10px;
+#notificationDropdown .dropdown-menu {
+    position: absolute !important;
+    top: 120%; /* Move it further down */
+    right: 0;
+    width: 320px; /* Adjusted width */
+    z-index: 1050; /* Ensure it appears above other elements */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow for better visibility */
+    background-image: var(--primary-color); /* Ensure the background is white */
+    border: 1px solid #dee2e6; /* Add a border for better separation */
+    padding: 0.5rem; /* Add padding for better spacing */
 }
 
-.dropdown-menu {
-    width: 300px;
+#notificationDropdown .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: 10px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #fff transparent; /* Create a small arrow pointing up */
+}
+
+/* Navbar Item Spacing */
+.navbar-nav .nav-item {
+    margin-right: 25px; /* Increase spacing between navbar items */
+}
+
+.navbar-nav .nav-link {
+    padding: 10px 15px; /* Add more padding for better spacing */
 }
 
 /* Main Content Styling */
@@ -268,18 +486,21 @@ main {
 .kanban-column {
     width: 30%;
     padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f4f4f4;
+    border: none;
+    border-radius: 15px;
+    background-image: var(--primary-color);
 }
 
 .task-card {
-    background: white;
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
     cursor: grab;
 }
-
+.task-list:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 /* comment form styles */
 .suggestions-list {
     position: absolute;
@@ -330,20 +551,28 @@ main {
     max-width: 250px;
 }
 
+/* Gradient background for cards and sections */
 .custom-btn,
 .btn {
-    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    background: linear-gradient(135deg, var(--bg-btn-start), var(--bg-btn-end));
+    /* Gradient background for buttons */
     border: none;
-    color: white;
+    /* Remove border */
+    color: var(--text-color-primary);
+    /* Dark text for better contrast */
     padding: 10px 20px;
     font-weight: bold;
     transition: 0.3s;
     font-size: 1rem;
 }
 
+/* Gradient background for cards and sections */
 .custom-btn:hover,
 .btn:hover {
-    background: linear-gradient(135deg, #6610f2, #0d6efd);
+    background: linear-gradient(135deg, var(--nav-text-color), var(--primary-color));
+    /* Reverse gradient on hover */
+    color: #000;
+    /* Darker text on hover */
     transform: scale(1.05);
 }
 
@@ -382,7 +611,7 @@ main {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #343a40;
+    color: var(--text-color-primary);
 }
 
 #comment-list,
@@ -394,7 +623,7 @@ main {
 
 #comment-list li,
 #all-comments-list li {
-    background-color: #fff;
+    background-image: var(--primary-color);
     padding: 1rem;
     margin-bottom: 0.75rem;
     border-radius: 0.5rem;
@@ -415,7 +644,7 @@ main {
 
 #comment-list li em,
 #all-comments-list li em {
-    color: #6c757d;
+    color: var(--text-color-disabled);
     font-style: italic;
 }
 
@@ -490,7 +719,7 @@ main {
 }
 
 #all-comments-list li {
-    background-color: #f8f9fa;
+    background-image: var(--primary-color);
     padding: 1rem;
     margin-bottom: 0.75rem;
     border-radius: 0.5rem;
@@ -515,7 +744,14 @@ main {
 
 /* modal */
 .header {
-    background-color: #e0e0e0;
+    background: #E6DADA;
+    /* fallback for old browsers */
+    background-image: var(--secondary-color);
+    /* Chrome 10-25, Safari 5.1-6 */
+    /* background: linear-gradient(to right, #274046, #E6DADA); */
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: #f3f3f3;
+    border-radius: 15px;
 }
 
 .progress-bar-vertical {
@@ -526,15 +762,26 @@ main {
     margin: 0 auto;
 }
 
+/* Gradient background for cards and sections */
 .progress-bar-vertical .progress-bar {
+    background: linear-gradient(135deg, #e8bdf9, #d8ded6);
+    /* Gradient background for progress bars */
+    color: #333;
+    /* Dark text for better contrast */
     width: 100%;
     height: 0;
     transition: height 0.6s ease;
 }
 
+/* Gradient background for cards and sections */
 .card-header {
-    font-size: 1.25rem;
+    background-image: var(--primary-color);
+    /* Gradient background */
+    color: var(--text-color-primary);
+    /* Dark text for better contrast */
     font-weight: bold;
+    border-bottom: none;
+    /* Remove border */
 }
 
 .badge {
@@ -542,7 +789,7 @@ main {
 }
 
 .comments-section {
-    background-color: #f8f9fa;
+    background-image: var(--primary-color);
     padding: 1rem;
     border-radius: 0.5rem;
 }
@@ -574,4 +821,101 @@ main {
     float: right;
     font-size: 24px;
     cursor: pointer;
+}
+
+/* Notifications Modal */
+#notificationsModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+.notification-list-item {
+    background-image: var(--primary-color);
+}
+.modal-content {
+    background-image: var(--primary-color);
+    padding: 20px;
+    width: 400px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Ensure no horizontal scrolling */
+
+/* Ensure main content expands fully when sidebar is hidden */
+#mainContent {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+    overflow-x: hidden;
+    /* Prevents main content from causing overflow */
+}
+
+/* When sidebar is hidden */
+#mainContent.col-12 {
+    margin-left: 0;
+    /* Take full width */
+}
+
+/* Navbar default when sidebar is present */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 250px;
+    width: calc(100% - 250px);
+    transition: left 0.3s ease, width 0.3s ease;
+}
+
+/* Navbar expands when sidebar is hidden */
+.navbar.expanded {
+    left: 0;
+    width: 100%;
+}
+
+/* Prevent other elements from exceeding screen width */
+.container-fluid,
+.row,
+.content-container {
+    max-width: 100%;
+    overflow-x: hidden;
+    /* Ensures no content stretches beyond screen */
+}
+
+/* Handle responsiveness */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    #mainContent {
+        margin-left: 0;
+    }
+
+    .navbar {
+        left: 0;
+        width: 100%;
+    }
+}
+
+/* Prevent navbar from becoming scrollable */
+.navbar-collapse {
+    overflow: visible !important;
+    /* Ensure dropdowns do not affect navbar layout */
 }
