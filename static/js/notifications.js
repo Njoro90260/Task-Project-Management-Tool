@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const notifCount = document.getElementById("notif-count");
-    const notifList = document.getElementById("notif-items");
 
     function getCSRFToken() {
         return document.querySelector("[name=csrfmiddlewaretoken]").value;
@@ -10,17 +8,37 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/notifications/")
             .then(response => response.json())
             .then(data => {
-                notifList.innerHTML = "";
-                notifCount.textContent = data.count;
+                let notificationList = document.getElementById("notificationList");
+                let notificationCount = document.getElementById("notificationCount");
 
-                data.notifications.forEach(notif => {
-                    const li = document.createElement("li");
-                    li.textContent = notif.message;
-                    notifList.appendChild(li);
-                });
+                notifList.innerHTML = "";
+
+                if (data.count > 0) {
+                    notificationCount.forEach(notif => {
+                        let item = document.createElement("a");
+                        item.href = notif.url;
+                        item.className = "list-group-item list-group-item-action notification-list-item";
+                        item.innerHTML = `
+                         <div class="d-flex justify-content-between">
+                            <span>${notif.message}</span>
+                            <small class="text-muted">${notif.created_at}</small>
+                            <hr>
+                        </div>
+                        `;
+                        item.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            markAsRead(notif.id, notif.url);
+                        });
+                        notificationList.appendChild(item);
+                    });
+                } else {
+                    notificationCount.textContent = "0";
+                    notificationList.innerHTML = `<p class="text-muted text-center">No new notifications</p>`;
+                }
             })
             .catch(error => console.error("Error fetching notifications:", error));
     }
+    
 
     function markAsRead(notificationId, redirectUrl) {
         fetch(`/notifications/mark-as-read/${notificationId}/`, {
