@@ -1,6 +1,6 @@
 import { getCSRFToken } from './utils.js';
 
-export default function initNotifications() {
+function initNotifications() {
     const modal = document.getElementById("notificationsModal");
     const openBtn = document.getElementById("openNotifications");
     const closeBtn = document.getElementById("closeNotifications");
@@ -23,41 +23,47 @@ export default function initNotifications() {
     });
 
     function fetchNotifications() {
+        console.log('Attempting to fetch notifications...')
         fetch("/notifications/")
-        .then(response => response.json())
-        .then(data => {
-            let notificationList = document.getElementById("notificationList");
-            let notificationCount = document.getElementById("notificationCount");
+            .then(response => {
+                console.log('Notification response status:', response.status);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received notifications data:', data);
+                let notificationList = document.getElementById("notificationList");
+                let notificationCount = document.getElementById("notificationCount");
 
-            notificationList.innerHTML = "";
+                notificationList.innerHTML = "";
 
-            if (data.count > 0) {
-                notificationCount.textContent = data.count;
-                data.notifications.forEach(notif => {
-                    let item = document.createElement("a");
-                    item.href = notif.url;
-                    item.className = "list-group-item list-group-item-action notification-list-item";
-                    item.innerHTML = `
-                    <div class="d-flex justify-content-between">
-                        <span>${notif.message}</span>
-                        <small class="text-muted">${notif.created_at}</small>
-                        <hr>
-                    </div>
+                if (data.count > 0) {
+                    notificationCount.textContent = data.count;
+                    data.notifications.forEach(notif => {
+                        let item = document.createElement("a");
+                        item.href = notif.url;
+                        item.className = "list-group-item list-group-item-action notification-list-item";
+                        item.innerHTML = `
+                        <div class="d-flex justify-content-between">
+                            <span>${notif.message}</span>
+                            <small class="text-muted">${notif.created_at}</small>
+                            <hr>
+                        </div>
                     `;
-                    item.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        markAsRead(notif.id, notif.url);
+                        item.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            markAsRead(notif.id, notif.url);
+                        });
+                        notificationList.appendChild(item);
                     });
-                    notificationList.appendChild(item);
-                });
-            } else {
-                notificationCount.textContent = "0";
-                notificationList.innerHTML = `<p class="text-muted text-center">No new notifications</p>`;
-            }
-        })
-        .catch(error => {console.error("Error fetching notifications:", error)});
+                } else {
+                    notificationCount.textContent = "0";
+                    notificationList.innerHTML = `<p class="text-muted text-center">No new notifications</p>`;
+                }
+            })
+            .catch(error => console.error("Error fetching notifications:", error));
     }
-    
+
     function markAsRead(notificationId, redirectUrl) {
         fetch(`/notifications/mark-as-read/${notificationId}/`, {
             method: "POST",
@@ -67,7 +73,7 @@ export default function initNotifications() {
             }
         })
             .then(() => {
-                window.location.href = redirectUrl;  // Redirect to notification URL
+                window.location.href = redirectUrl;
             })
             .catch(error => console.error("Error marking notification as read:", error));
     }
@@ -86,10 +92,12 @@ export default function initNotifications() {
                 .catch(error => console.error("Error clearing notifications:", error));
         });
     }
-    // Initial fetch
-    fetchNotifications();
-    setInterval(fetchNotifications, 10000);
+
+    // Wrap the initialization calls in a tiny delay
+    setTimeout(() => {
+        fetchNotifications().catch(error => console.error("Initial fetch error:", error));
+        setInterval(fetchNotifications, 10000);
+    }, 0);
 }
 
-// Initialize when imported
-initNotifications();
+export default initNotifications;

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from projects.models import Task, Comment, Project
+from projects.models import Task, Comment, Project, ProjectRole
 from projects.utils import user_has_permission
 from django.contrib import messages
 from projects.forms import TaskForm
@@ -55,10 +55,13 @@ def kanban_board(request):
 
     user = request.user  
 
+    #Get projects where the user has a role
+    user_projects = ProjectRole.objects.filter(user=user).values_list('project', flat=True)
+
     # Group tasks by their status (Only assigned tasks)
-    task_todo = Task.objects.filter(status="To Do", assigned_to=user)
-    task_in_progress = Task.objects.filter(status="In Progress", assigned_to=user)
-    task_completed = Task.objects.filter(status="Completed", assigned_to=user)
+    task_todo = Task.objects.filter(status="To Do", project__in=user_projects)
+    task_in_progress = Task.objects.filter(status="In Progress", project__in=user_projects)
+    task_completed = Task.objects.filter(status="Completed", project__in=user_projects)
 
     context = {
         "task_todo": task_todo,

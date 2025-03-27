@@ -182,7 +182,7 @@
         <div class="comments-section">
             <h5>Recent Comments</h5>
             <ul id="comment-list">
-                {% for comment in visible_comments|slice:":5" %}
+                {% for comment in visible_comments|slice:":3" %}
                 <li class="mb-2">
                     <strong>{{ comment.author.username }}</strong> on <em>{{ comment.task.title }}</em>:
                     {{ comment.content }}
@@ -192,7 +192,7 @@
                 <li class="empty">No Comments to show.</li>
                 {% endfor %}
             </ul>
-            {% if visible_comments|length > 5 %}
+            {% if visible_comments|length > 3 %}
             <button id="show-more-comments" class="btn btn-primary mt-2">Show More</button>
             {% endif %}
         </div>

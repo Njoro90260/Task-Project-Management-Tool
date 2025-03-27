@@ -8,10 +8,20 @@ document.addEventListener("DOMContentLoaded", function () {
     globalFeatures.forEach(feature => {
         switch (feature) {
             case 'search':
-                import('./modules/search.js');
+                import('./modules/search.js').then(module => {
+                    console.log('Search module loaded');
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load search:', err);
+                });
                 break;
             case 'notifications':
-                import('./modules/notifications.js');
+                import('./modules/notifications.js').then(module => {
+                    console.log('Notifications module loaded');
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load notifications:', err);
+                });
                 break;
             case 'theme':
                 // Theme handling if needed
@@ -23,14 +33,27 @@ document.addEventListener("DOMContentLoaded", function () {
     if (page) {
         switch (page) {
             case 'dashboard':
-                import('./modules/comments.js');
+                import('./modules/comments.js').then(module => {
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load comments:', err);
+                });
                 break;
             case 'task-detail':
-                import('./modules/comments.js');
-                import('./modules/files.js');
+                import('./modules/comments.js').then(module => {
+                    module.default();
+                });
+                import('./modules/files.js').then(module => {
+                    module.default();
+                });
                 break;
             case 'kanban':
-                import('./modules/kanban.js');
+                import('./modules/kanban.js').then(module => {
+                    console.log('Kanban module loaded');
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load kanban:', err);
+                });
                 break;
             // Add more cases as needed
         }

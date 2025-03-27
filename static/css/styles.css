@@ -105,6 +105,28 @@ h2, h3, h4, h5 {
 #balls-container .btn-success:hover {
     transform: translateY(-50%) scale(1.05);
 }
+.comment-form-container {
+    background-color: #f8f9fa;
+    border-left: 4px solid #0d6efd;
+}
+.suggestion-box {
+    position: absolute;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+.suggestion-box li {
+    cursor: pointer;
+    padding: 8px 12px;
+}
+.suggestion-box li:hover {
+    background-color: #f8f9fa;
+}
+.comments-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
 .home {
     background-image: var(--primary-color);
     /* color: #f3f3f3; */

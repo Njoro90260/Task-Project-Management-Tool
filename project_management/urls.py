@@ -24,10 +24,12 @@ urlpatterns = [
     path('', include('projects.urls')),
     path('users/', include('Users.urls')),
     path('tasks/', include('tasks.urls')),
-    path('api/', include('projects.api_urls')),  # Dedicated API routes
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/', include('projects.api_urls')),
+]
+
+# Add static/media files AND debug_toolbar ONLY in development
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns = [path('__debug__/', include(debug_toolbar.urls))] + urlpatterns

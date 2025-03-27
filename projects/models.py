@@ -4,6 +4,8 @@ from Users.models import Role
 from django.utils.text import slugify
 import re
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from django.urls import reverse
 
 # Create your models here.
 user = settings.AUTH_USER_MODEL
@@ -66,6 +68,13 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.project.name}"
+    
+    @property
+    def is_overdue(self):
+        return self.due_date and self.due_date < timezone.now().date() and self.status != 'Completed'
+    
+    def get_absolute_url(self):
+        return reverse('tasks:task_detail', args=[str(self.id)])
     
 
 class Comment(models.Model):

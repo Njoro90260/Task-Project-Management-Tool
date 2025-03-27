@@ -1,57 +1,112 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const apiURL = "/api/tasks/";  // Ensure this matches your API path
-    const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+import { getCSRFToken } from './utils.js';
 
+class KanbanManager {
+  constructor() {
+    this.apiURL = "/api/tasks/";
+    this.csrfToken = getCSRFToken();
+    this.kanbanColumns = document.querySelectorAll(".kanban-column");
+    this.taskCards = document.querySelectorAll(".task-card");
+    
+    if (this.kanbanColumns.length && this.taskCards.length) {
+      this.init();
+    } else {
+      console.warn('Kanban elements not found');
+    }
+  }
+
+  init() {
+    this.setupDragAndDrop();
+    console.log('Kanban system initialized');
+  }
+
+  setupDragAndDrop() {
     // Add drag events to task cards
-    document.querySelectorAll(".task-card").forEach(task => {
-        task.addEventListener("dragstart", dragStart);
+    this.taskCards.forEach(task => {
+      task.addEventListener("dragstart", this.dragStart.bind(this));
+      task.setAttribute('draggable', 'true');
     });
 
     // Enable dropping on columns
-    document.querySelectorAll(".kanban-column").forEach(column => {
-        column.addEventListener("dragover", event => event.preventDefault());  // Allow drop
-        column.addEventListener("drop", dropTask);
+    this.kanbanColumns.forEach(column => {
+      column.addEventListener("dragover", this.dragOver.bind(this));
+      column.addEventListener("drop", this.dropTask.bind(this));
+    });
+  }
+
+  dragStart(event) {
+    event.dataTransfer.setData("taskId", event.currentTarget.dataset.taskId);
+    event.currentTarget.classList.add("dragging");
+  }
+
+  dragOver(event) {
+    event.preventDefault(); // Necessary to allow drop
+  }
+
+  async dropTask(event) {
+    event.preventDefault();
+    const taskId = event.dataTransfer.getData("taskId");
+    const newStatus = event.currentTarget.dataset.status;
+    const taskElement = document.querySelector(`[data-task-id='${taskId}']`);
+
+    // Visual update first for better UX
+    const taskList = event.currentTarget.querySelector(".task-list");
+    taskList.appendChild(taskElement);
+    taskElement.classList.remove("dragging");
+
+    try {
+      await this.updateTaskStatus(taskId, newStatus);
+      this.showAlert(`Task moved to ${newStatus}`, 'success');
+    } catch (error) {
+      console.error("Error updating task:", error);
+      this.showAlert("Failed to update task!", 'danger');
+      // Optional: Revert visual change if update fails
+    }
+  }
+
+  async updateTaskStatus(taskId, newStatus) {
+    const response = await fetch(`${this.apiURL}${taskId}/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": this.csrfToken
+      },
+      body: JSON.stringify({ status: newStatus })
     });
 
-    function dragStart(event) {
-        event.dataTransfer.setData("taskId", event.target.dataset.taskId);
-        event.target.classList.add("dragging");  // Optional: Add a class for styling
+    if (!response.ok) {
+      throw new Error(await response.text());
     }
 
-    function dropTask(event) {
-        event.preventDefault();  // Important: Allow the drop action
-        const taskId = event.dataTransfer.getData("taskId");
-        const newStatus = event.currentTarget.dataset.status;  // Get new column's status
+    return await response.json();
+  }
 
-        const taskElement = document.querySelector(`[data-task-id='${taskId}']`);
-        event.currentTarget.querySelector(".task-list").appendChild(taskElement);
-
-        // Remove dragging class (optional)
-        taskElement.classList.remove("dragging");
-
-        //  **Now update the database**
-        updateTaskStatus(taskId, newStatus);
+  showAlert(message, type) {
+    // Remove existing alerts if any
+    const existingAlert = document.querySelector('.kanban-alert');
+    if (existingAlert) {
+      existingAlert.remove();
     }
 
-    function updateTaskStatus(taskId, newStatus) {
-        fetch(`${apiURL}${taskId}/`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrfToken
-            },
-            body: JSON.stringify({ status: newStatus })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Failed to update task status");
-            }
-            return response.json();
-        })
-        .then(data => console.log("Task updated:", data))
-        .catch(error => {
-            console.error("Error updating task:", error);
-            alert("Failed to update task!");  // Alert user if update fails
-        });
-    }
-});
+    // Create and show new alert
+    const alert = document.createElement('div');
+    alert.className = `kanban-alert alert alert-${type} alert-dismissible fade show`;
+    alert.style.position = 'fixed';
+    alert.style.bottom = '20px';
+    alert.style.right = '20px';
+    alert.style.zIndex = '1000';
+    alert.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    // Auto-dismiss after 3 seconds
+    setTimeout(() => alert.remove(), 3000);
+  }
+}
+
+// Initialize when imported
+export default function initKanban() {
+  return new KanbanManager();
+}
