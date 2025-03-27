@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const page = body.getAttribute('data-page');
     const globalFeatures = body.getAttribute('data-global').split(' ');
 
+    if (document.getElementById("search-form")) {
+        import('./modules/search.js').then(module => {
+            module.default();
+        });
+    }
     // Load global features
     globalFeatures.forEach(feature => {
         switch (feature) {

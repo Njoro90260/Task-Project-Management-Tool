@@ -199,6 +199,7 @@ def search_api(request):
         projects = Project.objects.filter(Q(name__icontains=query) | Q(project_description__icontains=query))
         results["projects"] = [
             {
+                "id": proj.id,
                 "name": proj.name,
                 "description": proj.project_description,
                 "url": f"/projects/{proj.id}/"
@@ -210,6 +211,7 @@ def search_api(request):
         tasks = Task.objects.filter(Q(title__icontains=query) | Q(task_description__icontains=query))
         results["tasks"] = [
             {
+                "id": task.id,
                 "title": task.title,
                 "description": task.task_description,
                 "url": f"/tasks/{task.id}/"
@@ -232,4 +234,9 @@ def search_api(request):
     return JsonResponse(results)
 
 def search_view(request):
-    return render(request, "tasks/search.html")
+    query = request.GET.get('q', '')
+    return render(request, 'tasks/search_results.html', {'query': query})
+
+def search_results_view(request):
+    # Just renders the template - JavaScript handles the actual search
+    return render(request, 'tasks/search_results.html')
