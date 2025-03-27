@@ -60,6 +60,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error('Failed to load kanban:', err);
                 });
                 break;
+            case 'balls':
+                import('./modules/balls.js').then(module => {
+                    console.log('Balls module loaded');
+                    module.default(); // Call initBalls
+                }).catch(err => {
+                    console.error('Failed to load balls:', err);
+                });
+                break;
             // Add more cases as needed
         }
     }

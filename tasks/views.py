@@ -16,6 +16,7 @@ from django.contrib.auth import get_user_model
 
 
 # Create your views here.
+@login_required
 def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     project = task.project
@@ -177,6 +178,7 @@ def delete_task_file(request, file_id):
 
     return JsonResponse({"message": "File deleted successfully!"})
 
+@login_required
 def search_api(request):
     query = request.GET.get("q", "").strip()
     status = request.GET.get("status", "")

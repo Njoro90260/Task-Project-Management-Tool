@@ -223,6 +223,7 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
+@login_required
 def assign_role(request, project_id):
     project = get_object_or_404(Project, id=project_id)
 
@@ -252,6 +253,7 @@ def assign_role(request, project_id):
     }
     return render(request, "projects/assign_role.html", context)
 
+@login_required
 def assign_role_to_user(project, user, role, change_by):
     """Assigns a role to a user in a project and creates a notification."""
     # Remove any existing role for this user in the project
@@ -299,6 +301,7 @@ def add_user_and_assign_role(request, project_id):
     }
     return render(request, "projects/add_user_and_assign_role.html", context)
 
+@login_required
 def add_user_to_project(project, user, role, added_by):
     """Adds a user to a project, assigns a role, and creates a notification."""
     # Check if the user already has a role in the project
@@ -325,6 +328,7 @@ def add_user_to_project(project, user, role, added_by):
             notification_type="role_changed"
         )
 
+@login_required
 def get_notifications(request):
     """Fetch unread notifications for the logged-in user."""
     notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
