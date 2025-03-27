@@ -180,10 +180,44 @@
     <hr class="my-5">
 
     {% cache 3600 features_section %}
-    <!-- Features Section -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-4 display-5">Features</h2>
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4 display-5">Features</h2>
+        
+        <!-- Mobile Carousel (shows on small screens) -->
+        <div class="d-block d-md-none">
+            <div id="featuresCarouselMobile" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for feature in display_features %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="card h-100 text-center p-3 mx-2">
+                            {% if feature.svg_icon %}
+                            <div class="mb-3">
+                                {{ feature.svg_icon|safe }}
+                            </div>
+                            {% elif feature.icon_file %}
+                            <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto" width="80">
+                            {% endif %}
+                            <h3 class="h5">{{ feature.title }}</h3>
+                            <p class="mb-0">{{ feature.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#featuresCarouselMobile" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#featuresCarouselMobile" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Desktop Grid (shows on medium+ screens) -->
+        <div class="d-none d-md-block">
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 {% for feature in display_features %}
                 <div class="col">
@@ -193,8 +227,7 @@
                             {{ feature.svg_icon|safe }}
                         </div>
                         {% elif feature.icon_file %}
-                        <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto"
-                            width="80">
+                        <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto" width="80">
                         {% endif %}
                         <h3 class="h5">{{ feature.title }}</h3>
                         <p class="mb-0">{{ feature.description }}</p>
@@ -202,19 +235,51 @@
                 </div>
                 {% endfor %}
             </div>
-
-            {% if features|length > 3 %}
-            <div class="text-center mt-4">
-                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#featuresModal">Show
-                    More</button>
-            </div>
-            {% endif %}
         </div>
-    </section>
-    {% endcache %}
-    <hr class="my-5">
 
-    {% cache 3600 why_use_section %}
+        {% if features|length > 3 %}
+        <!-- Full Features Carousel (replaces modal) -->
+        <div class="mt-5">
+            <h3 class="text-center mb-4">All Features</h3>
+            <div id="featuresCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for feature in features %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="card h-100 text-center p-4 mx-auto" style="max-width: 500px;">
+                            {% if feature.svg_icon %}
+                            <div class="mb-3">
+                                {{ feature.svg_icon|safe }}
+                            </div>
+                            {% elif feature.icon_file %}
+                            <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto" width="100">
+                            {% endif %}
+                            <h3 class="h4">{{ feature.title }}</h3>
+                            <p class="mb-0">{{ feature.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#featuresCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#featuresCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                <div class="carousel-indicators position-static mt-3">
+                    {% for feature in features %}
+                    <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                            class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% endif %}" 
+                            aria-label="Slide {{ forloop.counter }}"></button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endcache %}
     <!-- Why Use This Tool Section -->
     <section class="py-5">
         <div class="container">
