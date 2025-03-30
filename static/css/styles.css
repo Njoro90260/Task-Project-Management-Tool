@@ -205,6 +205,28 @@ body.bg-dark .modal-footer {
     margin-top: 0.5rem;
 }
 
+/* Comments Modal Styles */
+#comments-modal .modal-content {
+    background-image: var(--primary-color);
+    color: var(--text-color-primary);
+}
+
+#comments-modal .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+#all-comments-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+#all-comments-list li {
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+}
+
 /* Task List Styles */
 .task-list {
     transition: all 0.3s ease;

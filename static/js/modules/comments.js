@@ -6,16 +6,16 @@ class CommentSystem {
     this.suggestionBox = document.getElementById("mention-suggestions");
     this.commentForm = document.getElementById("comment-form");
     this.commentList = document.getElementById("comment-list");
-    
+
     this.selectedIndex = -1;
     this.debounceTimeout = null;
-    
+
     this.init();
   }
 
   init() {
     if (!this.validateElements()) return;
-    
+
     this.setupEventListeners();
     this.setupModals();
   }
@@ -37,34 +37,18 @@ class CommentSystem {
     this.commentForm.addEventListener("submit", (event) => this.handleSubmit(event));
   }
 
+
   setupModals() {
     const showMoreButton = document.getElementById("show-more-comments");
     const modalComments = document.getElementById("comments-modal");
-    
+
     if (showMoreButton && modalComments) {
-        showMoreButton.addEventListener("click", () => {
-            const modal = new bootstrap.Modal(modalComments);
-            modal.show();
-        });
+      showMoreButton.addEventListener("click", () => {
+        const modal = new bootstrap.Modal(modalComments);
+        modal.show();
+      });
     }
-
-    // Close button
-    const closeButton = modalComments.querySelector(".close");
-    if (closeButton) {
-        closeButton.addEventListener("click", () => {
-            const modal = bootstrap.Modal.getInstance(modalComments);
-            modal.hide();
-        });
-    }
-
-    // Click outside to close
-    modalComments.addEventListener("click", (event) => {
-        if (event.target === modalComments) {
-            const modal = bootstrap.Modal.getInstance(modalComments);
-            modal.hide();
-        }
-    });
-}
+  }
 
   async handleKeyUp(event) {
     if (["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(event.key)) {
@@ -97,7 +81,7 @@ class CommentSystem {
 
   updateSuggestions(users, cursorPosition) {
     this.suggestionBox.innerHTML = "";
-    
+
     if (users.length === 0) {
       this.hideSuggestions();
       return;
@@ -198,7 +182,7 @@ class CommentSystem {
 
   addCommentToDOM(user, comment) {
     if (!this.commentList) return;
-    
+
     const newComment = document.createElement("li");
     newComment.innerHTML = `<strong>${user}:</strong> ${comment}`;
     this.commentList.appendChild(newComment);
