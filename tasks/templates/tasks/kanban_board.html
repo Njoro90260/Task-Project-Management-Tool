@@ -3,71 +3,118 @@
 
 {% block page %}kanban{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-3 text-center">Kanban Board</h2>
+<div class="container-fluid mt-3">
+    <h2 class="mb-3">Kanban Board</h2>
     
-    <!-- Task Creation Form -->
-    <form method="post" class="p-4 shadow rounded bg-white">
-        {% csrf_token %}
-    
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="{{ form.project.id_for_label }}" class="form-label">Project</label>
-                {{ form.project }}
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="{{ form.assigned_to.id_for_label }}" class="form-label">Assigned To</label>
-                {{ form.assigned_to }}
+    <!-- Collapsible Task Creation Form for mobile -->
+    <div class="d-md-none mb-3">
+        <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#taskFormCollapse" aria-expanded="false" aria-controls="taskFormCollapse">
+            Create New Task
+        </button>
+        <div class="collapse mt-2" id="taskFormCollapse">
+            <div class="card card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.project.id_for_label }}" class="form-label">Project</label>
+                        {{ form.project }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.assigned_to.id_for_label }}" class="form-label">Assigned To</label>
+                        {{ form.assigned_to }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.task_description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.task_description }}
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
+                            {{ form.priority }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date</label>
+                            {{ form.start_date }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="{{ form.due_date.id_for_label }}" class="form-label">Due Date</label>
+                            {{ form.due_date }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary w-100 mt-2">Submit Task</button>
+                </form>
             </div>
         </div>
+    </div>
     
-        <div class="mb-3">
-            <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
-            {{ form.title }}
-        </div>
-    
-        <div class="mb-3">
-            <label for="{{ form.task_description.id_for_label }}" class="form-label">Description</label>
-            {{ form.task_description }}
-        </div>
-    
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
-                {{ form.status }}
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
-                {{ form.priority }}
-            </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date</label>
-                {{ form.start_date }}
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="{{ form.due_date.id_for_label }}" class="form-label">Due Date</label>
-                {{ form.due_date }}
-            </div>
-        </div>
-    
-        <button type="submit" class="btn btn-primary w-100">Submit Task</button>
-    </form>
-    
-    <!-- Kanban Board -->
-    <div class="kanban-container row mt-4 g-3">
-        <div class="kanban-column col-12 col-md-4" data-status="To Do">
-            <div class="card">
-                <div class="card-header bg-warning text-dark text-center">
-                    <h4 class="card-title">To Do</h4>
+    <!-- Regular Task Creation Form for desktop -->
+    <div class="d-none d-md-block mb-4">
+        <form method="post" class="p-4 shadow rounded bg-white">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.project.id_for_label }}" class="form-label">Project</label>
+                    {{ form.project }}
                 </div>
-                <div class="card-body task-list">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.assigned_to.id_for_label }}" class="form-label">Assigned To</label>
+                    {{ form.assigned_to }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                {{ form.title }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.task_description.id_for_label }}" class="form-label">Description</label>
+                {{ form.task_description }}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                    {{ form.status }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
+                    {{ form.priority }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date</label>
+                    {{ form.start_date }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.due_date.id_for_label }}" class="form-label">Due Date</label>
+                    {{ form.due_date }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-outline-primary w-100 mt-2">Submit Task</button>
+        </form>
+    </div>
+
+    <!-- Kanban Board Columns -->
+    <div class="kanban-container row g-3">
+        <div class="kanban-column col-12 col-md-4" data-status="To Do">
+            <div class="card h-100">
+                <div class="card-header bg-warning">
+                    <h3 class="card-title h5 mb-0">To Do</h3>
+                </div>
+                <div class="card-body task-list p-2">
                     {% for task in task_todo %}
                     <div class="task-card card mb-2" draggable="true" data-task-id="{{ task.id }}">
-                        <div class="card-body">
-                            <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
+                        <div class="card-body p-2">
+                            <a href="{% url 'tasks:task_detail' task_id=task.id %}" class="d-block text-truncate">{{ task.title }}</a>
                         </div>
                     </div>
                     {% endfor %}
@@ -76,15 +123,15 @@
         </div>
 
         <div class="kanban-column col-12 col-md-4" data-status="In Progress">
-            <div class="card">
-                <div class="card-header bg-info text-white text-center">
-                    <h4 class="card-title">In Progress</h4>
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title h5 mb-0">In Progress</h3>
                 </div>
-                <div class="card-body task-list">
+                <div class="card-body task-list p-2">
                     {% for task in task_in_progress %}
                     <div class="task-card card mb-2" draggable="true" data-task-id="{{ task.id }}">
-                        <div class="card-body">
-                            <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
+                        <div class="card-body p-2">
+                            <a href="{% url 'tasks:task_detail' task_id=task.id %}" class="d-block text-truncate">{{ task.title }}</a>
                         </div>
                     </div>
                     {% endfor %}
@@ -93,15 +140,15 @@
         </div>
 
         <div class="kanban-column col-12 col-md-4" data-status="Completed">
-            <div class="card">
-                <div class="card-header bg-success text-white text-center">
-                    <h4 class="card-title">Completed</h4>
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h3 class="card-title h5 mb-0">Completed</h3>
                 </div>
-                <div class="card-body task-list">
+                <div class="card-body task-list p-2">
                     {% for task in task_completed %}
                     <div class="task-card card mb-2" draggable="true" data-task-id="{{ task.id }}">
-                        <div class="card-body">
-                            <a href="{% url 'tasks:task_detail' task_id=task.id %}">{{ task.title }}</a>
+                        <div class="card-body p-2">
+                            <a href="{% url 'tasks:task_detail' task_id=task.id %}" class="d-block text-truncate">{{ task.title }}</a>
                         </div>
                     </div>
                     {% endfor %}

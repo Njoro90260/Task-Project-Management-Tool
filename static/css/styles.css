@@ -12,6 +12,7 @@
     --secondary-color: radial-gradient(circle farthest-corner at 50.3% 44.5%, rgba(116,147,179,1) 0%, rgba(62,83,104,1) 100.2%);
     --modal-z-index: 1060;
 }
+
 @font-face {
     font-family: 'Comfortaa';
     src: url('/static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
@@ -34,7 +35,7 @@ body {
 /* Typography */
 h1 {
     font-size: 3.5rem;
-    color: var(--headers-dark);
+    color: var(--headers-light);
 }
 
 h2, h3, h4, h5 {
@@ -278,6 +279,58 @@ body.bg-dark .modal-footer {
     transform: scale(1.05);
 }
 
+/* Custom styles for better responsiveness */
+.hero-section {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, #a9bed1 0%, #49494d 100%);
+    color: var(--headers-light);
+}
+
+.svg-container {
+    max-width: 100%;
+    height: auto;
+    opacity: 0.3;
+    z-index: 1;
+}
+
+.feature-icon svg {
+    width: 80px;
+    height: 80px;
+}
+
+@media (max-width: 992px) {
+    .hero-section {
+        text-align: center;
+    }
+
+    .svg-container {
+        margin-bottom: 2rem;
+    }
+
+    .d-flex {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 0;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+    }
+
+    .feature-icon svg {
+        width: 60px;
+        height: 60px;
+    }
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .header .progress {
@@ -347,4 +400,7 @@ body.bg-dark .modal-footer {
         left: 0;
         width: 100%;
     }
+}
+.home {
+    padding: 20px;
 }

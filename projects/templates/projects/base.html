@@ -12,13 +12,6 @@
     <link rel="icon" type="image/png" href="{% static 'images/project-management.png' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <script type="importmap">
-        {
-          "imports": {
-            "gsap": "https://cdn.skypack.dev/gsap@3.11.4"
-          }
-        }
-        </script>
 </head>
 
 <body data-page="{% block page %}{% endblock %}" data-global="search notifications theme"
@@ -52,14 +45,13 @@
                             </li>
                             {% endif %}
                         </ul>
-
+                        {% if user.is_authenticated %}
                         <!-- Search Form -->
                         <form id="search-form" class="d-flex">
                             <input name="q" class="form-control me-2" type="search" placeholder="Search...">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
                         <!-- Notifications -->
-                        {% if user.is_authenticated %}
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link" href="#" id="openNotifications">
