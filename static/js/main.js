@@ -1,37 +1,79 @@
+// Main entry point that loads modules based on data-page attribute
 document.addEventListener("DOMContentLoaded", function () {
-    const page = document.body.getAttribute("data-page") || "";
-    const globalScripts = document.body.getAttribute("data-global") || "";
+    const body = document.body;
+    const page = body.getAttribute('data-page');
+    const globalFeatures = body.getAttribute('data-global').split(' ');
 
-    function loadScript(src) {
-        const script = document.createElement("script");
-        script.src = src;
-        document.head.appendChild(script);
+    if (document.getElementById("search-form")) {
+        import('./modules/search.js').then(module => {
+            module.default();
+        });
     }
-
-    // Load global scripts (search, notifications) if they exist
-    if (globalScripts.includes("search")) {
-        loadScript("/static/js/search.js");
-    }
-    if (globalScripts.includes("notifications")) {
-        loadScript("/static/js/notifications.js");
-    }
-
-    // Handle multiple values in `data-page`
-    const pages = page.split(" ");
-
-    pages.forEach(function (p) {
-        switch (p) {
-            case "comments":
-                loadScript("/static/js/comment.js");
+    // Load global features
+    globalFeatures.forEach(feature => {
+        switch (feature) {
+            case 'search':
+                import('./modules/search.js').then(module => {
+                    console.log('Search module loaded');
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load search:', err);
+                });
                 break;
-            case "file_upload":
-                loadScript("/static/js/file_upload.js");
+            case 'notifications':
+                import('./modules/notifications.js').then(module => {
+                    console.log('Notifications module loaded');
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load notifications:', err);
+                });
                 break;
-            case "kanban":
-                loadScript("/static/js/kanban.js");
+            case 'theme':
+                // Theme handling if needed
                 break;
-            default:
-                console.warn(`No specific script to load for "${p}"`);
         }
     });
+
+    // Load page-specific modules
+    if (page) {
+        switch (page) {
+            case 'dashboard':
+                import('./modules/comments.js').then(module => {
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load comments:', err);
+                });
+                import('./modules/dashboard.js').then(module => {
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load dashboard:', err);
+                });
+                break;
+            case 'task-detail':
+                import('./modules/comments.js').then(module => {
+                    module.default();
+                });
+                import('./modules/files.js').then(module => {
+                    module.default();
+                });
+                break;
+            case 'kanban':
+                import('./modules/kanban.js').then(module => {
+                    console.log('Kanban module loaded');
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load kanban:', err);
+                });
+                break;
+            case 'balls':
+                import('./modules/balls.js').then(module => {
+                    console.log('Balls module loaded');
+                    module.default(); // Call initBalls
+                }).catch(err => {
+                    console.error('Failed to load balls:', err);
+                });
+                break;
+            // Add more cases as needed
+        }
+    }
 });

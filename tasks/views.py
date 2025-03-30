@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from projects.models import Task, Comment, Project
+from projects.models import Task, Comment, Project, ProjectRole
 from projects.utils import user_has_permission
 from django.contrib import messages
 from projects.forms import TaskForm
@@ -16,6 +16,7 @@ from django.contrib.auth import get_user_model
 
 
 # Create your views here.
+@login_required
 def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     project = task.project
@@ -55,10 +56,13 @@ def kanban_board(request):
 
     user = request.user  
 
+    #Get projects where the user has a role
+    user_projects = ProjectRole.objects.filter(user=user).values_list('project', flat=True)
+
     # Group tasks by their status (Only assigned tasks)
-    task_todo = Task.objects.filter(status="To Do", assigned_to=user)
-    task_in_progress = Task.objects.filter(status="In Progress", assigned_to=user)
-    task_completed = Task.objects.filter(status="Completed", assigned_to=user)
+    task_todo = Task.objects.filter(status="To Do", project__in=user_projects)
+    task_in_progress = Task.objects.filter(status="In Progress", project__in=user_projects)
+    task_completed = Task.objects.filter(status="Completed", project__in=user_projects)
 
     context = {
         "task_todo": task_todo,
@@ -82,7 +86,8 @@ def task_detail(request, task_id):
         "task": task,
         "comments": comments,
         "files": files,
-        "can_delete_files": can_delete_files
+        "can_delete_files": can_delete_files,
+        "project": project
     }
     return render(request, "tasks/task_detail.html", context)
 
@@ -173,6 +178,7 @@ def delete_task_file(request, file_id):
 
     return JsonResponse({"message": "File deleted successfully!"})
 
+@login_required
 def search_api(request):
     query = request.GET.get("q", "").strip()
     status = request.GET.get("status", "")
@@ -195,6 +201,7 @@ def search_api(request):
         projects = Project.objects.filter(Q(name__icontains=query) | Q(project_description__icontains=query))
         results["projects"] = [
             {
+                "id": proj.id,
                 "name": proj.name,
                 "description": proj.project_description,
                 "url": f"/projects/{proj.id}/"
@@ -206,6 +213,7 @@ def search_api(request):
         tasks = Task.objects.filter(Q(title__icontains=query) | Q(task_description__icontains=query))
         results["tasks"] = [
             {
+                "id": task.id,
                 "title": task.title,
                 "description": task.task_description,
                 "url": f"/tasks/{task.id}/"
@@ -228,4 +236,9 @@ def search_api(request):
     return JsonResponse(results)
 
 def search_view(request):
-    return render(request, "tasks/search.html")
+    query = request.GET.get('q', '')
+    return render(request, 'tasks/search_results.html', {'query': query})
+
+def search_results_view(request):
+    # Just renders the template - JavaScript handles the actual search
+    return render(request, 'tasks/search_results.html')

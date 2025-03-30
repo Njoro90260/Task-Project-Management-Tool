@@ -1,47 +1,406 @@
-/* Kanban styles */
-.kanban-container {
+:root {
+    --primary-color: radial-gradient(circle farthest-corner at 10% 20%, rgba(234,249,249,0.67) 0.1%, rgba(239,249,251,0.63) 90.1%);
+    --text-color-primary: #0a0909;
+    --ball-color: rgba(234,249,249,0.67);
+    --text-color-disabled: #6c757d;
+    --nav-text-color: #333;
+    --bg-btn-start: #007bff;
+    --bg-btn-end: #00c2ff;
+    --headers-light: #f3f3f3;
+    --headers-dark: #0a0909;
+    --progress-bar-color: radial-gradient(circle farthest-corner at 10% 20%, rgba(120,170,0,1) 0%, rgba(200,227,121,1) 90%);
+    --secondary-color: radial-gradient(circle farthest-corner at 50.3% 44.5%, rgba(116,147,179,1) 0%, rgba(62,83,104,1) 100.2%);
+    --modal-z-index: 1060;
+}
+
+@font-face {
+    font-family: 'Comfortaa';
+    src: url('/static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
+}
+
+/* Base Styles */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    background-image: var(--primary-color);
+    font-family: 'Comfortaa', sans-serif;
+}
+
+body {
     display: flex;
-    gap: 20px;
-    padding: 20px;
+    flex-direction: column;
 }
 
-.kanban-column {
-    width: 30%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f4f4f4;
+/* Typography */
+h1 {
+    font-size: 3.5rem;
+    color: var(--headers-light);
 }
 
-.task-card {
-    background: white;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    cursor: grab;
+h2, h3, h4, h5 {
+    font-weight: bold;
+    color: var(--text-color-primary);
 }
-/* kanban styles */
 
-/* comment form styles */
-.suggestions-list {
-    position: absolute;
-    background: white;
-    border: 1px solid #ddd;
-    max-height: 150px;
+.welcome-text {
+    color: var(--headers-light);
+}
+
+/* Layout Components */
+.container-fluid, .row, .content-container {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Header Styles */
+.header {
+    background-image: var(--secondary-color);
+    color: #f3f3f3;
+    border-radius: 15px;
+}
+
+.header .progress {
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+/* Card Styles */
+.card {
+    background-image: var(--primary-color);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    color: var(--text-color-primary);
+}
+
+.card-header {
+    background-image: var(--primary-color);
+    color: var(--text-color-primary);
+    font-weight: bold;
+    border-bottom: none;
+}
+
+/* Progress Bars */
+.progress {
+    height: 20px;
+}
+
+.progress-bar {
+    background-image: var(--progress-bar-color);
+}
+
+.progress-bar-vertical {
+    width: 30px;
+    min-height: 200px;
+    display: flex;
+    align-items: flex-end;
+    margin: 0 auto;
+}
+
+/* Projects Section */
+#projects .card-body {
+    max-height: 500px;
     overflow-y: auto;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 200px;
-    display: none; /* Initially hidden */
 }
 
-.suggestions-list li {
-    padding: 5px 10px;
+/* Modal Styles */
+.modal {
+    z-index: var(--modal-z-index);
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    color: #000;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin: 10% auto;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+.close {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: bold;
     cursor: pointer;
 }
 
-.suggestions-list li:hover {
-    background: #f0f0f0;
+/* Dark Mode Support */
+body.bg-dark .modal-content {
+    background-color: #343a40;
+    color: #fff;
 }
 
-/* commment form styles */
+body.bg-dark .modal-header,
+body.bg-dark .modal-footer {
+    border-color: #495057;
+}
+
+/* Comments Section */
+.comments-section {
+    max-height: 400px;
+    overflow-y: auto;
+    background-image: var(--primary-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+#comment-list,
+#all-comments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#comment-list li,
+#all-comments-list li {
+    background-image: var(--primary-color);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#comment-list li:hover,
+#all-comments-list li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#comment-list li strong,
+#all-comments-list li strong {
+    color: #007bff;
+}
+
+#comment-list li em,
+#all-comments-list li em {
+    color: var(--text-color-disabled);
+    font-style: italic;
+}
+
+#comment-list li small,
+#all-comments-list li small {
+    display: block;
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Comments Modal Styles */
+#comments-modal .modal-content {
+    background-image: var(--primary-color);
+    color: var(--text-color-primary);
+}
+
+#comments-modal .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+#all-comments-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+#all-comments-list li {
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+}
+
+/* Task List Styles */
+.task-list {
+    transition: all 0.3s ease;
+}
+
+.task-list:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Chart Styles */
+#projectProgressChart {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto !important;
+}
+
+.chart-legend {
+    margin-top: 1rem;
+}
+
+.chart-legend div {
+    margin-bottom: 0.5rem;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+    border-radius: 3px;
+}
+
+/* Button Styles */
+.btn {
+    background: linear-gradient(135deg, var(--bg-btn-start), var(--bg-btn-end));
+    border: none;
+    color: var(--text-color-primary);
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, var(--nav-text-color), var(--primary-color));
+    color: #000;
+    transform: scale(1.05);
+}
+
+/* Custom styles for better responsiveness */
+.hero-section {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, #a9bed1 0%, #49494d 100%);
+    color: var(--headers-light);
+}
+
+.svg-container {
+    max-width: 100%;
+    height: auto;
+    opacity: 0.3;
+    z-index: 1;
+}
+
+.feature-icon svg {
+    width: 80px;
+    height: 80px;
+}
+
+@media (max-width: 992px) {
+    .hero-section {
+        text-align: center;
+    }
+
+    .svg-container {
+        margin-bottom: 2rem;
+    }
+
+    .d-flex {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 0;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+    }
+
+    .feature-icon svg {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .header .progress {
+        height: 100px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+    
+    #projects .card-body {
+        max-height: none;
+        overflow-y: visible;
+    }
+}
+
+/* Sidebar and Main Content Layout */
+#sidebar-wrapper {
+    width: 250px;
+    transition: transform 0.3s ease;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+    background-color: #f8f9fa;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-right: 1px solid #dee2e6;
+}
+
+#mainContent {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+    overflow-x: hidden;
+}
+
+#mainContent.col-12 {
+    margin-left: 0;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 250px;
+    width: calc(100% - 250px);
+    z-index: 1000;
+    transition: left 0.3s ease, width 0.3s ease;
+}
+
+.navbar.expanded {
+    left: 0;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    #mainContent {
+        margin-left: 0;
+    }
+    
+    .navbar {
+        left: 0;
+        width: 100%;
+    }
+}
+.home {
+    padding: 20px;
+}

@@ -3,6 +3,7 @@ from django.contrib.auth import login, get_user_model
 from django.contrib import messages
 from .forms import CustomUserCreationForm
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 def register(request):
     """Register a new user."""
@@ -24,12 +25,13 @@ def register(request):
                 messages.error(request, error)
 
     # Display a blank or invalid form.
-    context = {'form': form}
+    context = {'form': form, "show_sidebar": False}
     return render(request, 'registration/register.html', context)
 
 
 User = get_user_model()
 
+@login_required
 def search_users(request):
     query = request.GET.get('q', '')
     if query:

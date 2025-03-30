@@ -1,68 +1,184 @@
 {% extends 'projects/base.html' %}
 
-{% block title %}Task Detail{% endblock title %}
+{% block title %}{{ task.title }} | Task Detail{% endblock title %}
 
-{% block page %}comments file_upload{% endblock %}
+{% block page %}task-detail{% endblock %}
 
 {% block content %}
+<div class="container-lg mt-4">
+    <!-- Task Header Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h4 mb-0">{{ task.title }}</h1>
+                <span class="badge bg-light text-dark">{{ task.get_status_display }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <h2 class="h5 text-muted">Project: {{ project.name }}</h2>
+                <p class="lead">{{ task.task_description }}</p>
+            </div>
 
-<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-<div class="container">
-    <h1>{{ task.title }}</h1>
-    <p>{{ task.task_description }}</p>
-    <p><strong>Assigned to:</strong> {{ task.assigned_to.username }}</p>
-    <p><strong>Created at:</strong> {{ task.created_at }}</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="material-icons-outlined me-2">person</span>
+                        <div>
+                            <small class="text-muted">Assigned to</small>
+                            <div class="fw-bold">
+                                {% if task.assigned_to %}
+                                    {{ task.assigned_to.get_full_name|default:task.assigned_to.username }}
+                                {% else %}
+                                    Unassigned
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="material-icons-outlined me-2">calendar_today</span>
+                        <div>
+                            <small class="text-muted">Created</small>
+                            <div class="fw-bold">{{ task.created_at|date:"F j, Y, g:i a" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <hr>
+            {% if task.due_date %}
+            <div class="alert alert-{% if task.is_overdue %}danger{% else %}info{% endif %} mt-3">
+                <div class="d-flex align-items-center">
+                    <span class="material-icons-outlined me-2">event</span>
+                    <div>
+                        <strong>Due Date:</strong> 
+                        {{ task.due_date|date:"F j, Y" }}
+                        {% if task.is_overdue %}
+                        <span class="badge bg-danger ms-2">Overdue</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 
-    <h3>Comments</h3>
-    <form id="comment-form" data-comment-id="{{ task.id }}">
-        {% csrf_token %}
-        <textarea id="comment-text" placeholder="Add a comment..." required>@</textarea>
-        <ul id="mention-suggestions" class="suggestion-box"></ul>
-        <!-- suggestion-list -->
-        <button type="submit">Post Comment</button>
-    </form>
-</form>
+    <!-- Comments Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h2 class="h5 mb-0">Comments</h2>
+        </div>
+        <div class="card-body">
+            <div class="comment-form-container mb-4 p-3 bg-light rounded">
+                <form id="comment-form" data-comment-id="{{ task.id }}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="comment-text" class="form-label">Add your comment</label>
+                        <textarea id="comment-text" class="form-control" rows="3" 
+                                  placeholder="Type @ to mention someone..." required></textarea>
+                        <div id="mention-suggestions" class="suggestion-box list-group mt-2 d-none"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="material-icons-outlined align-middle">send</span>
+                        Post Comment
+                    </button>
+                </form>
+            </div>
 
-    <form id="file-upload-form" enctype="multipart/form-data" data-url="{% url 'tasks:upload_task_file' task.id %}">
-        {% csrf_token %}
-        <input type="file" id="file-input" name="file" required>
-        <button type="submit">Upload File</button>
-    </form>
+            <div id="comment-list" class="comments-list">
+                {% for comment in comments %}
+                <div class="comment mb-3 p-3 bg-white rounded border">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>{{ comment.author.get_full_name|default:comment.author.username }}</strong>
+                        <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                    </div>
+                    <p class="mb-0">{{ comment.content }}</p>
+                </div>
+                {% empty %}
+                <div class="text-center py-4 text-muted">
+                    <span class="material-icons-outlined display-4">forum</span>
+                    <p class="mt-2">No comments yet. Be the first to comment!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-    <ul id="file-list">
-        {% for file in task.files.all %}
-            <li>
-                {% if file.file.url|lower|slice:"-3:" == "jpg" or file.file.url|lower|slice:"-3:" == "png" or file.file.url|lower|slice:"-4:" == "jpeg" %}
-                    <img src="{{ file.file.url }}" alt="Uploaded Image" style="width: 100px; border-radius: 5px;">
-                {% endif %}
-                
-                {% if file.file.url|lower|slice:"-3:" == "mp4" or file.file.url|lower|slice:"-3:" == "mov" or file.file.url|lower|slice:"-3:" == "avi" %}
-                    <video src="{{ file.file.url }}" controls style="width: 150px;"></video>
-                {% endif %}
-    
-                {% if file.file.url|lower|slice:"-3:" == "pdf" %}
-                    <iframe src="{{ file.file.url }}" width="150px" height="200px"></iframe>
-                {% endif %}
-    
-                {% if not file.file.url|lower|slice:"-3:" in "jpgpngjpegmp4movavipdf" %}
-                    <a href="{{ file.file.url }}" download>{{ file.file.name }}</a>
-                {% endif %}
+    <!-- File Upload Section -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h2 class="h5 mb-0">Upload Files</h2>
+                </div>
+                <div class="card-body">
+                    <form id="file-upload-form" enctype="multipart/form-data" 
+                          data-url="{% url 'tasks:upload_task_file' task.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="file-input" class="form-label">Select file to upload</label>
+                            <input type="file" id="file-input" name="file" class="form-control" required>
+                            <div class="form-text">Max file size: 10MB</div>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <span class="material-icons-outlined align-middle">upload</span>
+                            Upload
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-                {% if file.uploaded_by == request.user or request.user.is_superuser %}
-                <button class="delete-file-btn" data-file-id="{{ file.id }}" style="color: red; margin-left: 10px;">
-                    ❌ Delete
-                </button>
-                {% endif %}
-
-            </li>
-        {% empty %}
-            <li>No files uploaded yet.</li>
-        {% endfor %}
-    </ul>
-    
-
-
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0">Attachments ({{ files|length }})</h2>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <ul id="file-list" class="list-group list-group-flush">
+                        {% for file in files %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    {% if file.file.url|lower|slice:"-3:" == "pdf" %}
+                                    <span class="material-icons-outlined text-danger me-2">picture_as_pdf</span>
+                                    {% elif file.file.url|lower|slice:"-3:" == "doc" or file.file.url|lower|slice:"-4:" == "docx" %}
+                                    <span class="material-icons-outlined text-primary me-2">description</span>
+                                    {% elif file.file.url|lower|slice:"-3:" == "xls" or file.file.url|lower|slice:"-4:" == "xlsx" %}
+                                    <span class="material-icons-outlined text-success me-2">grid_on</span>
+                                    {% else %}
+                                    <span class="material-icons-outlined me-2">insert_drive_file</span>
+                                    {% endif %}
+                                    <div>
+                                        <a href="{{ file.file.url }}" target="_blank" class="text-decoration-none">
+                                            {{ file.file.name|truncatechars:30 }}
+                                        </a>
+                                        <div class="text-muted small">
+                                            Uploaded by {{ file.uploaded_by.username }} • {{ file.uploaded_at|timesince }} ago
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if can_delete_files %}
+                                <button class="delete-file-btn btn btn-sm btn-outline-danger" 
+                                        data-file-id="{{ file.id }}" title="Delete file">
+                                    <span class="material-icons-outlined">delete</span>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-center py-4 text-muted">
+                            <span class="material-icons-outlined display-4">folder_open</span>
+                            <p class="mt-2">No files uploaded yet</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}

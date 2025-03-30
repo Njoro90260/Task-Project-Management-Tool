@@ -1,14 +1,108 @@
-{% extends "projects/base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block page_header %}
-<h2>Login to your account</h2>
-{% endblock page_header %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+            padding: 10px 0;
+        }
+        @media (max-width: 576px) {
+            .login-container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+            body {
+                background-color: #fff;
+            }
+        }
+    </style>
+</head>
 
-{% block content %}
-<form action="{% url 'Users:login' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button name="submit">Login</button>
-    <input type="hidden" name="next" value="{% url 'projects:dashboard' %}"/>
-</form>
-{% endblock content %}
+<body class="d-flex align-items-center min-vh-100 py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="login-container p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Login to your account</h2>
+                        <p class="text-muted">Enter your credentials to access your dashboard</p>
+                    </div>
+
+                    {% if messages %}
+                    <div class="mb-4">
+                        <ul class="messages list-group">
+                            {% for message in messages %}
+                            <li class="list-group-item {% if message.tags %} {{ message.tags }}{% endif %}">
+                                {{ message }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <form action="{% url 'Users:login' %}" method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                {{ form.username }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                {{ form.password }}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </button>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            <a href="#" class="text-decoration-none">Forgot password?</a>
+                        </div>
+
+                        <input type="hidden" name="next" value="{% url 'projects:dashboard' %}" />
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted">Don't have an account? 
+                            <a href="{% url 'Users:register' %}" class="text-decoration-none fw-bold">Signup</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% bootstrap_javascript %}
+</body>
+</html>
