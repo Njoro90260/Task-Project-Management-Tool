@@ -180,24 +180,58 @@
     <hr class="my-5">
 
     {% cache 3600 features_section %}
-<!-- Features Section -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-4 display-5">Features</h2>
-        
-        <!-- Mobile Carousel (shows on small screens) -->
-        <div class="d-block d-md-none">
-            <div id="featuresCarouselMobile" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4 display-5">Features</h2>
+
+            <!-- Mobile Carousel (shows on small screens) -->
+            <div class="d-block d-md-none">
+                <div id="featuresCarouselMobile" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for feature in display_features %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="card h-100 text-center p-3 mx-2">
+                                {% if feature.svg_icon %}
+                                <div class="mb-3">
+                                    {{ feature.svg_icon|safe }}
+                                </div>
+                                {% elif feature.icon_file %}
+                                <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto"
+                                    width="80">
+                                {% endif %}
+                                <h3 class="h5">{{ feature.title }}</h3>
+                                <p class="mb-0">{{ feature.description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#featuresCarouselMobile"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#featuresCarouselMobile"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Desktop Grid (shows on medium+ screens) -->
+            <div class="d-none d-md-block">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
                     {% for feature in display_features %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <div class="card h-100 text-center p-3 mx-2">
+                    <div class="col">
+                        <div class="card h-100 text-center p-3">
                             {% if feature.svg_icon %}
                             <div class="mb-3">
                                 {{ feature.svg_icon|safe }}
                             </div>
                             {% elif feature.icon_file %}
-                            <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto" width="80">
+                            <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto"
+                                width="80">
                             {% endif %}
                             <h3 class="h5">{{ feature.title }}</h3>
                             <p class="mb-0">{{ feature.description }}</p>
@@ -205,81 +239,55 @@
                     </div>
                     {% endfor %}
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#featuresCarouselMobile" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#featuresCarouselMobile" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
             </div>
-        </div>
-        
-        <!-- Desktop Grid (shows on medium+ screens) -->
-        <div class="d-none d-md-block">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                {% for feature in display_features %}
-                <div class="col">
-                    <div class="card h-100 text-center p-3">
-                        {% if feature.svg_icon %}
-                        <div class="mb-3">
-                            {{ feature.svg_icon|safe }}
-                        </div>
-                        {% elif feature.icon_file %}
-                        <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto" width="80">
-                        {% endif %}
-                        <h3 class="h5">{{ feature.title }}</h3>
-                        <p class="mb-0">{{ feature.description }}</p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
 
-        {% if features|length > 3 %}
-        <!-- Full Features Carousel (replaces modal) -->
-        <div class="mt-5">
-            <h3 class="text-center mb-4">All Features</h3>
-            <div id="featuresCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    {% for feature in features %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <div class="card h-100 text-center p-4 mx-auto" style="max-width: 500px;">
-                            {% if feature.svg_icon %}
-                            <div class="mb-3">
-                                {{ feature.svg_icon|safe }}
+            {% if features|length > 3 %}
+            <!-- Full Features Carousel (replaces modal) -->
+            <div class="mt-5">
+                <h3 class="text-center mb-4">All Features</h3>
+                <div id="featuresCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for feature in features %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="card h-100 text-center p-4 mx-auto" style="max-width: 500px;">
+                                {% if feature.svg_icon %}
+                                <div class="mb-3">
+                                    {{ feature.svg_icon|safe }}
+                                </div>
+                                {% elif feature.icon_file %}
+                                <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto"
+                                    width="100">
+                                {% endif %}
+                                <h3 class="h4">{{ feature.title }}</h3>
+                                <p class="mb-0">{{ feature.description }}</p>
                             </div>
-                            {% elif feature.icon_file %}
-                            <img src="{{ feature.icon_file.url }}" alt="{{ feature.title }}" class="mb-3 mx-auto" width="100">
-                            {% endif %}
-                            <h3 class="h4">{{ feature.title }}</h3>
-                            <p class="mb-0">{{ feature.description }}</p>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#featuresCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#featuresCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-                <div class="carousel-indicators position-static mt-3">
-                    {% for feature in features %}
-                    <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
-                            class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% endif %}" 
+                    <button class="carousel-control-prev" type="button" data-bs-target="#featuresCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#featuresCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    <div class="carousel-indicators position-static mt-3">
+                        {% for feature in features %}
+                        <button type="button" data-bs-target="#featuresCarousel"
+                            data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"
+                            aria-current="{% if forloop.first %}true{% endif %}"
                             aria-label="Slide {{ forloop.counter }}"></button>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
+            {% endif %}
         </div>
-        {% endif %}
-    </div>
-</section>
-{% endcache %}
+    </section>
+    {% endcache %}
     <!-- Why Use This Tool Section -->
     <section class="py-5">
         <div class="container">
@@ -295,7 +303,10 @@
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Intuitive UI</h5>
                             <p class="text-muted">
-                                Enjoy a seamless experience with our clean, user-friendly interface designed for effortless navigation. Whether you're a beginner or a pro, our intuitive layout ensures you find what you need quickly—no learning curve required. Simplicity meets functionality, making every interaction smooth and enjoyable.
+                                Enjoy a seamless experience with our clean, user-friendly interface designed for
+                                effortless navigation. Whether you're a beginner or a pro, our intuitive layout ensures
+                                you find what you need quickly—no learning curve required. Simplicity meets
+                                functionality, making every interaction smooth and enjoyable.
                             </p>
                         </div>
                     </div>
@@ -310,7 +321,10 @@
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Efficient Collaboration</h5>
-                            <p class="text-muted">Work smarter with tools designed to streamline teamwork. Share ideas, assign tasks, and track progress in real-time—all in one place. Whether your team is remote or in-office, our platform keeps everyone aligned, reducing delays and boosting productivity. Collaboration made simple, effective, and hassle-free.</p>
+                            <p class="text-muted">Work smarter with tools designed to streamline teamwork. Share ideas,
+                                assign tasks, and track progress in real-time—all in one place. Whether your team is
+                                remote or in-office, our platform keeps everyone aligned, reducing delays and boosting
+                                productivity. Collaboration made simple, effective, and hassle-free.</p>
                         </div>
                     </div>
                 </div>
@@ -324,7 +338,10 @@
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Real-time Updates</h5>
-                            <p class="text-muted">Stay in sync with instant notifications and live data refreshes. No more manual reloading or outdated info—our system keeps everything current, so you always have the latest changes at your fingertips. Perfect for fast-paced teams who need accuracy without the wait.</p>
+                            <p class="text-muted">Stay in sync with instant notifications and live data refreshes. No
+                                more manual reloading or outdated info—our system keeps everything current, so you
+                                always have the latest changes at your fingertips. Perfect for fast-paced teams who need
+                                accuracy without the wait.</p>
                         </div>
                     </div>
                 </div>
@@ -338,7 +355,10 @@
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ No Unnecessary Complexity</h5>
-                            <p class="text-muted">We cut through the clutter so you don't have to. Our platform strips away bloated features and confusing workflows, delivering only what you need—clean, purposeful, and lightning-fast. Work smarter, not harder, with tools designed for clarity and results.</p>
+                            <p class="text-muted">We cut through the clutter so you don't have to. Our platform strips
+                                away bloated features and confusing workflows, delivering only what you need—clean,
+                                purposeful, and lightning-fast. Work smarter, not harder, with tools designed for
+                                clarity and results.</p>
                         </div>
                     </div>
                 </div>
@@ -352,7 +372,10 @@
                         </div>
                         <div class="col-md-6"> <!-- Reduced from col-md-7 -->
                             <h5>✅ Role-based Permissions</h5>
-                            <p class="text-muted">Control access effortlessly with customizable permission levels tailored to your team structure. Admins get full oversight, managers maintain workflows, and contributors focus on their tasks—all without unnecessary exposure. Security meets simplicity, so everyone works smarter within their scope.</p>
+                            <p class="text-muted">Control access effortlessly with customizable permission levels
+                                tailored to your team structure. Admins get full oversight, managers maintain workflows,
+                                and contributors focus on their tasks—all without unnecessary exposure. Security meets
+                                simplicity, so everyone works smarter within their scope.</p>
                         </div>
                     </div>
                 </div>

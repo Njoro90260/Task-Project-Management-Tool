@@ -74,8 +74,7 @@
                 <div class="card mb-2 border-danger h-auto p-2 task-list">
                     <div class="card-body p-2">
                         <h6 class="card-title mb-1">
-                            <a href="{% url 'tasks:task_detail' task_id=task.id %}" class="text-danger">{{ task.title
-                                }}</a>
+                            <a href="{% url 'tasks:task_detail' task_id=task.id %}" class="text-danger">{{ task.title }}</a>
                         </h6>
                         <p class="card-text text-muted mb-1">Due: {{ task.due_date }}</p>
                         <a href="{% url 'tasks:edit_task' task_id=task.id %}" class="btn btn-warning btn-sm">Edit</a>
@@ -228,41 +227,6 @@
     </div>
 </div>
 
-<!-- Progress Bars Section -->
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">Task Progress</div>
-            <div class="card-body">
-                <h5>Completed Tasks</h5>
-                <div class="progress mb-3">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ completed_percentage }}%"
-                        aria-valuenow="{{ completed_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                        {{ completed_percentage|floatformat:2 }}%
-                    </div>
-                </div>
-
-                <h5>In Progress Tasks</h5>
-                <div class="progress mb-3">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ in_progress_percentage }}%"
-                        aria-valuenow="{{ in_progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                        {{ in_progress_percentage|floatformat:2 }}%
-                    </div>
-                </div>
-
-                <h5>Not Started Tasks</h5>
-                <div class="progress">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ not_started_percentage }}%"
-                        aria-valuenow="{{ not_started_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                        {{ not_started_percentage|floatformat:2 }}%
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <!-- Projects Section -->
 <div class="row mt-4">
@@ -337,44 +301,69 @@
 
 <!-- Projects Modal -->
 <div id="projects-modal" class="modal fade" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">All Projects</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row">
+            <div class="modal-body p-4">
+                {% if user_projects %}
+                <div class="row g-4">
                     {% for project in user_projects %}
-                    <div class="col-md-6 mb-3">
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <a href="{% url 'projects:project_detail' project_id=project.id %}">
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <a href="{% url 'projects:project_detail' project_id=project.id %}" class="text-white text-decoration-none">
                                     <strong>{{ project.name }}</strong>
                                 </a>
+                                <span class="badge bg-light text-primary">{{ project.get_status_display }}</span>
                             </div>
-                            <div class="card-body text-center">
-                                <div class="progress mb-3">
-                                    <div class="progress-bar" role="progressbar"
-                                        style="width: {{ project_progress|get_item:project.id|floatformat:0 }}%"
-                                        aria-valuenow="{{ project_progress|get_item:project.id|floatformat:0 }}"
-                                        aria-valuemin="0" aria-valuemax="100">
+                            <div class="card-body">
+                                <p class="card-text text-muted mb-3">{{ project.description|truncatechars:100 }}</p>
+                                
+                                <div class="progress mb-4" style="height: 20px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar"
+                                         style="width: {{ project_progress|get_item:project.id|floatformat:0 }}%;"
+                                         aria-valuenow="{{ project_progress|get_item:project.id|floatformat:0 }}"
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
                                         {{ project_progress|get_item:project.id|floatformat:0 }}%
                                     </div>
                                 </div>
-                                <a href="{% url 'projects:assign_role' project.id %}"
-                                    class="btn btn-sm btn-primary">Manage</a>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        Last updated: {{ project.updated_at|date:"M d, Y" }}
+                                    </small>
+                                    <a href="{% url 'projects:assign_role' project.id %}"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-cog me-1"></i> Manage
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-folder-open fa-4x text-muted mb-4"></i>
+                    <h5 class="text-muted">No projects found</h5>
+                    <p class="text-muted">You don't have any projects yet. Create one to get started!</p>
+                    <a href="{% url 'projects:create_project' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create Project
+                    </a>
+                </div>
+                {% endif %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock content %}

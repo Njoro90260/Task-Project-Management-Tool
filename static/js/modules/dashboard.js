@@ -3,15 +3,18 @@ export default function initDashboard() {
     if (typeof Chart === 'undefined') {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-        script.onload = initializeChart;
+        script.onload = () => {
+            initializeChart();
+            initializeModals();
+        };
         script.onerror = () => console.error('Failed to load Chart.js');
         document.head.appendChild(script);
     } else {
         initializeChart();
+        initializeModals();
     }
 
     function initializeChart() {
-        // Initialize the doughnut chart
         const ctx = document.getElementById('projectProgressChart');
         if (ctx && typeof Chart !== 'undefined') {
             const completed = parseFloat(ctx.dataset.completed || '0');
@@ -25,9 +28,9 @@ export default function initDashboard() {
                     datasets: [{
                         data: [completed, inProgress, notStarted],
                         backgroundColor: [
-                            '#28a745', // green
-                            '#ffc107', // yellow
-                            '#dc3545'  // red
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
                         ],
                         borderWidth: 1
                     }]
@@ -50,20 +53,20 @@ export default function initDashboard() {
                     cutout: '70%'
                 }
             });
-        } else {
-            console.error('Chart.js not available or canvas element not found');
         }
     }
 
-    // Show all projects modal (independent of Chart.js)
-    const showAllBtn = document.getElementById('show-all-projects');
-    if (showAllBtn) {
-        showAllBtn.addEventListener('click', () => {
-            const modalEl = new bootstrap.Modal(document.getElementById('projects-modal'));
-            if (modalEl) {
-                const modal = new bootstrap.Modal(modalEl);
-                modal.show();
-            }
-        });
+    function initializeModals() {
+        // Projects modal
+        const showAllProjectsBtn = document.getElementById('show-all-projects');
+        if (showAllProjectsBtn) {
+            showAllProjectsBtn.addEventListener('click', () => {
+                const modalEl = document.getElementById('projects-modal');
+                if (modalEl) {
+                    const modal = new bootstrap.Modal(modalEl);
+                    modal.show();
+                }
+            });
+        }
     }
 }
