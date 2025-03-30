@@ -48,6 +48,42 @@ h2, h3, h4, h5 {
 .progress-bar {
     background-image: var(--progress-bar-color);
 }
+
+/* Projects section height fix */
+#projects .card-body {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Progress bars in header */
+.header .progress {
+    height: 150px !important; /* Reduced from 200px */
+    margin-bottom: 10px;
+}
+
+/* Make project cards in modal scrollable */
+#projects-modal .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+/* Modal styling */
+.modal {
+    z-index: 1060; /* Above Bootstrap's navbar */
+}
+
+.comments-section {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.task-list {
+    transition: all 0.3s ease;
+}
+
+.task-list:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
 /* balls style */
 /* Enhanced Balls Style */
 #balls-container {

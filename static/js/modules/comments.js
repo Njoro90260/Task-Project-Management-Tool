@@ -40,26 +40,31 @@ class CommentSystem {
   setupModals() {
     const showMoreButton = document.getElementById("show-more-comments");
     const modalComments = document.getElementById("comments-modal");
-    const closeButton = document.querySelector(".close");
-
+    
     if (showMoreButton) {
-      showMoreButton.addEventListener("click", () => {
-        modalComments.style.display = "block";
-      });
+        showMoreButton.addEventListener("click", () => {
+            const modal = new bootstrap.Modal(modalComments);
+            modal.show();
+        });
     }
 
+    // Close button
+    const closeButton = modalComments.querySelector(".close");
     if (closeButton) {
-      closeButton.addEventListener("click", () => {
-        modalComments.style.display = "none";
-      });
+        closeButton.addEventListener("click", () => {
+            const modal = bootstrap.Modal.getInstance(modalComments);
+            modal.hide();
+        });
     }
 
-    window.addEventListener("click", (event) => {
-      if (event.target === modalComments) {
-        modalComments.style.display = "none";
-      }
+    // Click outside to close
+    modalComments.addEventListener("click", (event) => {
+        if (event.target === modalComments) {
+            const modal = bootstrap.Modal.getInstance(modalComments);
+            modal.hide();
+        }
     });
-  }
+}
 
   async handleKeyUp(event) {
     if (["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(event.key)) {

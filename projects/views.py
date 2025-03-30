@@ -110,7 +110,7 @@ def dashboard(request):
         'user_tasks': user_tasks,
         'project_progress': project_progress,
         'overdue_tasks': overdue_tasks,
-        'upcomig_tasks': upcoming_tasks,
+        'upcoming_tasks': upcoming_tasks,
         'high_priority_tasks': high_priority_tasks,
         'medium_priority_tasks': medium_priority_tasks,
         'low_priority_tasks': low_priority_tasks,
@@ -120,6 +120,11 @@ def dashboard(request):
         'completed_percentage': completed_percentage,
         'in_progress_percentage': in_progress_percentage,
         'not_started_percentage': not_started_percentage,
+        'chart_data': {
+            'completed': completed_percentage,
+            'in_progress': in_progress_percentage,
+            'not_started': not_started_percentage,
+        }
     }
     return render(request, 'projects/dashboard.html', context)
 

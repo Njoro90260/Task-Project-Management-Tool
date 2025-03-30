@@ -43,6 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }).catch(err => {
                     console.error('Failed to load comments:', err);
                 });
+                import('./modules/dashboard.js').then(module => {
+                    module.default();
+                }).catch(err => {
+                    console.error('Failed to load dashboard:', err);
+                });
                 break;
             case 'task-detail':
                 import('./modules/comments.js').then(module => {
