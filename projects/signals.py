@@ -18,6 +18,7 @@ def set_default_permissions(sender, **kwargs):
                 permissions.can_delete_tasks = True
                 permissions.can_manage_members = True
                 permissions.can_delete_files = True
+                permissions.can_delete_project = True
 
             elif role.role.name == "Manager":
                 permissions.can_create_tasks = True
@@ -25,6 +26,7 @@ def set_default_permissions(sender, **kwargs):
                 permissions.can_delete_tasks = False
                 permissions.can_manage_members = True
                 permissions.can_delete_files = True
+                permissions.can_delete_project = False
 
             elif role.role.name == "Team Member":
                 permissions.can_create_tasks = True
@@ -32,6 +34,7 @@ def set_default_permissions(sender, **kwargs):
                 permissions.can_delete_tasks = False
                 permissions.can_manage_members = False
                 permissions.can_delete_files = False
+                permissions.can_delete_project = False
 
             permissions.save()
             print(f"✅ Permissions updated for {role.user.username} - {role.role.name}")

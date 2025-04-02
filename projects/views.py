@@ -143,8 +143,19 @@ def project_detail(request, project_id):
     can_edit_tasks = user_has_permission(request.user, project, "can_edit_tasks")
     can_delete_tasks = user_has_permission(request.user, project, "can_delete_tasks")
     can_delete_files = user_has_permission(request.user, project, "can_delete_files")
+    can_delete_project = user_has_permission(request.user, project, "can_delete_project")
 
     is_manager_or_admin = project_role and project_role.role.name in ["Manager", "Admin"]
+    is_admin = project_role and project_role.role.name in ["Admin"]
+
+    if request.method == "POST" and "delete_project" in request.POST:
+        if can_delete_project:
+            project.delete()
+            messages.success(request, "Project deleted successfully!")
+            return redirect("projects:dashboard")
+        else:
+            messages.error(request, "You do not have the permission to delte this project.")
+            
 
     # Get tasks related to the project
     tasks = Task.objects.filter(project=project).select_related("assigned_to").order_by("status", "priority", "due_date")
@@ -159,7 +170,9 @@ def project_detail(request, project_id):
         "can_edit_tasks": can_edit_tasks,
         "can_delete_tasks": can_delete_tasks,
         "can_delete_files": can_delete_files,
+        "can_delete_project": can_delete_project,
         "is_manager_or_admin": is_manager_or_admin,
+        "is_admin": is_admin,
     }
 
     return render(request, "projects/project_detail.html", context)

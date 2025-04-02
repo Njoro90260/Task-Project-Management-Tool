@@ -16,6 +16,8 @@ def user_has_permission(user, project, permission_codename):
                 return True
             if permission_codename == "can_delete_files" and project_role.permissions.can_delete_files:
                 return True
+            if permission_codename == "can_delete_project" and project_role.permissions.can_delete_project:
+                return True
 
     return False
 

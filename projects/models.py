@@ -169,6 +169,7 @@ class ProjectPermission(models.Model):
     can_delete_tasks = models.BooleanField(default=False)
     can_manage_members = models.BooleanField(default=False)
     can_delete_files = models.BooleanField(default=False)
+    can_delete_project = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Permissions for {self.project_role.user.username} in {self.project_role.project.name}"
