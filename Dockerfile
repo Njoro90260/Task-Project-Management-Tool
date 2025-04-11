@@ -4,14 +4,15 @@ ENV PATH="/scripts:${PATH}"
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Install system dependencies
+# Install system dependencies    
 RUN apt-get update && apt-get install -y \
-    netcat \
+    netcat-openbsd \
     gcc \
     postgresql-client \
     && pip install --upgrade pip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Install Python dependencies
 COPY ./requirements.txt /requirements.txt
