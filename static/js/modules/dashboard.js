@@ -68,5 +68,16 @@ export default function initDashboard() {
                 }
             });
         }
+
+        // comments modal
+        const showMoreButton = document.getElementById("show-more-comments");
+        const modalComments = document.getElementById("comments-modal");
+
+        if (showMoreButton && modalComments) {
+            showMoreButton.addEventListener("click", () => {
+                const modal = new bootstrap.Modal(modalComments);
+                modal.show();
+            });
+        }
     }
 }

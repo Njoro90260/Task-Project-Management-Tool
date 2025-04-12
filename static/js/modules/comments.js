@@ -17,7 +17,6 @@ class CommentSystem {
     if (!this.validateElements()) return;
 
     this.setupEventListeners();
-    this.setupModals();
   }
 
   validateElements() {
@@ -37,18 +36,6 @@ class CommentSystem {
     this.commentForm.addEventListener("submit", (event) => this.handleSubmit(event));
   }
 
-
-  setupModals() {
-    const showMoreButton = document.getElementById("show-more-comments");
-    const modalComments = document.getElementById("comments-modal");
-
-    if (showMoreButton && modalComments) {
-      showMoreButton.addEventListener("click", () => {
-        const modal = new bootstrap.Modal(modalComments);
-        modal.show();
-      });
-    }
-  }
 
   async handleKeyUp(event) {
     if (["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(event.key)) {

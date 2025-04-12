@@ -13,6 +13,11 @@
     --modal-z-index: 1060;
 }
 
+.row {
+    padding-bottom: calc(var(--bs-gutter-x) * .5);
+    padding-top: calc(var(--bs-gutter-x) * .5);
+}
+
 @font-face {
     font-family: 'Comfortaa';
     src: url('/static/css/Comfortaa/static/Comfortaa-Bold.ttf') format('truetype');
