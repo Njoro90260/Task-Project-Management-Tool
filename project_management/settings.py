@@ -23,9 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.getenv('DEBUG', 1)))
+DEBUG = bool(int(os.getenv('DEBUG', 0)))
 
 ALLOWED_HOSTS = []
+ALLOWED_HOSTS_ENV = os.getenv('ALLOWED_HOSTS')
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS.extend(ALLOWED_HOSTS_ENV.split(','))
 
 
 # Application definition
@@ -131,13 +134,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Ensure this matches your project structure
+    os.path.join(BASE_DIR, 'static'), 
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For production (collectstatic)
+STATIC_ROOT = '/static/media/'
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 # Default primary key field type
@@ -151,8 +154,8 @@ LOGIN_URL = 'Users:login'
 LOGOUT_URL = 'Users:logout'
 LOGOUT_REDIRECT_URL = '/'
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "static/media/"
+MEDIA_ROOT = "/vol/web/media"
 
 INTERNAL_IPS = [
     '127.0.0.1',
