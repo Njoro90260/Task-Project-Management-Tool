@@ -87,7 +87,7 @@
                             </div>
                             <a href="{% url 'tasks:edit_task' task_id=task.id %}" 
                                class="btn btn-warning btn-sm ms-2">
-                                <i class="fas fa-edit"></i>
+                                <i class="bi bi-pencil-square"></i>
                             </a>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                             </div>
                             <a href="{% url 'tasks:edit_task' task_id=task.id %}" 
                                class="btn btn-primary btn-sm ms-2">
-                                <i class="fas fa-edit"></i>
+                                <i class="bi bi-pencil-square"></i>
                             </a>
                         </div>
                     </div>
@@ -167,7 +167,7 @@
                                         </small>
                                         <a href="{% url 'tasks:edit_task' task_id=task.id %}" 
                                            class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="bi bi-pencil-square"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -202,7 +202,7 @@
                                         </small>
                                         <a href="{% url 'tasks:edit_task' task_id=task.id %}" 
                                            class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="bi bi-pencil-square"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -237,7 +237,7 @@
                                         </small>
                                         <a href="{% url 'tasks:edit_task' task_id=task.id %}" 
                                            class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="bi bi-pencil-square"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -349,7 +349,7 @@
                                     </small>
                                     <a href="{% url 'projects:assign_role' project.id %}"
                                         class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-cog"></i>
+                                        <i class="bi bi-gear-fill"></i>
                                     </a>
                                 </div>
                             </div>
@@ -433,8 +433,8 @@
                                 <span class="badge bg-light text-primary">{{ project.get_status_display }}</span>
                             </div>
                             <div class="card-body">
-                                {% if project.description %}
-                                <p class="card-text text-muted mb-3">{{ project.description|truncatechars:100 }}</p>
+                                {% if project.project_description %}
+                                <p class="card-text text-muted mb-3">{{ project.project_description|truncatechars:100 }}</p>
                                 {% endif %}
                                 
                                 <div class="progress mb-4" style="height: 20px;">
@@ -454,11 +454,11 @@
                                     <div>
                                         <a href="{% url 'projects:project_detail' project_id=project.id %}" 
                                            class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="fas fa-eye"></i>
+                                           <i class="bi bi-eye"></i>
                                         </a>
                                         <a href="{% url 'projects:assign_role' project.id %}"
                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-cog"></i>
+                                            <i class="bi bi-gear-fill"></i>
                                         </a>
                                     </div>
                                 </div>
