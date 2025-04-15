@@ -2,6 +2,9 @@ from .models import ProjectRole
 
 def user_has_permission(user, project, permission_codename):
     """Check if the user has the specified permission for a given project."""
+    if not ProjectRole.objects.filter(user=user, project=project).exists():
+        print(f"DEBUG: User {user.username} has nor role in project {project.name}")
+        return False
     project_roles = ProjectRole.objects.filter(user=user, project=project)
 
     for project_role in project_roles:
