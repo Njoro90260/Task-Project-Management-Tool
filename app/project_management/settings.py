@@ -35,9 +35,9 @@ if ALLOWED_HOSTS_ENV:
 
 INSTALLED_APPS = [
     #my apps
-    'Users',
-    'projects',
-    'tasks',
+    'Users.apps.UsersConfig',
+    'projects.apps.ProjectsConfig',
+    'tasks.apps.TasksConfig',
     #django default apps
     'django.contrib.admin',
     'django.contrib.auth',

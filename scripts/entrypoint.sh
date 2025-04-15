@@ -1,4 +1,6 @@
 #!/bin/sh
+#!/bin/sh
+echo "Entrypoint script running..."
 
 set -e
 

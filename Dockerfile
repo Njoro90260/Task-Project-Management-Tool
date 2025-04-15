@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-ENV PATH="/scripts:${PATH}"
+ENV PATH="/scripts:${PATH}:/app"
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
@@ -20,14 +20,14 @@ RUN pip install -r /requirements.txt
 
 # Create app directory and copy files
 RUN mkdir /app
-COPY ./ /app
+COPY ./app /app
 WORKDIR /app
 
 # # Copy scripts and make them executable
 # COPY ./scripts /scripts
 # RUN chmod +x /scripts/*
 
-COPY scripts/entrypoint.sh /scripts/entrypoint.sh
+COPY ./scripts/entrypoint.sh /scripts/entrypoint.sh
 RUN chmod +x /scripts/entrypoint.sh
 
 # Create static and media folders
