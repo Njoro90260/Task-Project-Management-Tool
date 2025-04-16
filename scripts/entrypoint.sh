@@ -1,17 +1,24 @@
 #!/bin/sh
-#!/bin/sh
-echo "Entrypoint script running..."
-
 set -e
 
+echo "Entrypoint script running..."
+
+cd /app
+
+# Wait for PostgreSQL
+echo "Waiting for PostgreSQL..."
+while ! nc -z db 5432; do
+  sleep 0.1
+done
+echo "PostgreSQL started"
+
 echo "Applying database migrations..."
-python manage.py migrate
+python manage.py migrate --noinput
 
-echo "collecting static files..."
+echo "Collecting static files..."
+python manage.py collectstatic --noinput --clear
 
-python manage.py collectstatic --noinput
-
-if ["$CREATE_SUPERUSER" = "true"]; then
+if [ "$CREATE_SUPERUSER" = "true" ]; then  # Fixed: added spaces around [ ]
     echo "Creating superuser..."
     python manage.py shell <<EOF
 from django.contrib.auth import get_user_model
@@ -24,9 +31,13 @@ if not User.objects.filter(username='${DJANGO_SUPERUSER_USERNAME}').exists():
     )
 EOF
 else
-    echo "Superuser already exists, skipping creation."
+    echo "Superuser creation skipped."
 fi
-    
-echo "starting uWSGI server..."
-uwsgi --socket :8000 --master --enable-threads --module app.wsgi
 
+echo "Starting uWSGI server..."
+uwsgi --http :8000 \
+      --master \
+      --enable-threads \
+      --module project_management.wsgi \
+      --buffer-size 32768 \
+      --http-timeout 300

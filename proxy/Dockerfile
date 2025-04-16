@@ -1,11 +1,18 @@
-FROM nginxinc/nginx-unprivileged:1-alpine
+FROM nginxinc/nginx-unprivileged:1.25-alpine
 
-COPY ./default.conf /etc/nginx/conf.d/default.conf
-COPY ./uwsgi_params /etc/nginx/uwsgi_params
+# Remove default config (works with unprivileged image)
+RUN rm /etc/nginx/conf.d/default.conf
 
-USER root
-RUN mkdir -p /vol/static && chmod 755 /vol/static
+# Copy config files
+COPY ./default.conf /etc/nginx/conf.d/
+COPY ./uwsgi_params /etc/nginx/
 
+# Create static volume directory with correct permissions
+RUN mkdir -p /vol/static && \
+    chown nginx:nginx /vol/static && \
+    chmod 755 /vol/static
+
+# Switch to nginx user for runtime
 USER nginx
 
-EXPOSE 80
+EXPOSE 8080

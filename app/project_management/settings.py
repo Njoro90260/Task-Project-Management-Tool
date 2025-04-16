@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+import socket
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -134,13 +135,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/static/'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = '/vol/web/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'), 
 ]
 
-STATIC_ROOT = '/static/media/'
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 # Default primary key field type
@@ -154,10 +154,15 @@ LOGIN_URL = 'Users:login'
 LOGOUT_URL = 'Users:logout'
 LOGOUT_REDIRECT_URL = '/'
 
-MEDIA_URL = "static/media/"
-MEDIA_ROOT = "/vol/web/media"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/vol/web/media/"
 
-INTERNAL_IPS = [
-    '127.0.0.1',
-    # If you use Docker or have other local IPs, add them here
-]
+if DEBUG:
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [
+        '127.0.0.1',
+        '172.17.0.1',
+        *[ip[:-1] + '1' for ip in ips],
+    ]
+else:
+    INTERNAL_IPS = []

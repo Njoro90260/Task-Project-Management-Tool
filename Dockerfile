@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 ENV PATH="/scripts:${PATH}:/app"
 ENV PYTHONUNBUFFERED=1
@@ -18,20 +18,17 @@ RUN apt-get update && apt-get install -y \
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-# Create app directory and copy files
-RUN mkdir /app
-COPY ./app /app
-WORKDIR /app
-
-# # Copy scripts and make them executable
-# COPY ./scripts /scripts
-# RUN chmod +x /scripts/*
+COPY . .
 
 COPY ./scripts/entrypoint.sh /scripts/entrypoint.sh
 RUN chmod +x /scripts/entrypoint.sh
 
+WORKDIR /app
+
 # Create static and media folders
-RUN mkdir -p /vol/web/media /vol/web/static
+RUN mkdir -p /vol/web/static && \
+    cp -r /app/static/* /vol/web/static/ && \
+    chmod -R 755 /vol/web/static
 
 # Create non-root user and fix permissions
 RUN adduser --disabled-password --no-create-home user \

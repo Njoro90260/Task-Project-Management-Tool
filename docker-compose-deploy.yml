@@ -1,26 +1,41 @@
 version: '3.9'
 
 services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
   app:
     build:
       context: .
+    image: myapp:latest
     volumes:
       - static_data:/vol/web
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DB_HOST=db  # Explicitly set to use the service name
+    depends_on:
+      - db
   
   proxy:
     build:
       context: ./proxy
+    image: nginx:1.25-alpine
     volumes:
       - static_data:/vol/static
+      - media_volume:/vol/media
     ports:
       - "8080:8080"
-
     depends_on:
       - app
 
 volumes:
+  postgres_data:
   static_data:
-    
+  media_volume:
