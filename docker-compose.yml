@@ -15,8 +15,8 @@ services:
       context: .
     volumes:
       - ./app:/app
-      - static_volume:/vol/web/static
-      - media_volume:/vol/web/media
+      - static_volume:/vol/static
+      - media_volume:/vol/media
     ports:
       - "8000:8000"
     env_file:

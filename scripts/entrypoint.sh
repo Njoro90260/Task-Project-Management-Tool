@@ -51,8 +51,8 @@ if [ "$SERVER_TYPE" = "uwsgi" ]; then
       --module project_management.wsgi \
       --buffer-size 32768 \
       --http-timeout 300 \
-      --static-safe /static=/vol/web/static \
-      --static-safe /media=/vol/web/media
+      --static-safe /static=/vol/static \
+      --static-safe /media=/vol/media
 else
     echo "Starting Gunicorn server (production mode)..."
     exec gunicorn project_management.wsgi:application \
