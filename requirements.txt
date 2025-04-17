@@ -12,3 +12,6 @@ sqlparse==0.5.3
 typing_extensions==4.12.2
 tzdata==2025.1
 uWSGI>=2.0.18,<2.1
+gunicorn==20.1.*
+whitenoise==6.4.*
+python-dotenv==1.0.*

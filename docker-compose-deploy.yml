@@ -9,33 +9,50 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   app:
     build:
       context: .
     image: myapp:latest
     volumes:
-      - static_data:/vol/web
+      - static_volume:/vol/static
+      - media_volume:/vol/media
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - DB_HOST=db  # Explicitly set to use the service name
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - CREATE_SUPERUSER=${CREATE_SUPERUSER:-false}
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+    command: sh -c "/scripts/entrypoint.sh"
     depends_on:
-      - db
-  
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
   proxy:
     build:
       context: ./proxy
     image: nginx:1.25-alpine
     volumes:
-      - static_data:/vol/static
-      - media_volume:/vol/media
+      - static_volume:/vol/static:ro
+      - media_volume:/vol/media:ro
     ports:
-      - "8080:8080"
+      - "80:80"
     depends_on:
       - app
+    restart: unless-stopped
 
 volumes:
   postgres_data:
-  static_data:
+  static_volume:
   media_volume:

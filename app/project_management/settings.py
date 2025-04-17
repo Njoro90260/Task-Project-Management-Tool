@@ -64,6 +64,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True 
@@ -136,9 +137,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/vol/web/static/'
+STATIC_ROOT = '/vol/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'), 
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 
@@ -155,7 +156,7 @@ LOGOUT_URL = 'Users:logout'
 LOGOUT_REDIRECT_URL = '/'
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = "/vol/web/media/"
+MEDIA_ROOT = "/vol/media/"
 
 if DEBUG:
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
