@@ -1,0 +1,37 @@
+<!-- templates/includes/sidebar.html -->
+<nav id="sidebar-wrapper" class="col-md-3 col-lg-2 d-md-block bg-light sidebar shadow-sm">
+    <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+            <!-- <li class="nav-item">
+                <a class="nav-link active" href="{% url 'projects:index' %}">
+                    <i class="bi bi-house"></i> Home
+                </a>
+            </li> -->
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <span class="nav-link">
+                    <i class="bi bi-person"></i> Hello, {{ user.username }}
+                </span>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'projects:dashboard' %}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'tasks:kanban-board' %}" class="nav-link">
+                    <i class="bi bi-kanban"></i> Manage Tasks
+                </a>
+            </li>
+            <li class="nav-item">
+                <form id="logout-form" method="post" action="{% url 'Users:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

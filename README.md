@@ -37,7 +37,7 @@ The **Task/Project Management Tool** is an open-source web application built usi
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/project-management-tool.git
+   git clone https://github.com/Njoro90260/project-management-tool.git
    cd project-management-tool
    ```
 
@@ -83,7 +83,7 @@ We welcome contributions to improve this tool! Follow the steps below to contrib
 ### 2. Clone Your Fork
 - Clone the forked repository to your local machine:
   ```bash
-  git clone https://github.com/your-username/project-management-tool.git
+  git clone https://github.com/Njoro90260/project-management-tool.git
   ```
 
 ### 3. Create a Feature Branch

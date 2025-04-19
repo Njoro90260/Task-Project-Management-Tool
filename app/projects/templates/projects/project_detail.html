@@ -1,0 +1,80 @@
+{% extends "projects/base.html" %}
+{% block title %}{{ project.name }}{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Project Details -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h2 class="text-primary mb-3">Project Details</h2>
+        <p><strong>Project Name:</strong> <span class="badge bg-secondary">{{ project.name }}</span></p>
+        <p><strong>Description:</strong> {{ project.project_description }}</p>
+        <p><strong>Created By:</strong> <span class="badge bg-info">{{ project.created_by.username }}</span></p>
+        <p><strong>Your Role:</strong> <span class="badge bg-success">{{ user_role_name }}</span></p>
+    </div>
+
+    <!-- Tasks Section -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h2 class="text-primary mb-3">Tasks in this Project</h2>
+
+        {% if tasks %}
+        <div class="row">
+            {% for task in tasks %}
+            <div class="col-md-6 mb-3">
+                <a href="{% url 'tasks:task_detail' task_id=task.id %}" class="text-decoration-none">
+                    <div class="card border-0 shadow-sm p-3 position-relative">
+                        <h5 class="text-dark fw-bold">{{ task.title }}</h5>
+                        <p class="text-muted">{{ task.task_description }}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="badge {% if task.status == 'Completed' %}bg-success{% elif task.status == 'In Progress' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                {{ task.status }}
+                            </span>
+                        </p>
+                        <p><strong>Priority:</strong> 
+                            <span class="badge {% if task.priority == 'High' %}bg-danger{% elif task.priority == 'Medium' %}bg-warning{% else %}bg-primary{% endif %}">
+                                {{ task.priority }}
+                            </span>
+                        </p>
+                        <p><strong>Due Date:</strong> {{ task.due_date }}</p>
+                        <span class="stretched-link"></span>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No tasks found for this project.</p>
+        {% endif %}
+    </div>
+
+    <!-- Permissions -->
+    <!-- <div class="card shadow-sm p-4 mb-4">
+        <h3 class="text-secondary mb-3">Permissions</h3>
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Permission</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Can Manage Members</td><td>{{ can_manage_members }}</td></tr>
+                <tr><td>Can Create Tasks</td><td>{{ can_create_tasks }}</td></tr>
+                <tr><td>Can Edit Tasks</td><td>{{ can_edit_tasks }}</td></tr>
+                <tr><td>Can Delete Tasks</td><td>{{ can_delete_tasks }}</td></tr>
+                <tr><td>Can Delete Files</td><td>{{ can_delete_files }}</td></tr>
+            </tbody>
+        </table>
+    </div> -->
+
+    <!-- Admin Actions -->
+    {% if is_manager_or_admin %}
+    <div class="card shadow-sm p-4 mt-4 text-center">
+        <h3 class="text-danger mb-3">Admin Actions</h3>
+        <div class="d-grid gap-2 d-md-flex justify-content-center">
+            <a href="{% url 'projects:assign_role' project.id %}" class="btn btn-primary">Assign Roles</a>
+            <a href="{% url 'projects:add_user_and_assign_role' project.id %}" class="btn btn-success">Add User & Assign Role</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

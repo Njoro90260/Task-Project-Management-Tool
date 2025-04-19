@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+  web:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+      - static_volume:/vol/static
+      - media_volume:/vol/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    command: sh -c "/scripts/entrypoint.sh"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
