@@ -360,7 +360,7 @@ body.bg-dark .modal-footer {
     position: fixed;
     height: 100vh;
     z-index: 1000;
-    background-color: #f8f9fa;
+    background-image: var(--primary-color);
     box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-right: 1px solid #dee2e6;
@@ -383,6 +383,8 @@ body.bg-dark .modal-footer {
     width: calc(100% - 250px);
     z-index: 1000;
     transition: left 0.3s ease, width 0.3s ease;
+    border-bottom: 1px solid #dee2e6;
+    background-image: var(--primary-color);
 }
 
 .navbar.expanded {
