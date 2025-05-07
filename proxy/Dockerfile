@@ -22,5 +22,3 @@ RUN mkdir -p /vol/static /vol/media && \
 
 # Switch to nginx user for runtime
 USER nginx
-
-EXPOSE 8080
