@@ -25,7 +25,7 @@ RUN mkdir -p /vol/static /vol/media /var/log/uwsgi && \
     chmod -R 777 /var/log/uwsgi 
 
 # Copy application files
-COPY . .
+COPY ./app /app
 COPY ./scripts/entrypoint.sh /scripts/entrypoint.sh
 RUN chmod +x /scripts/entrypoint.sh
 

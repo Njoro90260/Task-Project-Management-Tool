@@ -42,3 +42,5 @@ Dockerfile-dev
 
 staticfiles/
 local.txt
+
+.env.prod

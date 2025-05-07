@@ -180,3 +180,4 @@ cython_debug/
 client_secret.json
 .secret
 .prod
+.env.prod
