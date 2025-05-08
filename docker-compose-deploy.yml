@@ -17,18 +17,11 @@ services:
 
   
   app:
-    build: ./app
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - DB_HOST=db
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - CREATE_SUPERUSER=${CREATE_SUPERUSER:-false}
-      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
-      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
-      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+    build:
+      context: .
+    image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v1.0-official
+    env_file:
+      - .env
     command: sh -c "/scripts/entrypoint.sh"
     depends_on:
       db:
@@ -64,3 +57,4 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+
