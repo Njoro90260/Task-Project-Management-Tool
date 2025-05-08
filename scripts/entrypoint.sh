@@ -44,7 +44,7 @@ fi
 
 # Determine server type based on environment variable
 if [ "$SERVER_TYPE" = "uwsgi" ]; then
-    echo "Starting uWSGI server (development mode with Nginx)..."
+    echo "Starting uWSGI server"
     uwsgi --http :8000 \
       --master \
       --enable-threads \
@@ -54,7 +54,7 @@ if [ "$SERVER_TYPE" = "uwsgi" ]; then
       --static-safe /static=/vol/static \
       --static-safe /media=/vol/media
 else
-    echo "Starting Gunicorn server (production mode)..."
+    echo "Starting Gunicorn server"
     exec gunicorn project_management.wsgi:application \
         --bind 0.0.0.0:8000 \
         --workers 4 \
