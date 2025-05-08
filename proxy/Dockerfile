@@ -19,6 +19,3 @@ COPY ./uwsgi_params /etc/nginx/uwsgi_params
 RUN mkdir -p /vol/static /vol/media && \
     chown -R nginx:nginx /vol && \
     chmod -R 755 /vol
-
-# Switch to nginx user for runtime
-USER nginx
