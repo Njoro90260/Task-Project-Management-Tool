@@ -17,8 +17,6 @@ services:
 
   
   app:
-    build:
-      context: .
     image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v1.0-official
     env_file:
       - .env
