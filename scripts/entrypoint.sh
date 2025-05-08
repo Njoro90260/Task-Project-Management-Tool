@@ -2,6 +2,10 @@
 set -e
 
 echo "Entrypoint script running..."
+echo "Fixing static/media volume permissions..."
+mkdir -p /vol/static /vol/media
+chown -R user:user /vol/static /vol/media
+
 
 # Validate secret key
 if [ -z "$SECRET_KEY" ] || [ "$SECRET_KEY" = "default-dev-secret-key" ] || [ "$SECRET_KEY" = "must-be-set-for-production" ]; then
