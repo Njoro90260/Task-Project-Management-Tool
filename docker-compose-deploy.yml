@@ -15,35 +15,27 @@ services:
       timeout: 5s
       retries: 5
 
+  
   app:
     build:
       context: .
-    image: myapp:latest
-    volumes:
-      - static_volume:/vol/static
-      - media_volume:/vol/media
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - DB_HOST=db
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - CREATE_SUPERUSER=${CREATE_SUPERUSER:-false}
-      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
-      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
-      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+    image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v1.0-official
+    env_file:
+      - .env
     command: sh -c "/scripts/entrypoint.sh"
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+    expose:
+      - "8000"
 
   proxy:
     build:
       context: ./proxy
     image: nginx:1.25-alpine
     volumes:
+      - ./proxy/default.conf:/etc/nginx/conf.d/default.conf
       - static_volume:/vol/static:ro
       - media_volume:/vol/media:ro
     ports:
@@ -52,7 +44,17 @@ services:
       - app
     restart: unless-stopped
 
+  # nginx:
+  #   volumes:
+  #     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+  #     - ./app/static:/static
+  #     - ./app/media:/media
+
+  #   depends_on:
+  #     - app
+
 volumes:
   postgres_data:
   static_volume:
   media_volume:
+

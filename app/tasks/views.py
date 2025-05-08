@@ -21,8 +21,9 @@ def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     project = task.project
 
-    if not user_has_permission(request.user, project, 'change_task'):
+    if not user_has_permission(request.user, project, 'can_edit_tasks'):
         messages.error(request, "You are not a member of this project or lack the required permissions.")
+        return redirect("projects:dashboard")
     
     if request.method == "POST":
         form = TaskForm(request.POST, instance=task)
@@ -35,6 +36,7 @@ def edit_task(request, task_id):
         form = TaskForm(instance=task)
 
     context = {
+        "project": project,
         "form": form,
         "task": task
     }
