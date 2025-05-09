@@ -15,7 +15,9 @@ services:
       timeout: 5s
       retries: 5
   app:
-    image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v2.0-official
+   # image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v2.0-official
+    build:
+      context: .
     volumes:
       - static_volume:/vol/static
       - media_volume:/vol/media
