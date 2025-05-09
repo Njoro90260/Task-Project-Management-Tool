@@ -4,11 +4,12 @@ ENV PATH="/scripts:${PATH}:/app"
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Install system dependencies
+# Install system dependencies including sudo
 RUN apt-get update && apt-get install -y \
     netcat-openbsd \
     gcc \
     postgresql-client \
+    sudo \
     && pip install --upgrade pip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -17,12 +18,16 @@ RUN apt-get update && apt-get install -y \
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-# Create directory structure with correct permissions
+# Create user with sudo privileges (for initial setup only)
+RUN adduser --disabled-password --gecos '' user && \
+    echo 'user ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/user && \
+    chmod 0440 /etc/sudoers.d/user
+
+# Create directories with correct ownership
 RUN mkdir -p /vol/static /vol/media /var/log/uwsgi && \
-    adduser --disabled-password --no-create-home user && \
-    chown -R user:user /vol /var/log/uwsgi && \
-    chmod -R 775 /vol && \
-    chmod -R 777 /var/log/uwsgi 
+    chown -R user:user /vol/static /vol/media /var/log/uwsgi && \
+    chmod -R 775 /vol/static /vol/media && \
+    chmod -R 777 /var/log/uwsgi
 
 # Copy application files
 COPY ./app /app
@@ -31,6 +36,5 @@ RUN chmod +x /scripts/entrypoint.sh
 
 WORKDIR /app
 
-USER user
-
+# Start as root (entrypoint will drop privileges)
 CMD ["entrypoint.sh"]
