@@ -97,13 +97,13 @@ WSGI_APPLICATION = 'project_management.wsgi.application'
 
 DATABASES = {
 	'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME', 'django_db'),
-            'USER': os.getenv('DB_USER', 'django_user'),
-            'PASSWORD': os.getenv('DB_PASSWORD', 'django_pass'),
-            'HOST': os.getenv('DB_HOST', 'db'),
-            'PORT': os.getenv('DB_PORT', '5432'),
-        }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'django_db'),
+        'USER': os.getenv('DB_USER', 'django_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'django_pass'),
+        'HOST': os.getenv('DB_HOST', 'db'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+    }
 }
 
 

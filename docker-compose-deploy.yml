@@ -15,9 +15,7 @@ services:
       timeout: 5s
       retries: 5
   app:
-   # image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v2.0-official
-    build:
-      context: .
+    image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v2.1-official
     volumes:
       - static_volume:/vol/static
       - media_volume:/vol/media
@@ -27,6 +25,14 @@ services:
       db:
         condition: service_healthy
     user: "0"
+
+  init_volumes:
+    image: alpine
+    command: sh -c "mkdir -p /vol/static /vol/media && chown -R 1000:1000 /vol/static /vol/media && chmod -R 775 /vol/static /vol/media"
+    volumes:
+      - static_volume:/vol/static
+      - media_volume:/vol/media
+    restart: "no"
 
   proxy:
     build:
