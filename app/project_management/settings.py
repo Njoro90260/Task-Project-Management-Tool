@@ -34,7 +34,7 @@ ALLOWED_HOSTS_ENV = os.getenv('ALLOWED_HOSTS')
 if ALLOWED_HOSTS_ENV:
     ALLOWED_HOSTS.extend(ALLOWED_HOSTS_ENV.split(','))
 
-
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS')
 # Application definition
 
 INSTALLED_APPS = [
