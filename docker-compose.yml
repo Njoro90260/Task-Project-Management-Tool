@@ -11,12 +11,14 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
 
   web:
-    image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v1.0-official
+    build:
+      context: .
     volumes:
+      - ./app:/app
       - static_volume:/vol/static
       - media_volume:/vol/media
     ports:
-      - "80:8000"
+      - "8000:8000"
     env_file:
       - .env
     command: sh -c "/scripts/entrypoint.sh"
