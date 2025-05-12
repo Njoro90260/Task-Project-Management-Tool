@@ -14,7 +14,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-      networks:
+    networks:
       - global-proxy-net
   app:
     image: 484907498501.dkr.ecr.eu-central-1.amazonaws.com/my_app:v2.1-official
