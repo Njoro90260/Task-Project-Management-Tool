@@ -181,3 +181,14 @@ if DEBUG:
     ]
 else:
     INTERNAL_IPS = []
+
+
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI', '').split(',')
+GOOGLE_SCOPES = os.getenv('GOOGLE_SCOPES', '').split(',')
+GOOGLE_AUTH_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'openid'
+]

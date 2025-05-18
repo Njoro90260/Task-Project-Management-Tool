@@ -14,4 +14,8 @@ urlpatterns = [
     # Logout page
     path('logout/', LogoutView.as_view(), name='logout'),
     path('search_users/', views.search_users, name='search_users'),
+    path('google/login/', views.google_login, name='google_login'),
+    path('google/callback/', views.google_callback, name='google_callback'),
+    path('google/start/', views.google_auth_start, name='google_auth_start'),
+    path('google/redirect/', views.google_auth_redirect, name='google_auth_redirect'),
 ]

@@ -14,21 +14,25 @@
         body {
             background-color: #f8f9fa;
         }
+
         .login-container {
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
+
         .btn-primary {
             background-color: #0d6efd;
             border: none;
             padding: 10px 0;
         }
+
         @media (max-width: 576px) {
             .login-container {
                 border-radius: 0;
                 box-shadow: none;
             }
+
             body {
                 background-color: #fff;
             }
@@ -60,7 +64,7 @@
 
                     <form action="{% url 'Users:login' %}" method="post" class="needs-validation" novalidate>
                         {% csrf_token %}
-                        
+
                         <div class="mb-3">
                             <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
                             <div class="input-group">
@@ -68,7 +72,7 @@
                                 {{ form.username }}
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
                             <div class="input-group">
@@ -94,8 +98,17 @@
                         <input type="hidden" name="next" value="{% url 'projects:dashboard' %}" />
                     </form>
 
+                    <!-- templates/login.html -->
+
+                    <a href="{% url 'Users:google_login' %}" class="btn btn-outline-danger d-flex align-items-center">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" width="20"
+                            class="me-2">
+                        Sign in with Google
+                    </a>
+
+
                     <div class="text-center mt-4">
-                        <p class="text-muted">Don't have an account? 
+                        <p class="text-muted">Don't have an account?
                             <a href="{% url 'Users:register' %}" class="text-decoration-none fw-bold">Signup</a>
                         </p>
                     </div>
@@ -105,4 +118,5 @@
     </div>
     {% bootstrap_javascript %}
 </body>
+
 </html>
