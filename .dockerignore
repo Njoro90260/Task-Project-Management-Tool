@@ -44,3 +44,5 @@ staticfiles/
 local.txt
 
 .env.prod
+
+client_secret_937910586692-7s9j6ncnqqqafvu54m71bul54npkcv9i.apps.googleusercontent.com.json

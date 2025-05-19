@@ -38,6 +38,8 @@ CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 # Application definition
 
+SITE_ID = 2
+
 INSTALLED_APPS = [
     #my apps
     'Users.apps.UsersConfig',
@@ -55,7 +57,24 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'corsheaders',
     'bootstrap5',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +88,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True 
@@ -165,10 +185,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'Users.User'
 
-LOGIN_URL = 'Users:login'
-LOGOUT_URL = 'Users:logout'
-LOGOUT_REDIRECT_URL = '/'
-
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "/vol/media/"
 
@@ -192,3 +208,16 @@ GOOGLE_AUTH_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'openid'
 ]
+
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+
+)
+
+
+LOGIN_URL = 'Users:login'
+LOGIN_REDIRECT_URL = "projects:dashboard"
+LOGOUT_URL = 'Users:logout'
+LOGOUT_REDIRECT_URL = '/'

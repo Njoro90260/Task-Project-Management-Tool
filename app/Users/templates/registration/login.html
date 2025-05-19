@@ -41,6 +41,8 @@
 </head>
 
 <body class="d-flex align-items-center min-vh-100 py-4">
+    {% load socialaccount %}
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
@@ -100,7 +102,9 @@
 
                     <!-- templates/login.html -->
 
-                    <a href="{% url 'Users:google_login' %}" class="btn btn-outline-danger d-flex align-items-center">
+                    <!-- <a href="{% url 'Users:google_login' %}" class="btn btn-primary">Sign in with google</a> -->
+
+                    <a href="{% provider_login_url 'google' process='login' next='/dashboard/' %}" class="btn btn-outline-danger d-flex align-items-center">
                         <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" width="20"
                             class="me-2">
                         Sign in with Google

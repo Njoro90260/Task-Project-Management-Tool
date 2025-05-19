@@ -25,6 +25,7 @@ urlpatterns = [
     path('users/', include('Users.urls')),
     path('tasks/', include('tasks.urls')),
     path('api/', include('projects.api_urls')),
+    path("accounts/", include("allauth.urls")),
 ]
 
 # Add static/media files AND debug_toolbar ONLY in development
